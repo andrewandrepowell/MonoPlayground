@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 
 namespace MonoPlayground
 {
@@ -24,19 +24,21 @@ namespace MonoPlayground
 
             return (min, index);
         }
-
         public static T Min<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
-            (T min, _) = IndexWithMin<T>(values);
+            (T min, _) = values.IndexWithMin();
             return min;
         }
-
+        public static T Min<T>(params T[] values) where T : IComparable<T>
+        {
+            (T min, _) = values.IndexWithMin();
+            return min;
+        }
         public static int IndexOfMin<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
-            (_, int index) = IndexWithMin<T>(values);
+            (_, int index) = values.IndexWithMin();
             return index;
         }
-
         public static (T, int) IndexWithMax<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
             T max = values.GetEnumerator().Current;
@@ -54,19 +56,26 @@ namespace MonoPlayground
 
             return (max, index);
         }
-
         public static T Max<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
-            (T max, _) = IndexWithMax<T>(values);
+            (T max, _) = values.IndexWithMax();
             return max;
         }
-
+        public static T Max<T>(params T[] values) where T : IComparable<T>
+        {
+            (T max, _) = values.IndexWithMax();
+            return max;
+        }
         public static int IndexOfMax<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
-            (_, int index) = IndexWithMax<T>(values);
+            (_, int index) = values.IndexWithMax();
             return index;
         }
-
+        public static void ForEach<T>(this IEnumerable<T> values, Action<T> action)
+        {
+            foreach (T value in values)
+                action(value);
+        }
         public static void Shuffle<T>(this IList<T> list)
         {
             // https://stackoverflow.com/questions/273313/randomize-a-listt

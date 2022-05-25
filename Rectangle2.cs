@@ -88,10 +88,10 @@ namespace MonoPlayground
         public static Rectangle2 Intersect(Rectangle2 value1, Rectangle2 value2)
         {
             Debug.Assert(value1.Intersects(value2));
-            float x = GameMath.Max(new float[] { value1.Left, value2.Left });
-            float y = GameMath.Max(new float[] { value1.Top, value2.Top });
-            float width = GameMath.Min(new float[] { value1.Right, value2.Right }) - x;
-            float height = GameMath.Min(new float[] { value1.Bottom, value2.Bottom }) - y;
+            float x = GameMath.Max(value1.Left, value2.Left);
+            float y = GameMath.Max(value1.Top, value2.Top);
+            float width = GameMath.Min(value1.Right, value2.Right) - x;
+            float height = GameMath.Min(value1.Bottom, value2.Bottom) - y;
             Rectangle2 intersection = new Rectangle2(x, y, width, height);
             return intersection;
         }
