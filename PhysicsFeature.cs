@@ -33,9 +33,10 @@ namespace MonoPlayground
         }
         public override void Update(GameTime gameTime)
         {
-            _velocity += _acceleration; // Apply acceleration to velocity.
-            _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction, 0); // Apply friction to velocity.
-            _position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds; // Apply velocity to position.
+            float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _velocity += _acceleration * timeElapsed; // Apply acceleration to velocity.
+            _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction * timeElapsed, 0); // Apply friction to velocity.
+            _position += _velocity * timeElapsed; // Apply velocity to position.
             _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
         }
         public Texture2D Mask { get => _mask; }
