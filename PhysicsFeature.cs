@@ -17,10 +17,9 @@ namespace MonoPlayground
         private Vector2 _acceleration;
         private float _friction;
         private bool _solid;
-        private bool _disposed;
-        public PhysicsFeature(GameObject gameObject, ContentManager contentManager, string maskName, Action<PhysicsFeature> collisionHandle) : base(gameObject: gameObject)
+        public PhysicsFeature(GameObject gameObject, Texture2D mask, Action<PhysicsFeature> collisionHandle) : base(gameObject: gameObject)
         {
-            _mask = contentManager.Load<Texture2D>(maskName);
+            _mask = mask;
             _collisionHandle = collisionHandle;
             _collidablePhysics = new List<PhysicsFeature>();
             _position = new Vector2(0, 0);
@@ -28,7 +27,6 @@ namespace MonoPlayground
             _acceleration = new Vector2(0, 0);
             _friction = 0f;
             _solid = false;
-            _disposed = false;
             // https://codepen.io/OliverBalfour/post/implementing-velocity-acceleration-and-friction-on-a-canvas
         }
         public override void Update(GameTime gameTime)
@@ -39,23 +37,13 @@ namespace MonoPlayground
             _position += _velocity * timeElapsed; // Apply velocity to position.
             _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
         }
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
         public Texture2D Mask { get => _mask; }
         public Vector2 Position { get => _position; set => _position = value; }
         public Vector2 Velocity { get => _velocity; set => _velocity = value; }
         public Vector2 Acceleration { get => _acceleration; set => _acceleration = value; }
         public float Friction {  get => _friction; set => _friction = value; }
         public bool Solid {  get => _solid; set => _solid = value; }
-        protected override void Dispose(bool disposing)
-        {
-            if (_disposed)
-                return;
-            if (disposing)
-            {
-                _mask.Dispose();
-            }
-            _disposed = true;
-            base.Dispose(disposing);
-        }
         private void Collide(PhysicsFeature other)
         {
             Rectangle thisBounds = new Rectangle(
