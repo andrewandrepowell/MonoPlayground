@@ -22,10 +22,10 @@ namespace MonoPlayground
             _features.ForEach(x => x.Update(gameTime));
             _children.ForEach(x => x.Update(gameTime));
         }
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void Draw(GameTime gameTime)
         {
-            _features.ForEach(x => x.Draw(gameTime, spriteBatch));
-            _children.ForEach(x => x.Draw(gameTime, spriteBatch));
+            _features.ForEach(x => x.Draw(gameTime));
+            _children.ForEach(x => x.Draw(gameTime));
         }
     }
 }

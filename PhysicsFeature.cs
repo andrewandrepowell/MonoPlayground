@@ -17,6 +17,7 @@ namespace MonoPlayground
         private Vector2 _acceleration;
         private float _friction;
         private bool _solid;
+        private bool _physics;
         public PhysicsFeature(GameObject gameObject, Texture2D mask, Action<PhysicsFeature> collisionHandle) : base(gameObject: gameObject)
         {
             _mask = mask;
@@ -27,23 +28,30 @@ namespace MonoPlayground
             _acceleration = new Vector2(0, 0);
             _friction = 0f;
             _solid = false;
+            _physics = false;
             // https://codepen.io/OliverBalfour/post/implementing-velocity-acceleration-and-friction-on-a-canvas
         }
         public override void Update(GameTime gameTime)
         {
+            if (!_physics)
+                return;
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _velocity += _acceleration * timeElapsed; // Apply acceleration to velocity.
-            _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction * timeElapsed, 0); // Apply friction to velocity.
+            if (_velocity != Vector2.Zero)
+                _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction * timeElapsed, 0); // Apply friction to velocity.
             _position += _velocity * timeElapsed; // Apply velocity to position.
             _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
         }
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
+        public override void Draw(GameTime gameTime) { }
         public Texture2D Mask { get => _mask; }
         public Vector2 Position { get => _position; set => _position = value; }
+        public Vector2 Center { get => _position + _mask.Bounds.Center.ToVector2(); }
         public Vector2 Velocity { get => _velocity; set => _velocity = value; }
         public Vector2 Acceleration { get => _acceleration; set => _acceleration = value; }
         public float Friction {  get => _friction; set => _friction = value; }
         public bool Solid {  get => _solid; set => _solid = value; }
+        public bool Physics { get => _physics; set => _physics = value; }
+        public ICollection<PhysicsFeature> CollidablePhysics { get => _collidablePhysics; }
         private void Collide(PhysicsFeature other)
         {
             Rectangle thisBounds = new Rectangle(
@@ -109,7 +117,8 @@ namespace MonoPlayground
                             .Count())
                         .Max();
 
-                    if (colMax > rowMax)
+                    _position = _position.ToPoint().ToVector2();
+                    if (colMax < rowMax)
                     {
                         if (otherBounds.Top == intersection.Top)
                             _position.Y -= colMax;

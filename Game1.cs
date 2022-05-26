@@ -8,6 +8,7 @@ namespace MonoPlayground
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private TestARoom _testARoom;
 
         public Game1()
         {
@@ -28,6 +29,9 @@ namespace MonoPlayground
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            _testARoom = new TestARoom(
+                contentManager: Content,
+                graphicsDevice: GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
@@ -36,7 +40,7 @@ namespace MonoPlayground
                 Exit();
 
             // TODO: Add your update logic here
-
+            _testARoom.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -45,7 +49,7 @@ namespace MonoPlayground
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            _testARoom.Draw(gameTime);
             base.Draw(gameTime);
         }
     }

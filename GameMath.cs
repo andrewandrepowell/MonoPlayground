@@ -9,7 +9,10 @@ namespace MonoPlayground
         private static readonly Random _random = new Random();
         public static (T, int) IndexWithMin<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
-            T min = values.GetEnumerator().Current;
+            IEnumerator<T> enumerator = values.GetEnumerator();
+            if (!enumerator.MoveNext())
+                throw new InvalidOperationException();
+            T min = enumerator.Current;
             int i = 0;
             int index = 0;
             foreach (T value in values)
@@ -41,7 +44,10 @@ namespace MonoPlayground
         }
         public static (T, int) IndexWithMax<T>(this IEnumerable<T> values) where T : IComparable<T>
         {
-            T max = values.GetEnumerator().Current;
+            IEnumerator<T> enumerator = values.GetEnumerator();
+            if (!enumerator.MoveNext())
+                throw new InvalidOperationException();
+            T max = enumerator.Current;
             int i = 0;
             int index = 0;
             foreach (T value in values)
