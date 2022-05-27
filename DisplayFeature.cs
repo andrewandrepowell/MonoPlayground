@@ -21,7 +21,12 @@ namespace MonoPlayground
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(texture: _texture, position: _position, color: Color.White);
+            _spriteBatch.Draw(
+                texture: _texture,
+                destinationRectangle: new Rectangle(
+                    location: _position.ToPoint(), 
+                    size: _texture.Bounds.Size), 
+                color: Color.White);
             _spriteBatch.End();
         }
         public override void Update(GameTime gameTime)

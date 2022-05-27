@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.InteropServices;
 
 namespace MonoPlayground
 {
@@ -12,6 +13,7 @@ namespace MonoPlayground
         private readonly Texture2D _mask;
         private readonly Action<PhysicsFeature> _collisionHandle;
         private readonly ICollection<PhysicsFeature> _collidablePhysics;
+        private Vector2 _collisionPoint;
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _acceleration;
@@ -23,9 +25,10 @@ namespace MonoPlayground
             _mask = mask;
             _collisionHandle = collisionHandle;
             _collidablePhysics = new List<PhysicsFeature>();
-            _position = new Vector2(0, 0);
-            _velocity = new Vector2(0, 0);
-            _acceleration = new Vector2(0, 0);
+            _collisionPoint = Vector2.Zero;
+            _position = Vector2.Zero;
+            _velocity = Vector2.Zero;
+            _acceleration = Vector2.Zero;
             _friction = 0f;
             _solid = false;
             _physics = false;
@@ -41,6 +44,10 @@ namespace MonoPlayground
                 _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction * timeElapsed, 0); // Apply friction to velocity.
             _position += _velocity * timeElapsed; // Apply velocity to position.
             _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
+#if DEBUG
+            AllocConsole();
+            Console.WriteLine($"Position={_position}");
+#endif 
         }
         public override void Draw(GameTime gameTime) { }
         public Texture2D Mask { get => _mask; }
@@ -51,6 +58,7 @@ namespace MonoPlayground
         public float Friction {  get => _friction; set => _friction = value; }
         public bool Solid {  get => _solid; set => _solid = value; }
         public bool Physics { get => _physics; set => _physics = value; }
+        public Vector2 CollisionPoint { get => _collisionPoint; }
         public ICollection<PhysicsFeature> CollidablePhysics { get => _collidablePhysics; }
         private void Collide(PhysicsFeature other)
         {
@@ -100,41 +108,59 @@ namespace MonoPlayground
             {
                 if (_solid && other.Solid)
                 {
-                    int rowMax = Enumerable
+                    (int rowMax, int rowIndex) = Enumerable
                         .Range(0, thisIntersection.Height)
                         .Select(row => Enumerable
                             .Range(0, thisIntersection.Width)
                             .Select(col => collisionMask[col + row * thisIntersection.Width])
                             .Where(x => x)
                             .Count())
-                        .Max();
-                    int colMax = Enumerable
+                        .IndexWithMax();
+                    (int colMax, int colIndex) = Enumerable
                         .Range(0, thisIntersection.Width)
                         .Select(col => Enumerable
                             .Range(0, thisIntersection.Height)
                             .Select(row => collisionMask[col + row * thisIntersection.Width])
                             .Where(x => x)
                             .Count())
-                        .Max();
+                        .IndexWithMax();
 
-                    _position = _position.ToPoint().ToVector2();
                     if (colMax < rowMax)
                     {
+                        _collisionPoint.X = intersection.X + colIndex;
                         if (otherBounds.Top == intersection.Top)
+                        {
                             _position.Y -= colMax;
-                        if (otherBounds.Bottom == intersection.Bottom)
+                            _collisionPoint.Y = intersection.Top - 1;
+                        }
+                        else if (otherBounds.Bottom == intersection.Bottom)
+                        {
                             _position.Y += colMax;
+                            _collisionPoint.Y = intersection.Bottom + 1;
+                        }
                     }
                     else
                     {
+                        _collisionPoint.Y = intersection.Y + rowIndex;
                         if (otherBounds.Left == intersection.Left)
+                        {
                             _position.X -= rowMax;
-                        if (otherBounds.Right == intersection.Right)
+                            _collisionPoint.X = intersection.Left - 1;
+                        }
+                        else if (otherBounds.Right == intersection.Right)
+                        {
                             _position.X += rowMax;
+                            _collisionPoint.X = intersection.Right + 1;
+                        }
                     }
                 }
                 _collisionHandle(other);
             }
         }
+#if DEBUG
+        // https://gamedev.stackexchange.com/questions/45107/input-output-console-window-in-xna#:~:text=Right%20click%20your%20game%20in%20the%20solution%20explorer,tab.%20Change%20the%20Output%20Type%20to%20Console%20Application.
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
+#endif
     }
 }
