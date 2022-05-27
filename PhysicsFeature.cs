@@ -131,12 +131,14 @@ namespace MonoPlayground
                         if (otherBounds.Top == intersection.Top)
                         {
                             _position.Y -= colMax;
-                            _collisionPoint.Y = intersection.Top - 1;
+                            //_collisionPoint.Y = intersection.Top - 1;
+                            // Need to figure out how to get the Y offset of the collision point differently.
                         }
                         else if (otherBounds.Bottom == intersection.Bottom)
                         {
                             _position.Y += colMax;
-                            _collisionPoint.Y = intersection.Bottom + 1;
+                            //_collisionPoint.Y = intersection.Bottom + 1;
+                            // Need to figure out how to get the Y offset of the collision point differently.                            
                         }
                     }
                     else
@@ -145,12 +147,14 @@ namespace MonoPlayground
                         if (otherBounds.Left == intersection.Left)
                         {
                             _position.X -= rowMax;
-                            _collisionPoint.X = intersection.Left - 1;
+                            //_collisionPoint.X = intersection.Left - 1;
+                            // Need to figure out how to get the X offset of the collision point differently.     
                         }
                         else if (otherBounds.Right == intersection.Right)
                         {
                             _position.X += rowMax;
-                            _collisionPoint.X = intersection.Right + 1;
+                            //_collisionPoint.X = intersection.Right + 1;
+                            // Need to figure out how to get the X offset of the collision point differently.  
                         }
                     }
                 }
