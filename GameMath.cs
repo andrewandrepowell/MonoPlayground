@@ -115,7 +115,6 @@ namespace MonoPlayground
             var angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
             DrawLine(spriteBatch, point1, distance, angle, color, thickness);
         }
-
         public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness = 1f)
         {
             var origin = new Vector2(0f, 0.5f);

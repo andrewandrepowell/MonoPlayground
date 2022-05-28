@@ -199,9 +199,9 @@ namespace MonoPlayground
                         }
                     }
 
-                    Vector2 localCollisionPoint = _collisionPoint - other.Position;
                     if (other.Vertices.Count >= 2)
                     {
+                        Vector2 localCollisionPoint = _collisionPoint - other.Position;
                         IEnumerable<float> distances = other.Vertices.Select(x => Vector2.DistanceSquared(x, localCollisionPoint));
                         (Vector2 vertix, int index)[] pairs = other.Vertices
                             .Zip(distances, (vertix, distance) => (vertix, distance))

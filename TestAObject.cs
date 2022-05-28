@@ -35,7 +35,11 @@ namespace MonoPlayground
         public PhysicsFeature Physics { get => _physics; }
         private void HandleCollision(PhysicsFeature other)
         {
-            _physics.Velocity = Vector2.Zero;
+            Vector2 basis0 = Physics.CollisionNormal;
+            Vector2 basis1 = new Vector2(x: -basis0.Y, y: basis0.X);
+            Matrix2 matrix = new Matrix2(row0: basis0, row1: basis1);
+            Vector2 scalars = _physics.Velocity * Matrix2.Inverse(matrix);
+            _physics.Velocity = basis1 * scalars.Y;
         }
         public override void Update(GameTime gameTime)
         {
