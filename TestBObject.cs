@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MonoPlayground
 {
@@ -19,10 +16,13 @@ namespace MonoPlayground
                 collisionHandle: HandleCollision);
             _physics.Physics = false;
             _physics.Solid = true;
-            _physics.Vertices.Add(new Vector2(x: 4, y: 3));
-            _physics.Vertices.Add(new Vector2(x: 120, y: 3));
-            _physics.Vertices.Add(new Vector2(x: 120, y: 121));
-            _physics.Vertices.Add(new Vector2(x: 4, y: 121));
+            _physics.Vertices.Add(new Vector2(x: 0, y: 0));
+            _physics.Vertices.Add(new Vector2(x: 50, y: 0));
+            _physics.Vertices.Add(new Vector2(x: 127, y: 0));
+            /*
+            _physics.Vertices.Add(new Vector2(x: 127, y: 127));
+            _physics.Vertices.Add(new Vector2(x: 0, y: 127));
+            */
             Features.Add(_physics);
 
             _display = new DisplayFeature(

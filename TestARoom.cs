@@ -33,7 +33,14 @@ namespace MonoPlayground
             testBObject.Physics.Position = new Vector2(x: 300, y: 300);
             Children.Add(testBObject);
 
+            TestCObject testCObject = new TestCObject(
+                contentManager: contentManager,
+                spriteBatch: _spriteBatch);
+            testCObject.Physics.Position = new Vector2(x: 428, y: 300);
+            Children.Add(testCObject);
+
             _testAObject.Physics.CollidablePhysics.Add(testBObject.Physics);
+            _testAObject.Physics.CollidablePhysics.Add(testCObject.Physics);
         }
         public override void Draw(GameTime gameTime)
         {

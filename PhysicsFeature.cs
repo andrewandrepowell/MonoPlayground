@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace MonoPlayground
 {
@@ -117,6 +118,11 @@ namespace MonoPlayground
                     _position.X = (int)_position.X;
                     _position.Y = (int)_position.Y;
 
+                    int thisMidHeight = thisBounds.Height / 2;
+                    int thisMidWidth = thisBounds.Width / 2;
+                    int thisRowOffset = intersection.Y - thisBounds.Y;
+                    int thisColOffset = intersection.X - thisBounds.X;
+                    int topSum = 0, bottomSum = 0, leftSum = 0, rightSum = 0;
                     int[] rowSums = new int[intersection.Height];
                     int[] colSums = new int[intersection.Width];
                     for (int row = 0; row < intersection.Height; row++)
@@ -125,6 +131,14 @@ namespace MonoPlayground
                             {
                                 rowSums[row]++;
                                 colSums[col]++;
+                                if (row + thisRowOffset < thisMidHeight)
+                                    topSum++;
+                                else
+                                    bottomSum++;
+                                if (col + thisColOffset < thisMidWidth)
+                                    leftSum++;
+                                else
+                                    rightSum++;
                             }
 
                     int rowMax = rowSums.Max();
@@ -148,7 +162,7 @@ namespace MonoPlayground
                     {
                         _collisionPoint.X = intersection.X + colMaxIndex;
 
-                        if (otherBounds.Top == intersection.Top)
+                        if (topSum < bottomSum)
                         {
                             _position.Y -= colMax;
 
@@ -159,7 +173,7 @@ namespace MonoPlayground
                                     break;
                                 }
                         }
-                        else if (otherBounds.Bottom == intersection.Bottom)
+                        else 
                         {
                             _position.Y += colMax;
 
@@ -175,7 +189,7 @@ namespace MonoPlayground
                     {
                         _collisionPoint.Y = intersection.Y + rowMaxIndex;
 
-                        if (otherBounds.Left == intersection.Left)
+                        if (leftSum < rightSum)
                         {
                             _position.X -= rowMax;
 
@@ -186,7 +200,7 @@ namespace MonoPlayground
                                     break;
                                 }
                         }
-                        else if (otherBounds.Right == intersection.Right)
+                        else 
                         {
                             _position.X += rowMax;
 
@@ -225,6 +239,7 @@ namespace MonoPlayground
                         _collisionNormal = Vector2.Normalize(new Vector2(
                             x: direction.Y,
                             y: -direction.X));
+                        Debug.Assert(!Double.IsNaN(_collisionNormal.X) && !Double.IsNaN(_collisionNormal.Y));
                     }
                 }
                 _collisionHandle(other);

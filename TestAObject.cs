@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -39,7 +40,8 @@ namespace MonoPlayground
             Vector2 basis1 = new Vector2(x: -basis0.Y, y: basis0.X);
             Matrix2 matrix = new Matrix2(row0: basis0, row1: basis1);
             Vector2 scalars = _physics.Velocity * Matrix2.Inverse(matrix);
-            _physics.Velocity = basis1 * scalars.Y;
+            _physics.Velocity = -0.5f * basis0 * scalars.X + basis1 * scalars.Y;
+            Debug.Assert(!Double.IsNaN(_physics.Velocity.X) && !Double.IsNaN(_physics.Velocity.Y));
         }
         public override void Update(GameTime gameTime)
         {
