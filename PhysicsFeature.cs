@@ -108,53 +108,72 @@ namespace MonoPlayground
             {
                 if (_solid && other.Solid)
                 {
-                    (int rowMax, int rowIndex) = Enumerable
-                        .Range(0, thisIntersection.Height)
-                        .Select(row => Enumerable
-                            .Range(0, thisIntersection.Width)
-                            .Select(col => collisionMask[col + row * thisIntersection.Width])
-                            .Where(x => x)
-                            .Count())
-                        .IndexWithMax();
-                    (int colMax, int colIndex) = Enumerable
-                        .Range(0, thisIntersection.Width)
-                        .Select(col => Enumerable
-                            .Range(0, thisIntersection.Height)
-                            .Select(row => collisionMask[col + row * thisIntersection.Width])
-                            .Where(x => x)
-                            .Count())
-                        .IndexWithMax();
+                    int[] rowSums = new int[intersection.Height];
+                    int[] colSums = new int[intersection.Width];
+                    for (int row = 0; row < intersection.Height; row++)
+                        for (int col = 0; col < intersection.Width; col++)
+                            if (collisionMask[col + row * intersection.Width])
+                            {
+                                rowSums[row]++;
+                                colSums[col]++;
+                            }
+
+                    int rowMax = rowSums.Max();
+                    int colMax = colSums.Max();
+
+                    List<int> rowMaxIndexes = new List<int>();
+                    List<int> colMaxIndexes = new List<int>();
+
+                    for (int row = 0; row < intersection.Height; row++)
+                        if (rowSums[row] == rowMax)
+                            rowMaxIndexes.Add(row);
+
+                    for (int col = 0; col < intersection.Width; col++)
+                        if (colSums[col] == colMax)
+                            colMaxIndexes.Add(col);
+
+                    int colMaxIndex = (int)colMaxIndexes.Average();
+                    int rowMaxIndex = (int)rowMaxIndexes.Average();
 
                     if (colMax < rowMax)
                     {
-                        _collisionPoint.X = intersection.X + colIndex;
+                        _collisionPoint.X = intersection.X + colMaxIndex;
+
                         if (otherBounds.Top == intersection.Top)
                         {
                             _position.Y -= colMax;
-                            //_collisionPoint.Y = intersection.Top - 1;
-                            // Need to figure out how to get the Y offset of the collision point differently.
+
+                            for (int row = 0; row < intersection.Height; row++)
+                                if (collisionMask[colMaxIndex + row * intersection.Width])
+                                    _collisionPoint.Y = intersection.Y + row;
                         }
                         else if (otherBounds.Bottom == intersection.Bottom)
                         {
                             _position.Y += colMax;
-                            //_collisionPoint.Y = intersection.Bottom + 1;
-                            // Need to figure out how to get the Y offset of the collision point differently.                            
+
+                            for (int row = intersection.Height - 1; row >= 0; row--)
+                                if (collisionMask[colMaxIndex + row * intersection.Width])
+                                    _collisionPoint.Y = intersection.Y + row;
                         }
                     }
                     else
                     {
-                        _collisionPoint.Y = intersection.Y + rowIndex;
+                        _collisionPoint.Y = intersection.Y + rowMaxIndex;
                         if (otherBounds.Left == intersection.Left)
                         {
                             _position.X -= rowMax;
-                            //_collisionPoint.X = intersection.Left - 1;
-                            // Need to figure out how to get the X offset of the collision point differently.     
+
+                            for (int col = 0; col < intersection.Width; col++)
+                                if (collisionMask[col + rowMaxIndex * intersection.Width])
+                                    _collisionPoint.X = intersection.X + col;
                         }
                         else if (otherBounds.Right == intersection.Right)
                         {
                             _position.X += rowMax;
-                            //_collisionPoint.X = intersection.Right + 1;
-                            // Need to figure out how to get the X offset of the collision point differently.  
+
+                            for (int col = intersection.Width - 1; col >= 0; col--)
+                                if (collisionMask[col + rowMaxIndex * intersection.Width])
+                                    _collisionPoint.X = intersection.X + col;
                         }
                     }
                 }

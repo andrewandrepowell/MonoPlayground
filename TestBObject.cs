@@ -27,6 +27,7 @@ namespace MonoPlayground
                 spriteBatch: spriteBatch);
             Features.Add(_display);
         }
+        public PhysicsFeature Physics { get => _physics; }
         public override void Update(GameTime gameTime)
         {
             _display.Position = _physics.Position;

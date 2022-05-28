@@ -24,26 +24,27 @@ namespace MonoPlayground
                 spriteBatch: _spriteBatch,
                 friction: 160f,
                 accelerationMagnitude: 800f);
-            PhysicsFeature testAFeature =
-                _testAObject.Features
-                    .Where(x => x is PhysicsFeature)
-                    .Select(x => x as PhysicsFeature)
-                    .Single();
-            testAFeature.Position = new Vector2(x: 0, y: 0);
+            _testAObject.Physics.Position = new Vector2(x: 0, y: 0);
             Children.Add(_testAObject);
 
             TestBObject testBObject = new TestBObject(
                 contentManager: contentManager,
                 spriteBatch: _spriteBatch);
-            PhysicsFeature testBFeature =
-                testBObject.Features
-                    .Where(x => x is PhysicsFeature)
-                    .Select(x => x as PhysicsFeature)
-                    .Single();
-            testBFeature.Position = new Vector2(x: 300, y: 300);
+            testBObject.Physics.Position = new Vector2(x: 300, y: 300);
             Children.Add(testBObject);
 
-            testAFeature.CollidablePhysics.Add(testBFeature);
+            _testAObject.Physics.CollidablePhysics.Add(testBObject.Physics);
+        }
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            _spriteBatch.Begin();
+            _spriteBatch.DrawLine(
+                point1: _testAObject.Physics.Center,
+                point2: _testAObject.Physics.CollisionPoint,
+                color: Color.Red,
+                thickness: 2);
+            _spriteBatch.End();
         }
         public virtual void Dispose(bool disposing)
         {

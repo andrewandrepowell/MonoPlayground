@@ -32,6 +32,7 @@ namespace MonoPlayground
 
             _accelerationMagnitude = accelerationMagnitude;
         }
+        public PhysicsFeature Physics { get => _physics; }
         private void HandleCollision(PhysicsFeature other)
         {
             _physics.Velocity = Vector2.Zero;
