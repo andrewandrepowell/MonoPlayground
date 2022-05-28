@@ -266,6 +266,8 @@ namespace MonoPlayground
                         }
                     }
                     // Move in X direction case:
+                    // The operations below follow the same rationale as that
+                    // done in the Y direction case.
                     else
                     {
                         _collisionPoint.Y = intersection.Y + rowMaxIndex;
@@ -294,8 +296,15 @@ namespace MonoPlayground
                         }
                     }
 
-                    if (other.Vertices.Count >= 2)
+                    // Collision physics is applied at this block,
+                    // if the other physics consists of three or more vertices. 
+                    // Requiring three or more vertices is needed to have enough information
+                    // to unambigiously know the directions of the normal vectors.
+                    if (other.Vertices.Count >= 3)
                     {
+                        // Find the two vertices closest to the point of collision.
+                        // The original indices corresponding to each vertix is needed in order
+                        // to account for a special between the last and first vertix.
                         Vector2 localCollisionPoint = _collisionPoint - other.Position;
                         IEnumerable<float> distances = other.Vertices.Select(x => Vector2.DistanceSquared(x, localCollisionPoint));
                         (Vector2 vertix, int index)[] pairs = other.Vertices
@@ -305,6 +314,9 @@ namespace MonoPlayground
                             .Take(2)
                             .Select(tuple => (tuple.vertix, tuple.index))
                             .ToArray();
+
+                        // Determine the start and end point based on the original order of the vertices.
+                        // Handle the special when the selected vertices are the first and last.
                         Vector2 start = Vector2.Zero, end = Vector2.Zero;
                         if (pairs[0].index > pairs[1].index || (pairs[1].index == other.Vertices.Count - 1 && pairs[0].index == 0))
                         {
@@ -317,6 +329,8 @@ namespace MonoPlayground
                             end = pairs[0].vertix;
                         }
                         Vector2 direction = start - end;
+
+                        // The normal vector is the normalized vector perpendicular to the direction of the two vertices.
                         _collisionNormal = Vector2.Normalize(new Vector2(
                             x: direction.Y,
                             y: -direction.X));
