@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Runtime.InteropServices;
+#if DEBUG
+using System;
 using System.Diagnostics;
+#endif
 
 namespace MonoPlayground
 {
@@ -49,10 +49,6 @@ namespace MonoPlayground
                 _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction * timeElapsed, 0); // Apply friction to velocity.
             _position += _velocity * timeElapsed; // Apply velocity to position.
             _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
-#if DEBUG
-            AllocConsole();
-            Console.WriteLine($"Position={_position}");
-#endif 
         }
         public override void Draw(GameTime gameTime) { }
         public Texture2D Mask { get => _mask; }
@@ -245,10 +241,5 @@ namespace MonoPlayground
                 _collisionHandle(other);
             }
         }
-#if DEBUG
-        // https://gamedev.stackexchange.com/questions/45107/input-output-console-window-in-xna#:~:text=Right%20click%20your%20game%20in%20the%20solution%20explorer,tab.%20Change%20the%20Output%20Type%20to%20Console%20Application.
-        [DllImport("kernel32")]
-        static extern bool AllocConsole();
-#endif
     }
 }

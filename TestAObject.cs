@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+#if DEBUG
+using System;
+#endif
 
 namespace MonoPlayground
 {
@@ -38,10 +40,11 @@ namespace MonoPlayground
         {
             Vector2 basis0 = Physics.CollisionNormal;
             Vector2 basis1 = new Vector2(x: -basis0.Y, y: basis0.X);
-            Matrix2 matrix = new Matrix2(row0: basis0, row1: basis1);
-            Vector2 scalars = _physics.Velocity * Matrix2.Inverse(matrix);
-            _physics.Velocity = -0.5f * basis0 * scalars.X + basis1 * scalars.Y;
+            float scalar0 = Vector2.Dot(basis0, _physics.Velocity);
+            float scalar1 = Vector2.Dot(basis1, _physics.Velocity);
+            _physics.Velocity = -0.5f * basis0 * scalar0 + basis1 * scalar1;
             Debug.Assert(!Double.IsNaN(_physics.Velocity.X) && !Double.IsNaN(_physics.Velocity.Y));
+            Console.WriteLine($"Scalar0: {scalar0}. Scalar1: {scalar1}.");
         }
         public override void Update(GameTime gameTime)
         {

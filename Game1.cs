@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+#if DEBUG
+using System.Runtime.InteropServices;
+#endif
 
 namespace MonoPlayground
 {
@@ -15,6 +18,7 @@ namespace MonoPlayground
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            AllocConsole();
         }
 
         protected override void Initialize()
@@ -52,5 +56,10 @@ namespace MonoPlayground
             _testARoom.Draw(gameTime);
             base.Draw(gameTime);
         }
+#if DEBUG
+        // https://gamedev.stackexchange.com/questions/45107/input-output-console-window-in-xna#:~:text=Right%20click%20your%20game%20in%20the%20solution%20explorer,tab.%20Change%20the%20Output%20Type%20to%20Console%20Application.
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
+#endif
     }
 }
