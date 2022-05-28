@@ -16,7 +16,7 @@ namespace MonoPlayground
         private readonly PhysicsFeature _physics;
         private readonly DisplayFeature _display;
         private readonly float _accelerationMagnitude;
-        public TestAObject(ContentManager contentManager, SpriteBatch spriteBatch, float friction, float accelerationMagnitude)
+        public TestAObject(ContentManager contentManager, SpriteBatch spriteBatch, float friction, float accelerationMagnitude, float maxSpeed)
         {
             _physics = new PhysicsFeature(
                 gameObject: this,
@@ -25,6 +25,7 @@ namespace MonoPlayground
             _physics.Physics = true;
             _physics.Solid = true;
             _physics.Friction = friction;
+            _physics.MaxSpeed = maxSpeed;
             Features.Add(_physics);
 
             _display = new DisplayFeature(

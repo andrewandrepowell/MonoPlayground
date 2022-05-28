@@ -20,6 +20,7 @@ namespace MonoPlayground
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _acceleration;
+        private float _maxSpeed;
         private float _friction;
         private bool _solid;
         private bool _physics;
@@ -35,6 +36,7 @@ namespace MonoPlayground
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
             _friction = 0f;
+            _maxSpeed = 0f;
             _solid = false;
             _physics = false;
             // https://codepen.io/OliverBalfour/post/implementing-velocity-acceleration-and-friction-on-a-canvas
@@ -46,7 +48,10 @@ namespace MonoPlayground
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _velocity += _acceleration * timeElapsed; // Apply acceleration to velocity.
             if (_velocity != Vector2.Zero)
-                _velocity = Vector2.Normalize(_velocity) * GameMath.Max(_velocity.Length() - _friction * timeElapsed, 0); // Apply friction to velocity.
+            {
+                float _speed = GameMath.Max(GameMath.Min(_velocity.Length(), _maxSpeed) - _friction * timeElapsed, 0);
+                _velocity = Vector2.Normalize(_velocity) * _speed;
+            }
             _position += _velocity * timeElapsed; // Apply velocity to position.
             _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
         }
@@ -56,7 +61,26 @@ namespace MonoPlayground
         public Vector2 Center { get => _position + _mask.Bounds.Center.ToVector2(); }
         public Vector2 Velocity { get => _velocity; set => _velocity = value; }
         public Vector2 Acceleration { get => _acceleration; set => _acceleration = value; }
-        public float Friction {  get => _friction; set => _friction = value; }
+        public float Friction 
+        { 
+            get => _friction;
+            set 
+            {
+                if (value < 0f)
+                    throw new ArgumentOutOfRangeException();
+                _friction = value; 
+            } 
+        }
+        public float MaxSpeed 
+        { 
+            get => _maxSpeed;
+            set
+            {
+                if (value < 0f)
+                    throw new ArgumentOutOfRangeException();
+                _maxSpeed = value;
+            }
+        }
         public bool Solid {  get => _solid; set => _solid = value; }
         public bool Physics { get => _physics; set => _physics = value; }
         public Vector2 CollisionPoint { get => _collisionPoint; }
@@ -65,6 +89,7 @@ namespace MonoPlayground
         public IList<Vector2> Vertices { get => _vertices; }
         private void Collide(PhysicsFeature other)
         {
+            // Determine the bounding rectangles for this physics and the other physics.
             Rectangle thisBounds = new Rectangle(
                 location: _position.ToPoint(),
                 size: _mask.Bounds.Size);
@@ -72,10 +97,18 @@ namespace MonoPlayground
                 location: other.Position.ToPoint(),
                 size: other.Mask.Bounds.Size);
 
+            // Determine whether the bounding rectangles intersect.
+            // If they don't, don't bother going further.
             if (!thisBounds.Intersects(otherBounds))
                 return;
 
+            // Find the bounding rectangle that represents the overlap between 
+            // this and other bounding rectangles. 
             Rectangle intersection = Rectangle.Intersect(thisBounds, otherBounds);
+
+            // Find the equivalent rectangles that represent the intersection relative
+            // to this and other's mask bounding rectangles.
+            // These are needed to extract the corresponding pixel data from the masks.
             Rectangle thisIntersection = new Rectangle(
                 x: intersection.X - thisBounds.X,
                 y: intersection.Y - thisBounds.Y,
@@ -104,16 +137,34 @@ namespace MonoPlayground
                 startIndex: 0,
                 elementCount: otherData.Length);
 
+            // Build a collision mask, where each element is a boolean that indicates the pixel in the same place
+            // in this pixel data and other pixel data are both not the transparent color.
+            // If there's at least one element in the collision mask that's true, then we know
+            // a collision occured.
             bool[] collisionMask = thisData.Zip(otherData, (td, od) => td != Color.Transparent && od != Color.Transparent).ToArray();
             bool collisionOccurred = collisionMask.Contains(true);
 
+            // Specific operations occur on collision.
             if (collisionOccurred)
             {
+                // Extra functionality is needed for the case where
+                // both this physics and the other physics are solid. 
+                // 1) This physic's position needs correction to remove the overlap.
+                // 2) "Collision physics" is applied at this step.  
                 if (_solid && other.Solid)
                 {
+                    // The first correction is to apply floor rounding to the position.
+                    // This is needed because MonoGame's Rectangle is only integers.
                     _position.X = (int)_position.X;
                     _position.Y = (int)_position.Y;
 
+                    // Several important pieces of information is needed in order
+                    // to detect what direction to perform the correction, and 
+                    // how much correction is needed.
+                    // topSum, bottomSum, leftSum, and rightSum indicate what portion of this physics 
+                    // the collision occurred. This information is used to partly determine
+                    // what direction this physics should get shifted.
+                    // rowSums and colSums are used to determine what dimension has the most overlap.
                     int thisMidHeight = thisBounds.Height / 2;
                     int thisMidWidth = thisBounds.Width / 2;
                     int thisRowOffset = intersection.Y - thisBounds.Y;
@@ -137,6 +188,8 @@ namespace MonoPlayground
                                     rightSum++;
                             }
 
+                    // The maxes of each dimension are used to determine
+                    // how much movement is necessary to eliminate the overlap.
                     int rowMax = rowSums.Max();
                     int colMax = colSums.Max();
 
@@ -238,6 +291,8 @@ namespace MonoPlayground
                         Debug.Assert(!Double.IsNaN(_collisionNormal.X) && !Double.IsNaN(_collisionNormal.Y));
                     }
                 }
+
+                // Finally, this physic handles the collision with an action.
                 _collisionHandle(other);
             }
         }
