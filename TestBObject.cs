@@ -19,6 +19,10 @@ namespace MonoPlayground
                 collisionHandle: HandleCollision);
             _physics.Physics = false;
             _physics.Solid = true;
+            _physics.Vertices.Add(new Vector2(x: 4, y: 3));
+            _physics.Vertices.Add(new Vector2(x: 120, y: 3));
+            _physics.Vertices.Add(new Vector2(x: 120, y: 121));
+            _physics.Vertices.Add(new Vector2(x: 4, y: 121));
             Features.Add(_physics);
 
             _display = new DisplayFeature(

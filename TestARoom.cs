@@ -40,7 +40,7 @@ namespace MonoPlayground
             base.Draw(gameTime);
             _spriteBatch.Begin();
             _spriteBatch.DrawLine(
-                point1: _testAObject.Physics.Center,
+                point1: _testAObject.Physics.CollisionPoint + _testAObject.Physics.CollisionNormal * 200,
                 point2: _testAObject.Physics.CollisionPoint,
                 color: Color.Red,
                 thickness: 2);
