@@ -161,9 +161,13 @@ namespace MonoPlayground
                     // Several important pieces of information is needed in order
                     // to detect what direction to perform the correction, and 
                     // how much correction is needed.
+
                     // topSum, bottomSum, leftSum, and rightSum indicate what portion of this physics 
                     // the collision occurred. This information is used to partly determine
                     // what direction this physics should get shifted.
+                    // It's worth noting this approach assumes the center of mass is directly in the
+                    // middle of the mask, which will need to be corrected at some point.
+
                     // rowSums and colSums are used to determine what dimension has the most overlap.
                     int thisMidHeight = thisBounds.Height / 2;
                     int thisMidWidth = thisBounds.Width / 2;
@@ -193,6 +197,10 @@ namespace MonoPlayground
                     int rowMax = rowSums.Max();
                     int colMax = colSums.Max();
 
+                    // The respective index of each max is needed in order
+                    // to calculate the point of collision. 
+                    // There's a special case where there could be multiple indices of the same max.
+                    // The average of the indices are taken. 
                     List<int> rowMaxIndexes = new List<int>();
                     List<int> colMaxIndexes = new List<int>();
 
@@ -207,14 +215,32 @@ namespace MonoPlayground
                     int colMaxIndex = (int)colMaxIndexes.Average();
                     int rowMaxIndex = (int)rowMaxIndexes.Average();
 
+                    // The correction to the position and the calculation of the point of collision
+                    // is done here.
+                    // The correction is done only is one dimension, and such that minimum
+                    // correction is needed.
+                    
+                    // Move in Y direction case:
                     if (colMax < rowMax)
                     {
+                        // Since the correction is based on the column max, 
+                        // the X position of the collision point is just the X position
+                        // of the intersection bounding rectangle offset by the
+                        // index of the column max.
                         _collisionPoint.X = intersection.X + colMaxIndex;
 
+                        // The topSum and bottomSum are used to know where the intersection
+                        // occurred on this mask.
+
+                        // "Collision occurred on the bottom of this" case:
                         if (topSum < bottomSum)
                         {
+                            // Apply the correction.
                             _position.Y -= colMax;
 
+                            // The Y position of the collision point is the first instance
+                            // of collision in the column of the maximum index, 
+                            // starting from the top.
                             for (int row = 0; row < intersection.Height; row++)
                                 if (collisionMask[colMaxIndex + row * intersection.Width])
                                 {
@@ -222,10 +248,15 @@ namespace MonoPlayground
                                     break;
                                 }
                         }
-                        else 
+                        // "Collision occurred on the top of this" case:
+                        else
                         {
+                            // Apply the correction.
                             _position.Y += colMax;
 
+                            // The Y position of the collision point is the first instance
+                            // of collision in the column of the maximum index, 
+                            // starting from the bottom.
                             for (int row = intersection.Height - 1; row >= 0; row--)
                                 if (collisionMask[colMaxIndex + row * intersection.Width])
                                 {
@@ -234,6 +265,7 @@ namespace MonoPlayground
                                 }
                         }
                     }
+                    // Move in X direction case:
                     else
                     {
                         _collisionPoint.Y = intersection.Y + rowMaxIndex;
