@@ -24,7 +24,9 @@ namespace MonoPlayground
                 spriteBatch: _spriteBatch,
                 friction: 160f,
                 accelerationMagnitude: 800f,
-                maxSpeed: 400);
+                maxSpeed: 400,
+                bounce: 0f,
+                gravity: new Vector2(x:0, y: 400));
             _testAObject.Physics.Position = new Vector2(x: 0, y: 0);
             Children.Add(_testAObject);
 

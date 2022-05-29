@@ -16,7 +16,15 @@ namespace MonoPlayground
         private readonly PhysicsFeature _physics;
         private readonly DisplayFeature _display;
         private readonly float _accelerationMagnitude;
-        public TestAObject(ContentManager contentManager, SpriteBatch spriteBatch, float friction, float accelerationMagnitude, float maxSpeed)
+        private readonly Vector2 _gravity;
+        public TestAObject(
+            ContentManager contentManager, 
+            SpriteBatch spriteBatch, 
+            float friction, 
+            float accelerationMagnitude, 
+            float maxSpeed,
+            float bounce,
+            Vector2 gravity)
         {
             _physics = new PhysicsFeature(
                 gameObject: this,
@@ -26,6 +34,7 @@ namespace MonoPlayground
             _physics.Solid = true;
             _physics.Friction = friction;
             _physics.MaxSpeed = maxSpeed;
+            _physics.Bounce = bounce;
             Features.Add(_physics);
 
             _display = new DisplayFeature(
@@ -35,17 +44,12 @@ namespace MonoPlayground
             Features.Add(_display);
 
             _accelerationMagnitude = accelerationMagnitude;
+            _gravity = gravity;
         }
         public PhysicsFeature Physics { get => _physics; }
         private void HandleCollision(PhysicsFeature other)
         {
-            Vector2 basis0 = Physics.CollisionNormal;
-            Vector2 basis1 = new Vector2(x: -basis0.Y, y: basis0.X);
-            float scalar0 = Vector2.Dot(basis0, _physics.Velocity);
-            float scalar1 = Vector2.Dot(basis1, _physics.Velocity);
-            _physics.Velocity = -0.5f * basis0 * scalar0 + basis1 * scalar1;
-            Debug.Assert(!Double.IsNaN(_physics.Velocity.X) && !Double.IsNaN(_physics.Velocity.Y));
-            Console.WriteLine($"Scalar0: {scalar0}. Scalar1: {scalar1}.");
+
         }
         public override void Update(GameTime gameTime)
         {
@@ -62,6 +66,8 @@ namespace MonoPlayground
             {
                 _physics.Acceleration = Vector2.Zero;
             }
+            _physics.Acceleration += _gravity;
+
             _display.Position = _physics.Position;
             base.Update(gameTime);
         }

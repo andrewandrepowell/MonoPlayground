@@ -22,6 +22,8 @@ namespace MonoPlayground
         private Vector2 _acceleration;
         private float _maxSpeed;
         private float _friction;
+        private float _stick;
+        private float _bounce;
         private bool _solid;
         private bool _physics;
         public PhysicsFeature(GameObject gameObject, Texture2D mask, Action<PhysicsFeature> collisionHandle) : base(gameObject: gameObject)
@@ -37,6 +39,8 @@ namespace MonoPlayground
             _acceleration = Vector2.Zero;
             _friction = 0f;
             _maxSpeed = 0f;
+            _stick = 0.01f;
+            _bounce = 0f;
             _solid = false;
             _physics = false;
             // https://codepen.io/OliverBalfour/post/implementing-velocity-acceleration-and-friction-on-a-canvas
@@ -79,6 +83,16 @@ namespace MonoPlayground
                 if (value < 0f)
                     throw new ArgumentOutOfRangeException();
                 _maxSpeed = value;
+            }
+        }
+        public float Bounce
+        {
+            get => _bounce;
+            set
+            {
+                if (value < 0f)
+                    throw new ArgumentOutOfRangeException();
+                _bounce = value;
             }
         }
         public bool Solid {  get => _solid; set => _solid = value; }
@@ -338,8 +352,27 @@ namespace MonoPlayground
                     }
                 }
 
-                // Finally, this physic handles the collision with an action.
+                // This physic handles the collision with an action.
                 _collisionHandle(other);
+
+                // Correction to position and determining point of collision
+                // occurs before handling the collision with user-defined action.
+                // After, physic-specific operations are applied. This way the user
+                // can detect a collision and then change the physics before they occur.
+                if (_solid && other.Solid)
+                {
+                    // Apply the bounce change to velocity.
+                    Vector2 collisionOrthog = new Vector2(x: -_collisionNormal.Y, y: _collisionNormal.X);
+                    float normalScalar = Vector2.Dot(_collisionNormal, _velocity);
+                    float orthogScalar = Vector2.Dot(collisionOrthog, _velocity);
+                    float totalBounce = _bounce + other.Bounce;
+                    _velocity = -totalBounce * _collisionNormal * normalScalar + collisionOrthog * orthogScalar;
+                    Debug.Assert(!Double.IsNaN(_velocity.X) && !Double.IsNaN(_velocity.Y));
+                    Console.WriteLine($"normalScalar={normalScalar}, orthogScalar={orthogScalar}");
+
+                    // Apply the stcik change to velocity.
+
+                }
             }
         }
     }
