@@ -17,6 +17,9 @@ namespace MonoPlayground
         private readonly DisplayFeature _display;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
+        private readonly float _orientationThreshold;
+        private Vector2 _normalOrientation;
+        private float _orientationTimer;
         public TestAObject(
             ContentManager contentManager, 
             SpriteBatch spriteBatch, 
@@ -34,7 +37,8 @@ namespace MonoPlayground
             _physics.Solid = true;
             _physics.Friction = friction;
             _physics.MaxSpeed = maxSpeed;
-            _physics.Bounce = bounce;
+            _physics.Bounce = 0f;
+            _physics.Stick = 4;
             Features.Add(_physics);
 
             _display = new DisplayFeature(
@@ -45,14 +49,26 @@ namespace MonoPlayground
 
             _accelerationMagnitude = accelerationMagnitude;
             _gravity = gravity;
+            _normalOrientation = new Vector2(x: 0, y: -1);
+            _orientationThreshold = .25f;
+            _orientationTimer = 0f;
         }
         public PhysicsFeature Physics { get => _physics; }
         private void HandleCollision(PhysicsFeature other)
         {
-
+            float dotProduct = Vector2.Dot(_normalOrientation, _physics.CollisionNormal);
+            float crossProduct = GameMath.Cross(_normalOrientation, _physics.CollisionNormal);
+            if (dotProduct > .5)
+            {
+                _normalOrientation = _physics.CollisionNormal;
+                _orientationTimer = 0;
+            }
+            Console.WriteLine($"Normal Orientation: {_normalOrientation}. Dot: {dotProduct}: Cross: {crossProduct}");
         }
         public override void Update(GameTime gameTime)
         {
+            _physics.Acceleration = _gravity;
+
             MouseState mouseState = Mouse.GetState();
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
@@ -60,13 +76,28 @@ namespace MonoPlayground
                     x: (float)mouseState.X,
                     y: (float)mouseState.Y);
                 Vector2 mouseDirection = mousePosition - _physics.Center;
-                _physics.Acceleration = Vector2.Normalize(mouseDirection) * _accelerationMagnitude;
+                _physics.Acceleration += Vector2.Normalize(mouseDirection) * _accelerationMagnitude;
             }
-            else
+
+            _orientationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_orientationTimer > _orientationThreshold)
             {
-                _physics.Acceleration = Vector2.Zero;
+                _orientationTimer = 0;
+                _normalOrientation = new Vector2(x: 0, y: -1);
             }
-            _physics.Acceleration += _gravity;
+
+            KeyboardState keyboardState = Keyboard.GetState();
+            Vector2 direction = new Vector2( 
+                x: -_normalOrientation.Y,
+                y: _normalOrientation.X);
+            if (keyboardState.IsKeyDown(Keys.Right))
+            {
+                _physics.Acceleration += direction * _accelerationMagnitude / 3 * 2;
+            }
+            if (keyboardState.IsKeyDown(Keys.Left))
+            {
+                _physics.Acceleration -= direction * _accelerationMagnitude / 3 * 2;
+            }
 
             _display.Position = _physics.Position;
             base.Update(gameTime);

@@ -20,6 +20,7 @@ namespace MonoPlayground
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _acceleration;
+        private Vector2 _stickTotal;
         private float _maxSpeed;
         private float _friction;
         private float _stick;
@@ -37,9 +38,10 @@ namespace MonoPlayground
             _position = Vector2.Zero;
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
+            _stickTotal = Vector2.Zero;
             _friction = 0f;
             _maxSpeed = 0f;
-            _stick = 0.01f;
+            _stick = 0f;
             _bounce = 0f;
             _solid = false;
             _physics = false;
@@ -47,17 +49,25 @@ namespace MonoPlayground
         }
         public override void Update(GameTime gameTime)
         {
+            // Only apply the physic operations if physics is enabled in the first place.
             if (!_physics)
                 return;
+
+            // The elapsed time is needed since position, velocity, and acceleration affect in each with respect to time.
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Update velocity based on current acceleration.
             _velocity += _acceleration * timeElapsed; // Apply acceleration to velocity.
+
+            // Update velocity based on the effects of friction and maximum speed.
             if (_velocity != Vector2.Zero)
             {
                 float _speed = GameMath.Max(GameMath.Min(_velocity.Length(), _maxSpeed) - _friction * timeElapsed, 0);
                 _velocity = Vector2.Normalize(_velocity) * _speed;
             }
-            _position += _velocity * timeElapsed; // Apply velocity to position.
-            _collidablePhysics.ForEach(x => Collide(x)); // Apply collision to position and velocity.
+            _position += (_velocity - _stickTotal) * timeElapsed; // Apply velocity to position.
+            _stickTotal = Vector2.Zero;
+            _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
         }
         public override void Draw(GameTime gameTime) { }
         public Texture2D Mask { get => _mask; }
@@ -95,13 +105,23 @@ namespace MonoPlayground
                 _bounce = value;
             }
         }
+        public float Stick
+        {
+            get => _stick;
+            set
+            {
+                if (value < 0f)
+                    throw new ArgumentOutOfRangeException();
+                _stick = value;
+            }
+        }
         public bool Solid {  get => _solid; set => _solid = value; }
         public bool Physics { get => _physics; set => _physics = value; }
         public Vector2 CollisionPoint { get => _collisionPoint; }
         public Vector2 CollisionNormal { get => _collisionNormal; }
         public ICollection<PhysicsFeature> CollidablePhysics { get => _collidablePhysics; }
         public IList<Vector2> Vertices { get => _vertices; }
-        private void Collide(PhysicsFeature other)
+        private void Collide(GameTime gameTime, PhysicsFeature other)
         {
             // Determine the bounding rectangles for this physics and the other physics.
             Rectangle thisBounds = new Rectangle(
@@ -361,17 +381,22 @@ namespace MonoPlayground
                 // can detect a collision and then change the physics before they occur.
                 if (_solid && other.Solid)
                 {
-                    // Apply the bounce change to velocity.
+                    // Apply the bounce and stick change to velocity.
+                    // The current velocity is broken down into the normal and orthogonal basis vectors.
+                    // Normal scalar represents the speed along normal direction,
+                    // whereas orthog scalar represents the speed along the direction perpendicular to normal direction.
+                    // Bounce flips, or squashes, the normal scalar.
+                    // Stick is effectively a constant velocity applied in the direction opposite of the normal direction.
                     Vector2 collisionOrthog = new Vector2(x: -_collisionNormal.Y, y: _collisionNormal.X);
                     float normalScalar = Vector2.Dot(_collisionNormal, _velocity);
                     float orthogScalar = Vector2.Dot(collisionOrthog, _velocity);
                     float totalBounce = _bounce + other.Bounce;
-                    _velocity = -totalBounce * _collisionNormal * normalScalar + collisionOrthog * orthogScalar;
+
+                    _stickTotal += (_stick + other.Stick) * _collisionNormal;
+                    _velocity =  
+                        - totalBounce * normalScalar * _collisionNormal // bounce component
+                        + orthogScalar * collisionOrthog; // orthog component
                     Debug.Assert(!Double.IsNaN(_velocity.X) && !Double.IsNaN(_velocity.Y));
-                    Console.WriteLine($"normalScalar={normalScalar}, orthogScalar={orthogScalar}");
-
-                    // Apply the stcik change to velocity.
-
                 }
             }
         }

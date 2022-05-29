@@ -19,10 +19,6 @@ namespace MonoPlayground
             _physics.Vertices.Add(new Vector2(x: 0, y: 0));
             _physics.Vertices.Add(new Vector2(x: 50, y: 0));
             _physics.Vertices.Add(new Vector2(x: 127, y: 0));
-            /*
-            _physics.Vertices.Add(new Vector2(x: 127, y: 127));
-            _physics.Vertices.Add(new Vector2(x: 0, y: 127));
-            */
             Features.Add(_physics);
 
             _display = new DisplayFeature(
