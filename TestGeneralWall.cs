@@ -19,6 +19,8 @@ namespace MonoPlayground
                 collisionHandle: HandleCollision);
             _physics.Physics = false;
             _physics.Solid = true;
+            _physics.Friction = 0;
+            _physics.Stick = 96;
             Features.Add(_physics);
 
             _display = new DisplayFeature(

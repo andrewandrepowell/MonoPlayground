@@ -22,12 +22,13 @@ namespace MonoPlayground
             _testAObject = new TestAObject(
                 contentManager: contentManager,
                 spriteBatch: _spriteBatch,
+                mask: "object0Mask",
                 friction: 200f,
                 accelerationMagnitude: 1000f,
                 maxSpeed: 400,
                 bounce: 0f,
-                gravity: new Vector2(x:0, y: 800));
-            _testAObject.Physics.Position = new Vector2(x: 100, y: 0);
+                gravity: new Vector2(x:0, y: 1600));
+            _testAObject.Physics.Position = new Vector2(x: 400, y: 0);
             Children.Add(_testAObject);
 
             TestBObject testBObject = new TestBObject(

@@ -23,6 +23,7 @@ namespace MonoPlayground
         private Vector2 _stickTotal;
         private float _maxSpeed;
         private float _friction;
+        private float _frictionTotal;
         private float _stick;
         private float _bounce;
         private bool _solid;
@@ -40,6 +41,7 @@ namespace MonoPlayground
             _acceleration = Vector2.Zero;
             _stickTotal = Vector2.Zero;
             _friction = 0f;
+            _frictionTotal = 0f;
             _maxSpeed = 0f;
             _stick = 0f;
             _bounce = 0f;
@@ -59,14 +61,15 @@ namespace MonoPlayground
             // Update velocity based on current acceleration.
             _velocity += _acceleration * timeElapsed; // Apply acceleration to velocity.
 
-            // Update velocity based on the effects of friction and maximum speed.
+            // Update velocity based on the effects of total friction and maximum speed.
             if (_velocity != Vector2.Zero)
             {
-                float _speed = GameMath.Max(GameMath.Min(_velocity.Length(), _maxSpeed) - _friction * timeElapsed, 0);
+                float _speed = GameMath.Max(GameMath.Min(_velocity.Length(), _maxSpeed) - _frictionTotal * timeElapsed, 0);
                 _velocity = Vector2.Normalize(_velocity) * _speed;
             }
             _position += (_velocity - _stickTotal) * timeElapsed; // Apply velocity to position.
             _stickTotal = Vector2.Zero;
+            _frictionTotal = _friction;
             _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
         }
         public override void Draw(GameTime gameTime) { }
@@ -381,7 +384,7 @@ namespace MonoPlayground
                 // can detect a collision and then change the physics before they occur.
                 if (_solid && other.Solid)
                 {
-                    // Apply the bounce and stick change to velocity.
+                    // Apply the bounce to velocity's normal basis vector. 
                     // The current velocity is broken down into the normal and orthogonal basis vectors.
                     // Normal scalar represents the speed along normal direction,
                     // whereas orthog scalar represents the speed along the direction perpendicular to normal direction.
@@ -392,7 +395,9 @@ namespace MonoPlayground
                     float orthogScalar = Vector2.Dot(collisionOrthog, _velocity);
                     float totalBounce = _bounce + other.Bounce;
 
-                    _stickTotal += (_stick + other.Stick) * _collisionNormal;
+                    _stickTotal += other.Stick * _collisionNormal;
+                    _frictionTotal += other.Friction;
+
                     _velocity =  
                         - totalBounce * normalScalar * _collisionNormal // bounce component
                         + orthogScalar * collisionOrthog; // orthog component
