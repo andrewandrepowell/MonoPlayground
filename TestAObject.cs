@@ -18,10 +18,11 @@ namespace MonoPlayground
         private const float _jumpTimerThreshold = .25f;
         private const float _jumpEnableTimerThreshold = 0.2f;
         private readonly PhysicsFeature _physics;
-        private readonly DisplayFeature _display;
+        private readonly AnimationFeature _animationWalk;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
         private readonly Vector2 _orientationDefault;
+        private AnimationFeature _animationCurrent;
         private Vector2 _orientationNormal;
         private Vector2 _jumpOrientation;
         private float _orientationTimer;
@@ -32,7 +33,6 @@ namespace MonoPlayground
             ContentManager contentManager, 
             SpriteBatch spriteBatch,
             Vector2 gravity,
-            string mask,
             float friction, 
             float accelerationMagnitude, 
             float maxSpeed,
@@ -40,7 +40,7 @@ namespace MonoPlayground
         {
             _physics = new PhysicsFeature(
                 gameObject: this,
-                mask: contentManager.Load<Texture2D>(mask),
+                mask: contentManager.Load<Texture2D>("object0Mask"),
                 collisionHandle: HandleCollision);
             _physics.Physics = true;
             _physics.Solid = true;
@@ -49,11 +49,20 @@ namespace MonoPlayground
             _physics.Bounce = bounce;
             Features.Add(_physics);
 
-            _display = new DisplayFeature(
+            _animationWalk = new AnimationFeature(
                 gameObject: this,
-                texture: contentManager.Load<Texture2D>(mask),
-                spriteBatch: spriteBatch);
-            Features.Add(_display);
+                spriteBatch: spriteBatch,
+                textures: Enumerable.Range(1, 10).Select(x => contentManager.Load<Texture2D>($"cat/Walk ({x})")).ToList(),
+                animationTimerThreshold: 0.05f);
+            _animationWalk.Visible = true;
+            _animationWalk.Repeat = true;
+            _animationWalk.Play = true;
+            Features.Add(_animationWalk);
+
+            float scale = (float)_physics.Mask.Height / _animationWalk.Height;
+            _animationWalk.Scale = scale;
+            _animationWalk.Rotation = 0;
+            _animationCurrent = _animationWalk;
 
             _accelerationMagnitude = accelerationMagnitude;
             _gravity = gravity;
@@ -121,13 +130,15 @@ namespace MonoPlayground
             if (keyboardState.IsKeyDown(Keys.Right))
             {
                 _physics.Acceleration += direction * _accelerationMagnitude * 4f;
+                _animationCurrent.Flip = false;
             }
             if (keyboardState.IsKeyDown(Keys.Left))
             {
                 _physics.Acceleration -= direction * _accelerationMagnitude * 4f;
+                _animationCurrent.Flip = true;
             }
 
-            _display.Position = _physics.Position;
+            _animationCurrent.Position = _physics.Position + _physics.Mask.Bounds.Center.ToVector2();
             base.Update(gameTime);
         }
     }
