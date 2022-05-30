@@ -13,16 +13,17 @@ namespace MonoPlayground
 {
     internal class TestAObject : GameObject
     {
-        private const float _orientationTimerThreshold = 0.25f;
-        private const float _orientationGroundThreshold = 0.5f;
+        private const float _orientationTimerThreshold = 0.15f;
+        private const float _orientationGroundThreshold = 0.25f;
         private const float _jumpTimerThreshold = .25f;
-        private const float _jumpEnableTimerThreshold = 0.1f;
+        private const float _jumpEnableTimerThreshold = 0.2f;
         private readonly PhysicsFeature _physics;
         private readonly DisplayFeature _display;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
         private readonly Vector2 _orientationDefault;
         private Vector2 _orientationNormal;
+        private Vector2 _jumpOrientation;
         private float _orientationTimer;
         private float _jumpTimer;
         private float _jumpEnableTimer;
@@ -68,8 +69,9 @@ namespace MonoPlayground
             if (dotProduct > _orientationGroundThreshold)
             {
                 _orientationNormal = _physics.CollisionNormal;
-                _orientationTimer = 0;
+                _orientationTimer = _orientationTimerThreshold;
                 _jumpEnableTimer = _jumpEnableTimerThreshold;
+                Console.WriteLine($"Jump Enable Timer Activated.");
             }
             Console.WriteLine($"Normal Orientation: {_orientationNormal}. Dot: {dotProduct}");
         }
@@ -90,12 +92,10 @@ namespace MonoPlayground
                 _physics.Acceleration += Vector2.Normalize(mouseDirection) * _accelerationMagnitude * 2;
             }
 
-            _orientationTimer += timeElapsed;
-            if (_orientationTimer > _orientationTimerThreshold)
-            {
-                _orientationTimer = 0;
+            if (_orientationTimer > 0)
+                _orientationTimer -= timeElapsed;
+            else
                 _orientationNormal = _orientationDefault;
-            }
 
             if (_jumpEnableTimer > 0)
             {
@@ -105,13 +105,14 @@ namespace MonoPlayground
                 {
                     _jumpEnableTimer = 0;
                     _jumpTimer = _jumpTimerThreshold;
+                    _jumpOrientation = _orientationNormal;
                 }
             }
 
             if (_jumpTimer > 0)
             {
                 _jumpTimer -= timeElapsed;
-                _physics.Acceleration += _orientationNormal * _accelerationMagnitude * 4;
+                _physics.Acceleration += _jumpOrientation * _accelerationMagnitude * 5;
             }
 
             Vector2 direction = new Vector2( 
@@ -119,11 +120,11 @@ namespace MonoPlayground
                 y: _orientationNormal.X);
             if (keyboardState.IsKeyDown(Keys.Right))
             {
-                _physics.Acceleration += direction * _accelerationMagnitude * 1.5f;
+                _physics.Acceleration += direction * _accelerationMagnitude * 4f;
             }
             if (keyboardState.IsKeyDown(Keys.Left))
             {
-                _physics.Acceleration -= direction * _accelerationMagnitude * 1.5f;
+                _physics.Acceleration -= direction * _accelerationMagnitude * 4f;
             }
 
             _display.Position = _physics.Position;

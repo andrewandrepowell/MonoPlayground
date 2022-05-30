@@ -23,11 +23,11 @@ namespace MonoPlayground
                 contentManager: contentManager,
                 spriteBatch: _spriteBatch,
                 mask: "object0Mask",
-                friction: 200f,
+                friction: 600f,
                 accelerationMagnitude: 1000f,
                 maxSpeed: 400,
-                bounce: 0f,
-                gravity: new Vector2(x:0, y: 1600));
+                bounce: .1f,
+                gravity: new Vector2(x:0, y: 2000));
             _testAObject.Physics.Position = new Vector2(x: 400, y: 0);
             Children.Add(_testAObject);
 
