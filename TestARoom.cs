@@ -27,7 +27,7 @@ namespace MonoPlayground
                 maxSpeed: 300,
                 bounce: 0f,
                 gravity: new Vector2(x:0, y: 2000));
-            _testAObject.Physics.Position = new Vector2(x: 400, y: 0);
+            _testAObject.Physics.Position = new Vector2(x: 600, y: 0);
             Children.Add(_testAObject);
 
             TestBObject testBObject = new TestBObject(

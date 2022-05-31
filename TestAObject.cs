@@ -16,7 +16,8 @@ namespace MonoPlayground
         private const float _orientationTimerThreshold = 0.25f;
         private const float _orientationGroundThreshold = 0.25f;
         private const float _jumpTimerThreshold = .35f;
-        private const float _jumpEnableTimerThreshold = 0.5f;
+        private const float _jumpEnableTimerThreshold = 0.2f;
+        private const float _slideGroundThreshold = 0.25f;
         private readonly SpriteBatch _spriteBatch;
         private readonly PhysicsFeature _physics;
         private readonly AnimationFeature _animationWalk;
@@ -24,6 +25,7 @@ namespace MonoPlayground
         private readonly AnimationFeature _animationJump;
         private readonly AnimationFeature _animationFall;
         private readonly AnimationFeature _animationRun;
+        private readonly AnimationFeature _animationSlide;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
         private readonly Vector2 _orientationDefault;
@@ -80,6 +82,12 @@ namespace MonoPlayground
                 spriteBatch: spriteBatch,
                 textures: Enumerable.Range(1, 8).Select(x => contentManager.Load<Texture2D>($"cat/Fall ({x})")).ToList());
             Features.Add(_animationFall);
+
+            _animationSlide = new AnimationFeature(
+                gameObject: this,
+                spriteBatch: spriteBatch,
+                textures: Enumerable.Range(1, 10).Select(x => contentManager.Load<Texture2D>($"cat/Slide ({x})")).ToList());
+            Features.Add(_animationSlide);
 
             _animationRun = new AnimationFeature(
                 gameObject: this,
@@ -209,9 +217,11 @@ namespace MonoPlayground
                 // is trying to move.
                 if (_jumpEnableTimer > 0)
                 {
-                    float dot = Math.Abs(Vector2.Dot(_physics.Velocity, direction));
+                    float dot = Math.Abs(Vector2.Dot(Vector2.Normalize(_physics.Velocity), direction));
                     if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.Left))
                         ChangeAnimation(animation: _animationRun, repeat: true);
+                    else if (dot > _slideGroundThreshold)
+                        ChangeAnimation(animation: _animationSlide, repeat: true);
                     else
                         ChangeAnimation(animation: _animationIdle, repeat: true);
                 }
@@ -237,13 +247,15 @@ namespace MonoPlayground
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+            /*
             _spriteBatch.Begin();
             _spriteBatch.DrawLine(
                 point1: _physics.CollisionPoint + _orientationNormal * 200,
                 point2: _physics.CollisionPoint,
                 color: Color.Red,
-                thickness: 2);
+                thickness: 10);
             _spriteBatch.End();
+            */
         }
     }
 }
