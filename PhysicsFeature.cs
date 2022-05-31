@@ -23,7 +23,6 @@ namespace MonoPlayground
         private Vector2 _stickTotal;
         private float _maxSpeed;
         private float _friction;
-        private float _frictionTotal;
         private float _stick;
         private float _bounce;
         private bool _solid;
@@ -41,7 +40,6 @@ namespace MonoPlayground
             _acceleration = Vector2.Zero;
             _stickTotal = Vector2.Zero;
             _friction = 0f;
-            _frictionTotal = 0f;
             _maxSpeed = 0f;
             _stick = 0f;
             _bounce = 0f;
@@ -55,6 +53,9 @@ namespace MonoPlayground
             if (!_physics)
                 return;
 
+            _stickTotal = Vector2.Zero;
+            _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
+
             // The elapsed time is needed since position, velocity, and acceleration affect in each with respect to time.
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -64,13 +65,10 @@ namespace MonoPlayground
             // Update velocity based on the effects of total friction and maximum speed.
             if (_velocity != Vector2.Zero)
             {
-                float _speed = GameMath.Max(GameMath.Min(_velocity.Length(), _maxSpeed) - _frictionTotal * timeElapsed, 0);
+                float _speed = GameMath.Min(_velocity.Length(), _maxSpeed);
                 _velocity = Vector2.Normalize(_velocity) * _speed;
             }
             _position += (_velocity - _stickTotal) * timeElapsed; // Apply velocity to position.
-            _stickTotal = Vector2.Zero;
-            _frictionTotal = _friction;
-            _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
         }
         public override void Draw(GameTime gameTime) { }
         public Texture2D Mask { get => _mask; }
@@ -181,9 +179,11 @@ namespace MonoPlayground
             bool[] collisionMask = thisData.Zip(otherData, (td, od) => td != Color.Transparent && od != Color.Transparent).ToArray();
             bool collisionOccurred = collisionMask.Contains(true);
 
+            Console.WriteLine("Checking for collision.");
             // Specific operations occur on collision.
             if (collisionOccurred)
             {
+                Console.WriteLine("Collision Occurred");
                 // Extra functionality is needed for the case where
                 // both this physics and the other physics are solid. 
                 // 1) This physic's position needs correction to remove the overlap.
@@ -394,13 +394,14 @@ namespace MonoPlayground
                     float normalScalar = Vector2.Dot(_collisionNormal, _velocity);
                     float orthogScalar = Vector2.Dot(collisionOrthog, _velocity);
                     float totalBounce = _bounce + other.Bounce;
+                    float totalFriction = _friction + other.Friction;
+                    float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                     _stickTotal += other.Stick * _collisionNormal;
-                    _frictionTotal += other.Friction;
 
                     _velocity =  
                         - totalBounce * normalScalar * _collisionNormal // bounce component
-                        + orthogScalar * collisionOrthog; // orthog component
+                        + Math.Sign(orthogScalar) * GameMath.Max(Math.Abs(orthogScalar) - totalFriction * timeElapsed, 0) * collisionOrthog; // orthog component
                     Debug.Assert(!Double.IsNaN(_velocity.X) && !Double.IsNaN(_velocity.Y));
                 }
             }

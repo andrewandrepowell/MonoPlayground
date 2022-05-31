@@ -22,11 +22,11 @@ namespace MonoPlayground
             _testAObject = new TestAObject(
                 contentManager: contentManager,
                 spriteBatch: _spriteBatch,
-                friction: 600f,
+                friction: 1000,
                 accelerationMagnitude: 1000f,
-                maxSpeed: 800,
-                bounce: .1f,
-                gravity: new Vector2(x:0, y: 2500));
+                maxSpeed: 300,
+                bounce: 0f,
+                gravity: new Vector2(x:0, y: 2000));
             _testAObject.Physics.Position = new Vector2(x: 400, y: 0);
             Children.Add(_testAObject);
 
@@ -108,13 +108,6 @@ namespace MonoPlayground
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            _spriteBatch.Begin();
-            _spriteBatch.DrawLine(
-                point1: _testAObject.Physics.CollisionPoint + _testAObject.Physics.CollisionNormal * 200,
-                point2: _testAObject.Physics.CollisionPoint,
-                color: Color.Red,
-                thickness: 2);
-            _spriteBatch.End();
         }
         public virtual void Dispose(bool disposing)
         {

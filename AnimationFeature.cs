@@ -54,14 +54,23 @@ namespace MonoPlayground
             get => _scale; 
             set
             {
-                Debug.Assert(_scale > 0);
+                Debug.Assert(value > 0);
                 _scale = value;
+            }
+        }
+        public float AnimationTimerThreshold
+        {
+            get => _animationTimerThreshold;
+            set
+            {
+                Debug.Assert(value > 0);
+                _animationTimerThreshold = value;
             }
         }
         public void Reset()
         {
             _currentIndex = 0;
-            _animationTimer = 0;
+            _animationTimer = _animationTimerThreshold;
             _flip = false;
             _play = false;
             _repeat = false;
