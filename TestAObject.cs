@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 #if DEBUG
 using System;
 #endif
@@ -26,10 +27,12 @@ namespace MonoPlayground
         private readonly AnimationFeature _animationFall;
         private readonly AnimationFeature _animationRun;
         private readonly AnimationFeature _animationSlide;
+        private readonly SoundEffectInstance _soundWalk;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
         private readonly Vector2 _orientationDefault;
         private AnimationFeature _animationCurrent;
+        private SoundEffectInstance _soundCurrent;
         private Vector2 _orientationNormal;
         private Vector2 _jumpOrientation;
         private float _orientationTimer;
@@ -57,6 +60,8 @@ namespace MonoPlayground
             _physics.Friction = friction;
             _physics.MaxSpeed = maxSpeed;
             _physics.Bounce = bounce;
+            _physics.StickThreshold = 20f;
+            _physics.Stick = 30;
             Features.Add(_physics);
 
             _animationWalk = new AnimationFeature(
@@ -106,6 +111,8 @@ namespace MonoPlayground
             _animationCurrent.Visible = true;
             _animationCurrent.Repeat = true;
             _animationCurrent.Play = true;
+
+            _soundWalk = contentManager.Load<SoundEffect>("run").CreateInstance();
 
             _accelerationMagnitude = accelerationMagnitude;
             _gravity = gravity;
@@ -219,7 +226,9 @@ namespace MonoPlayground
                 {
                     float dot = Math.Abs(Vector2.Dot(Vector2.Normalize(_physics.Velocity), direction));
                     if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.Left))
+                    {
                         ChangeAnimation(animation: _animationRun, repeat: true);
+                    }
                     else if (dot > _slideGroundThreshold)
                         ChangeAnimation(animation: _animationSlide, repeat: true);
                     else

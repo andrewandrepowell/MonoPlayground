@@ -985,3 +985,9 @@
 /processorParam:TextureFormat=Color
 /build:object6Mask.png
 
+#begin run.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:run.mp3
+

@@ -24,6 +24,7 @@ namespace MonoPlayground
         private float _maxSpeed;
         private float _friction;
         private float _stick;
+        private float _stickThreshold;
         private float _bounce;
         private bool _solid;
         private bool _physics;
@@ -42,6 +43,7 @@ namespace MonoPlayground
             _friction = 0f;
             _maxSpeed = 0f;
             _stick = 0f;
+            _stickThreshold = 0f;
             _bounce = 0f;
             _solid = false;
             _physics = false;
@@ -114,6 +116,16 @@ namespace MonoPlayground
                 if (value < 0f)
                     throw new ArgumentOutOfRangeException();
                 _stick = value;
+            }
+        }
+        public float StickThreshold
+        {
+            get => _stickThreshold;
+            set
+            {
+                if (value < 0f)
+                    throw new ArgumentOutOfRangeException();
+                _stickThreshold = value;
             }
         }
         public bool Solid {  get => _solid; set => _solid = value; }
@@ -397,7 +409,7 @@ namespace MonoPlayground
                     float totalFriction = _friction + other.Friction;
                     float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    _stickTotal += other.Stick * _collisionNormal;
+                    _stickTotal += (Math.Abs(orthogScalar) > _stickThreshold ? (_stick + other.Stick) : 0) * _collisionNormal;
 
                     _velocity =  
                         - totalBounce * normalScalar * _collisionNormal // bounce component
