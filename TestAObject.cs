@@ -27,7 +27,8 @@ namespace MonoPlayground
         private readonly AnimationFeature _animationFall;
         private readonly AnimationFeature _animationRun;
         private readonly AnimationFeature _animationSlide;
-        private readonly SoundEffectInstance _soundWalk;
+        private readonly SoundEffectInstance _soundRun;
+        private readonly SoundEffectInstance _soundLand;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
         private readonly Vector2 _orientationDefault;
@@ -112,7 +113,9 @@ namespace MonoPlayground
             _animationCurrent.Repeat = true;
             _animationCurrent.Play = true;
 
-            _soundWalk = contentManager.Load<SoundEffect>("run").CreateInstance();
+            _soundRun = contentManager.Load<SoundEffect>("run").CreateInstance();
+            _soundLand = contentManager.Load<SoundEffect>("land").CreateInstance();
+            _soundCurrent = _soundRun;
 
             _accelerationMagnitude = accelerationMagnitude;
             _gravity = gravity;
@@ -128,16 +131,12 @@ namespace MonoPlayground
             float dotProduct = Vector2.Dot(_orientationNormal, _physics.CollisionNormal);
             if (dotProduct > _orientationGroundThreshold)
             {
+                if (_jumpEnableTimer <= 0)
+                    _soundLand.Play();
                 _orientationNormal = _physics.CollisionNormal;
                 _orientationTimer = _orientationTimerThreshold;
                 _jumpEnableTimer = _jumpEnableTimerThreshold;
-                Console.WriteLine($"Jump Enable Timer Activated.");                
             }
-            else
-            {
-                Console.WriteLine($"Jump Enable Timer NOT ACTIVATED.");
-            }
-            Console.WriteLine($"Normal Orientation: {_orientationNormal}. Dot: {dotProduct}");
         }
         private void ChangeAnimation(AnimationFeature animation, bool repeat)
         {
@@ -151,6 +150,15 @@ namespace MonoPlayground
             _animationCurrent.Play = true;
             _animationCurrent.Visible = true;
             _animationCurrent.Repeat = repeat;
+        }
+        private void ChangeSoundEffect(SoundEffectInstance sound, bool repeat)
+        {
+            if (sound == _soundCurrent)
+                return;
+            _soundCurrent.Stop();
+            _soundCurrent = sound;
+            _soundCurrent.IsLooped = repeat;
+            _soundCurrent.Play();
         }
         public override void Update(GameTime gameTime)
         {
@@ -228,6 +236,9 @@ namespace MonoPlayground
                     if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.Left))
                     {
                         ChangeAnimation(animation: _animationRun, repeat: true);
+                        _soundRun.Play();
+                        //ChangeSoundEffect(sound: _soundRun, repeat: true);  
+
                     }
                     else if (dot > _slideGroundThreshold)
                         ChangeAnimation(animation: _animationSlide, repeat: true);
