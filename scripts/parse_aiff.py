@@ -56,12 +56,17 @@ if __name__ == "__main__":
         
         # Grab the run sound.
         # run_data = data[245000:300000,:]
-        run_data = data[248000:254000,:]
-        sounddevice.play(run_data, frame_rate)
+        # run_data = data[248000:254000,:]
+        # run_data = data[250100:252000,:]
+        # sounddevice.play(run_data, frame_rate)
         # wavfile.write('run.wav', frame_rate, run_data)
-        write(file='run.mp3', data=run_data, frame_rate=frame_rate)
-        pyplot.plot(run_data)
+        # write(file='run.mp3', data=run_data, frame_rate=frame_rate)
+        # pyplot.plot(run_data)
         
+        white_noise = numpy.random.normal(loc=0, scale=17500000, size=(60000, channels_per_sound)).astype(numpy.int32)
+        sounddevice.play(white_noise, frame_rate)
+        pyplot.plot(white_noise)
+        write(file='noiseSound.mp3', data=white_noise, frame_rate=frame_rate)
         
         pyplot.show()
         pass

@@ -17,7 +17,7 @@ namespace MonoPlayground
         private const float _orientationTimerThreshold = 0.25f;
         private const float _orientationGroundThreshold = 0.25f;
         private const float _jumpTimerThreshold = .35f;
-        private const float _jumpEnableTimerThreshold = 0.2f;
+        private const float _jumpEnableTimerThreshold = 0.1f;
         private const float _slideGroundThreshold = 0.25f;
         private readonly SpriteBatch _spriteBatch;
         private readonly PhysicsFeature _physics;
@@ -29,11 +29,11 @@ namespace MonoPlayground
         private readonly AnimationFeature _animationSlide;
         private readonly SoundEffectInstance _soundRun;
         private readonly SoundEffectInstance _soundLand;
+        private readonly SoundEffectInstance _soundSlide;
         private readonly float _accelerationMagnitude;
         private readonly Vector2 _gravity;
         private readonly Vector2 _orientationDefault;
         private AnimationFeature _animationCurrent;
-        private SoundEffectInstance _soundCurrent;
         private Vector2 _orientationNormal;
         private Vector2 _jumpOrientation;
         private float _orientationTimer;
@@ -101,21 +101,27 @@ namespace MonoPlayground
                 textures: Enumerable.Range(1, 8).Select(x => contentManager.Load<Texture2D>($"cat/Run ({x})")).ToList());
             Features.Add(_animationRun);
 
-            float scale = (float)_physics.Mask.Height / _animationWalk.Height;
+            float scale = 1.1f * (float)_physics.Mask.Height / _animationWalk.Height;
             Features.OfType<AnimationFeature>().ForEach(delegate(AnimationFeature feature) 
             {
                 feature.Scale = scale;
                 feature.Rotation = 0;
                 feature.AnimationTimerThreshold = 0.1f;
             });
+            _animationRun.AnimationTimerThreshold = 0.05f;
             _animationCurrent = _animationIdle;
             _animationCurrent.Visible = true;
             _animationCurrent.Repeat = true;
             _animationCurrent.Play = true;
 
-            _soundRun = contentManager.Load<SoundEffect>("run").CreateInstance();
-            _soundLand = contentManager.Load<SoundEffect>("land").CreateInstance();
-            _soundCurrent = _soundRun;
+            _soundRun = contentManager.Load<SoundEffect>("boopSound").CreateInstance();
+            _soundRun.Volume = 0.01f;
+            _soundRun.Pitch = -0.8f;
+            _soundLand = contentManager.Load<SoundEffect>("boopSound").CreateInstance();
+            _soundLand.Volume = 0.01f;
+            _soundSlide = contentManager.Load<SoundEffect>("noiseSound").CreateInstance();
+            _soundSlide.Volume = 0.05f;
+            _soundSlide.Pitch = -0.9f;
 
             _accelerationMagnitude = accelerationMagnitude;
             _gravity = gravity;
@@ -150,15 +156,6 @@ namespace MonoPlayground
             _animationCurrent.Play = true;
             _animationCurrent.Visible = true;
             _animationCurrent.Repeat = repeat;
-        }
-        private void ChangeSoundEffect(SoundEffectInstance sound, bool repeat)
-        {
-            if (sound == _soundCurrent)
-                return;
-            _soundCurrent.Stop();
-            _soundCurrent = sound;
-            _soundCurrent.IsLooped = repeat;
-            _soundCurrent.Play();
         }
         public override void Update(GameTime gameTime)
         {
@@ -237,13 +234,19 @@ namespace MonoPlayground
                     {
                         ChangeAnimation(animation: _animationRun, repeat: true);
                         _soundRun.Play();
-                        //ChangeSoundEffect(sound: _soundRun, repeat: true);  
+                        _soundSlide.Stop();
 
                     }
                     else if (dot > _slideGroundThreshold)
+                    {
                         ChangeAnimation(animation: _animationSlide, repeat: true);
+                        _soundSlide.Play();
+                    }
                     else
+                    {
                         ChangeAnimation(animation: _animationIdle, repeat: true);
+                        _soundSlide.Stop();
+                    }                        
                 }
                 else
                 {
@@ -252,6 +255,7 @@ namespace MonoPlayground
                         ChangeAnimation(animation: _animationJump, repeat: false);
                     else
                         ChangeAnimation(animation: _animationFall, repeat: true);
+                    _soundSlide.Stop();
                 }
 
                 // Set the rotation of the animation based on the orientation normal.

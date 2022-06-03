@@ -191,11 +191,9 @@ namespace MonoPlayground
             bool[] collisionMask = thisData.Zip(otherData, (td, od) => td != Color.Transparent && od != Color.Transparent).ToArray();
             bool collisionOccurred = collisionMask.Contains(true);
 
-            Console.WriteLine("Checking for collision.");
             // Specific operations occur on collision.
             if (collisionOccurred)
             {
-                Console.WriteLine("Collision Occurred");
                 // Extra functionality is needed for the case where
                 // both this physics and the other physics are solid. 
                 // 1) This physic's position needs correction to remove the overlap.

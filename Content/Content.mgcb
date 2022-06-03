@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin boopSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:boopSound.mp3
+
 #begin cat/Dead (1).png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -901,11 +907,11 @@
 /processorParam:TextureFormat=Color
 /build:cat/Walk (9).png
 
-#begin land.mp3
+#begin noiseSound.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:land.mp3
+/build:noiseSound.mp3
 
 #begin object0Mask.png
 /importer:TextureImporter
@@ -991,9 +997,9 @@
 /processorParam:TextureFormat=Color
 /build:object6Mask.png
 
-#begin run.mp3
+#begin swooshSound.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:run.mp3
+/processorParam:Quality=Low
+/build:swooshSound.mp3
 
