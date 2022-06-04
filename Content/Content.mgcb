@@ -937,6 +937,18 @@
 /processorParam:TextureFormat=Color
 /build:object1Mask.png
 
+#begin object1Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object1Texture.png
+
 #begin object2Mask.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -948,6 +960,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:object2Mask.png
+
+#begin object2Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object2Texture.png
 
 #begin object3Mask.png
 /importer:TextureImporter
@@ -996,6 +1020,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:object6Mask.png
+
+#begin scene0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:scene0.png
 
 #begin swooshSound.mp3
 /importer:Mp3Importer

@@ -11,6 +11,10 @@ from matplotlib import pyplot
 from scipy.io import wavfile
 import pydub
 
+# https://freesound.org/people/bennychico11/sounds/110930/
+# https://creativecommons.org/licenses/by/4.0/
+# https://freesound.org/people/ProjectsU012/sounds/341025/
+
 
 def write(file: str, data: numpy.ndarray, frame_rate: int) -> None:
     assert len(data.shape) == 1 or len(data.shape) == 2

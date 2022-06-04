@@ -106,7 +106,7 @@ namespace MonoPlayground
 
                 spriteBatch.Draw(
                     texture: _textures[_currentIndex],
-                    position: _position,
+                    position: Vector2.Round(_position),
                     sourceRectangle: null,
                     color: Color.White,
                     rotation: _rotation,

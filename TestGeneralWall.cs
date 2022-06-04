@@ -11,7 +11,7 @@ namespace MonoPlayground
     {
         private readonly PhysicsFeature _physics;
         private readonly DisplayFeature _display;
-        public TestGeneralWall(ContentManager contentManager, Texture2D mask)
+        public TestGeneralWall(ContentManager contentManager, Texture2D mask, Texture2D texture = null)
         {
             _physics = new PhysicsFeature(
                 gameObject: this,
@@ -25,7 +25,7 @@ namespace MonoPlayground
 
             _display = new DisplayFeature(
                 gameObject: this,
-                texture: mask);
+                texture: (texture == null) ? mask : texture);
             Features.Add(_display);
         }
         public PhysicsFeature Physics { get => _physics; }

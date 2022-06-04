@@ -14,6 +14,7 @@ namespace MonoPlayground
         private readonly SpriteBatch _spriteBatch;
         private readonly MonoKitty _player;
         private readonly CameraFeature _camera;
+        private readonly Texture2D _background;
         private bool _disposed;
         public TestARoom(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
@@ -29,7 +30,8 @@ namespace MonoPlayground
 
             TestGeneralWall testGWall = new TestGeneralWall(
                 contentManager: contentManager,
-                mask: contentManager.Load<Texture2D>("object1Mask"));
+                mask: contentManager.Load<Texture2D>("object1Mask"),
+                texture: contentManager.Load<Texture2D>("object1Texture"));
             testGWall.Physics.Position = new Vector2(x: 300, y: 300);
             testGWall.Physics.Vertices.Add(new Vector2(x: 0, y: 0));
             testGWall.Physics.Vertices.Add(new Vector2(x: 50, y: 0));
@@ -38,7 +40,8 @@ namespace MonoPlayground
 
             TestGeneralWall testFWall = new TestGeneralWall(
                 contentManager: contentManager,
-                mask: contentManager.Load<Texture2D>("object2Mask"));
+                mask: contentManager.Load<Texture2D>("object2Mask"),
+                texture: contentManager.Load<Texture2D>("object2Texture"));
             testFWall.Physics.Position = new Vector2(x: 428, y: 300);
             testFWall.Physics.Vertices.Add(new Vector2(x: 0, y: 0));
             testFWall.Physics.Vertices.Add(new Vector2(x: 15, y: 3));
@@ -119,6 +122,8 @@ namespace MonoPlayground
                 threshold: 300);
             Features.Add(_camera);
 
+            _background = contentManager.Load<Texture2D>("scene0");
+
             _player.Physics.CollidablePhysics.Add(testAWall.Physics);
             _player.Physics.CollidablePhysics.Add(testBWall.Physics);
             _player.Physics.CollidablePhysics.Add(testCWall.Physics);
@@ -130,6 +135,7 @@ namespace MonoPlayground
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(transformMatrix: _camera.Transform);
+            spriteBatch.Draw(texture: _background, destinationRectangle: _camera.CameraBounds, color: Color.White);
             base.Draw(gameTime, spriteBatch);
             spriteBatch.End();
         }
