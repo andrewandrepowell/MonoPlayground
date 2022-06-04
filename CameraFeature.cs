@@ -16,6 +16,7 @@ namespace MonoPlayground
         public int Bottom { get => Y + CameraBounds.Height; }
         public int Left { get => X; }
         public int Right { get => X + CameraBounds.Width;  }
+        public Point Location { get => new Point(x: X, y: Y); }
         public Point Center { get => new Point(x: X + Width / 2, y: Y + Height / 2); }
         public Matrix Transform { get; private set; }
         public Rectangle RoomBounds { get; set; }

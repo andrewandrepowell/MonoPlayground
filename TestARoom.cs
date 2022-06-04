@@ -23,11 +23,6 @@ namespace MonoPlayground
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _disposed = false;
 
-            _player = new MonoKitty(
-                contentManager: contentManager);
-            _player.Physics.Position = new Vector2(x: 500, y: -500);
-            Children.Add(_player);
-
             TestGeneralWall testGWall = new TestGeneralWall(
                 contentManager: contentManager,
                 mask: contentManager.Load<Texture2D>("object1Mask"),
@@ -114,6 +109,11 @@ namespace MonoPlayground
             testDWall.Physics.Vertices.Add(new Vector2(x: 127, y: 127));
             Children.Add(testDWall);
 
+            _player = new MonoKitty(
+                contentManager: contentManager);
+            _player.Physics.Position = new Vector2(x: 500, y: -500);
+            Children.Add(_player);
+
             _camera = new CameraFeature(
                 gameObject: this, 
                 roomBounds: new Rectangle(x: 0, y:0, width: 2000, height: 2000), 
@@ -135,8 +135,19 @@ namespace MonoPlayground
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(transformMatrix: _camera.Transform);
-            spriteBatch.Draw(texture: _background, destinationRectangle: _camera.CameraBounds, color: Color.White);
+            
+            // Draw Background.
+            spriteBatch.Draw(
+                texture: _background, 
+                destinationRectangle: new Rectangle(
+                    location: _camera.Location, 
+                    size: _camera.CameraBounds.Size),
+                color: Color.White);
+
+            // Draw the rest of the game objects.
             base.Draw(gameTime, spriteBatch);
+            
+            
             spriteBatch.End();
         }
         public virtual void Dispose(bool disposing)
