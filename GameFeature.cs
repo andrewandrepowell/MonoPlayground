@@ -13,6 +13,6 @@ namespace MonoPlayground
         }
         public GameObject GameObject { get => _gameObject; }
         public abstract void Update(GameTime gameTime);
-        public abstract void Draw(GameTime gameTime);
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }
 }

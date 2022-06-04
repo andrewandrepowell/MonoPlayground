@@ -10,24 +10,25 @@ namespace MonoPlayground
     internal class TestARoom : GameObject, IDisposable
     {
         private readonly ContentManager _contentManager;
+        private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteBatch _spriteBatch;
-        private readonly MonoKitty _testAObject;
+        private readonly MonoKitty _player;
+        private readonly CameraFeature _camera;
         private bool _disposed;
         public TestARoom(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             _contentManager = contentManager;
+            _graphicsDevice = graphicsDevice;
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _disposed = false;
 
-            _testAObject = new MonoKitty(
-                contentManager: contentManager,
-                spriteBatch: _spriteBatch);
-            _testAObject.Physics.Position = new Vector2(x: 600, y: 0);
-            Children.Add(_testAObject);
+            _player = new MonoKitty(
+                contentManager: contentManager);
+            _player.Physics.Position = new Vector2(x: 500, y: -500);
+            Children.Add(_player);
 
             TestGeneralWall testGWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object1Mask"));
             testGWall.Physics.Position = new Vector2(x: 300, y: 300);
             testGWall.Physics.Vertices.Add(new Vector2(x: 0, y: 0));
@@ -37,7 +38,6 @@ namespace MonoPlayground
 
             TestGeneralWall testFWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object2Mask"));
             testFWall.Physics.Position = new Vector2(x: 428, y: 300);
             testFWall.Physics.Vertices.Add(new Vector2(x: 0, y: 0));
@@ -55,7 +55,6 @@ namespace MonoPlayground
 
             TestGeneralWall testEWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object3Mask"));
             testEWall.Physics.Position = new Vector2(x: 556, y: 300);
             testEWall.Physics.Vertices.Add(new Vector2(x: 0, y: 127));
@@ -69,7 +68,6 @@ namespace MonoPlayground
 
             TestGeneralWall testAWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object4Mask"));
             testAWall.Physics.Position = new Vector2(x: 684, y: 300);
             testAWall.Physics.Vertices.Add(new Vector2(x: 0, y: 77));
@@ -80,7 +78,6 @@ namespace MonoPlayground
 
             TestGeneralWall testBWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object5Mask"));
             testBWall.Physics.Position = new Vector2(x: 684, y: 172);
             testBWall.Physics.Vertices.Add(new Vector2(x: 30, y: 127));
@@ -92,7 +89,6 @@ namespace MonoPlayground
 
             TestGeneralWall testCWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object6Mask"));
             testCWall.Physics.Position = new Vector2(x: 556, y: 44);
             testCWall.Physics.Vertices.Add(new Vector2(x: 195, y: 127));
@@ -108,7 +104,6 @@ namespace MonoPlayground
 
             TestGeneralWall testDWall = new TestGeneralWall(
                 contentManager: contentManager,
-                spriteBatch: _spriteBatch,
                 mask: contentManager.Load<Texture2D>("object1Mask"));
             testDWall.Physics.Position = new Vector2(x: 172, y: 172);
             testDWall.Physics.Vertices.Add(new Vector2(x: 0, y: 0));
@@ -116,17 +111,27 @@ namespace MonoPlayground
             testDWall.Physics.Vertices.Add(new Vector2(x: 127, y: 127));
             Children.Add(testDWall);
 
-            _testAObject.Physics.CollidablePhysics.Add(testAWall.Physics);
-            _testAObject.Physics.CollidablePhysics.Add(testBWall.Physics);
-            _testAObject.Physics.CollidablePhysics.Add(testCWall.Physics);
-            _testAObject.Physics.CollidablePhysics.Add(testDWall.Physics);
-            _testAObject.Physics.CollidablePhysics.Add(testEWall.Physics);
-            _testAObject.Physics.CollidablePhysics.Add(testFWall.Physics);
-            _testAObject.Physics.CollidablePhysics.Add(testGWall.Physics);
+            _camera = new CameraFeature(
+                gameObject: this, 
+                roomBounds: new Rectangle(x: 0, y:0, width: 2000, height: 2000), 
+                cameraBounds: graphicsDevice.Viewport.Bounds, 
+                physics: _player.Physics, 
+                threshold: 300);
+            Features.Add(_camera);
+
+            _player.Physics.CollidablePhysics.Add(testAWall.Physics);
+            _player.Physics.CollidablePhysics.Add(testBWall.Physics);
+            _player.Physics.CollidablePhysics.Add(testCWall.Physics);
+            _player.Physics.CollidablePhysics.Add(testDWall.Physics);
+            _player.Physics.CollidablePhysics.Add(testEWall.Physics);
+            _player.Physics.CollidablePhysics.Add(testFWall.Physics);
+            _player.Physics.CollidablePhysics.Add(testGWall.Physics);
         }
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            base.Draw(gameTime);
+            spriteBatch.Begin(transformMatrix: _camera.Transform);
+            base.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
         }
         public virtual void Dispose(bool disposing)
         {

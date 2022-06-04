@@ -12,7 +12,6 @@ namespace MonoPlayground
         // https://www.gameart2d.com/license.html
         readonly private IList<Texture2D> _textures;
         readonly private Vector2 _origin;
-        readonly private SpriteBatch _spriteBatch;
         private Vector2 _position;
         private int _currentIndex;
         private float _scale;
@@ -25,7 +24,6 @@ namespace MonoPlayground
         private bool _visible;
         public AnimationFeature(
             GameObject gameObject,
-            SpriteBatch spriteBatch,
             IList<Texture2D> textures,
             float scale = 1.0f,
             float animationTimerThreshold = 0.1f) : base(gameObject)
@@ -36,7 +34,6 @@ namespace MonoPlayground
             Debug.Assert(animationTimerThreshold > 0);
 
             _textures = textures;
-            _spriteBatch = spriteBatch;
             _scale = scale;
             _origin = _textures[0].Bounds.Center.ToVector2();
             _animationTimerThreshold = animationTimerThreshold;
@@ -77,7 +74,7 @@ namespace MonoPlayground
             _repeat = false;
             _visible = false;
         }
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (_play)
             {
@@ -107,8 +104,7 @@ namespace MonoPlayground
             {
                 SpriteEffects spriteEffects = (_flip) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                _spriteBatch.Begin();
-                _spriteBatch.Draw(
+                spriteBatch.Draw(
                     texture: _textures[_currentIndex],
                     position: _position,
                     sourceRectangle: null,
@@ -118,7 +114,6 @@ namespace MonoPlayground
                     scale: _scale,
                     effects: spriteEffects,
                     layerDepth: 0f);
-                _spriteBatch.End();
             }
         }
 

@@ -41,8 +41,7 @@ namespace MonoPlayground
         private bool _jumpPressed;
         
         public MonoKitty(
-            ContentManager contentManager, 
-            SpriteBatch spriteBatch)
+            ContentManager contentManager)
         {
             // Construct the physics.
             _physics = new PhysicsFeature(
@@ -62,37 +61,31 @@ namespace MonoPlayground
             {
                 _animationWalk = new AnimationFeature(
                     gameObject: this,
-                    spriteBatch: spriteBatch,
                     textures: Enumerable.Range(1, 10).Select(x => contentManager.Load<Texture2D>($"cat/Walk ({x})")).ToList());
                 Features.Add(_animationWalk);
 
                 _animationIdle = new AnimationFeature(
                     gameObject: this,
-                    spriteBatch: spriteBatch,
                     textures: Enumerable.Range(1, 10).Select(x => contentManager.Load<Texture2D>($"cat/Idle ({x})")).ToList());
                 Features.Add(_animationIdle);
 
                 _animationJump = new AnimationFeature(
                     gameObject: this,
-                    spriteBatch: spriteBatch,
                     textures: Enumerable.Range(1, 8).Select(x => contentManager.Load<Texture2D>($"cat/Jump ({x})")).ToList());
                 Features.Add(_animationJump);
 
                 _animationFall = new AnimationFeature(
                     gameObject: this,
-                    spriteBatch: spriteBatch,
                     textures: Enumerable.Range(1, 8).Select(x => contentManager.Load<Texture2D>($"cat/Fall ({x})")).ToList());
                 Features.Add(_animationFall);
 
                 _animationSlide = new AnimationFeature(
                     gameObject: this,
-                    spriteBatch: spriteBatch,
                     textures: Enumerable.Range(1, 10).Select(x => contentManager.Load<Texture2D>($"cat/Slide ({x})")).ToList());
                 Features.Add(_animationSlide);
 
                 _animationRun = new AnimationFeature(
                     gameObject: this,
-                    spriteBatch: spriteBatch,
                     textures: Enumerable.Range(1, 8).Select(x => contentManager.Load<Texture2D>($"cat/Run ({x})")).ToList());
                 Features.Add(_animationRun);
 
@@ -273,19 +266,6 @@ namespace MonoPlayground
 
             // Run the other updates.
             base.Update(gameTime);
-        }
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-            /*
-            _spriteBatch.Begin();
-            _spriteBatch.DrawLine(
-                point1: _physics.CollisionPoint + _orientationNormal * 200,
-                point2: _physics.CollisionPoint,
-                color: Color.Red,
-                thickness: 10);
-            _spriteBatch.End();
-            */
         }
     }
 }

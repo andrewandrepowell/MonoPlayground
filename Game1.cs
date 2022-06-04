@@ -9,6 +9,8 @@ namespace MonoPlayground
 {
     public class Game1 : Game
     {
+        private const int _gameWidth = 1280; // 720p
+        private const int _gameHeight = 720; // 720p
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private TestARoom _testARoom;
@@ -24,7 +26,10 @@ namespace MonoPlayground
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = _gameWidth;
+            _graphics.PreferredBackBufferHeight = _gameHeight;
+            _graphics.ApplyChanges();
             base.Initialize();
         }
 
@@ -53,7 +58,7 @@ namespace MonoPlayground
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            _testARoom.Draw(gameTime);
+            _testARoom.Draw(gameTime, _spriteBatch);
             base.Draw(gameTime);
         }
 #if DEBUG

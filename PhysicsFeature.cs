@@ -72,7 +72,7 @@ namespace MonoPlayground
             }
             _position += (_velocity - _stickTotal) * timeElapsed; // Apply velocity to position.
         }
-        public override void Draw(GameTime gameTime) { }
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
         public Texture2D Mask { get => _mask; }
         public Vector2 Position { get => _position; set => _position = value; }
         public Vector2 Center { get => _position + _mask.Bounds.Center.ToVector2(); }
