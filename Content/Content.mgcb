@@ -1057,6 +1057,18 @@
 /processorParam:TextureFormat=Color
 /build:object6Mask.png
 
+#begin object6Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object6Texture.png
+
 #begin object7Mask.png
 /importer:TextureImporter
 /processor:TextureProcessor

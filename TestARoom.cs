@@ -27,23 +27,36 @@ namespace MonoPlayground
             {
                 Wall wall;
 
-                wall = new WallA(contentManager: contentManager);
+                wall = new Wall1(contentManager: contentManager);
                 wall.Physics.Position = new Vector2(x: 300, y: 300);
                 walls.Add(wall);
 
-                wall = new WallB(contentManager: contentManager);
+                wall = new Wall3(contentManager: contentManager);
                 wall.Physics.Position = new Vector2(x: 300, y: 428);
                 walls.Add(wall);
 
-                wall = new WallC(contentManager: contentManager);
+                wall = new Wall4(contentManager: contentManager);
                 wall.Physics.Position = new Vector2(x: 172, y: 300);
                 walls.Add(wall);
 
-                wall = new WallD(contentManager: contentManager);
+                wall = new Wall5(contentManager: contentManager);
                 wall.Physics.Position = new Vector2(x: 172, y: 428);
+                walls.Add(wall);
+
+                wall = new Wall1(contentManager: contentManager);
+                wall.Physics.Position = new Vector2(x: 556, y: 428);
+                walls.Add(wall);
+
+                wall = new Wall6(contentManager: contentManager);
+                wall.Physics.Position = new Vector2(x: 428, y: 428);
+                walls.Add(wall);
+
+                wall = new Wall2(contentManager: contentManager);
+                wall.Physics.Position = new Vector2(x: 428, y: 300);
                 walls.Add(wall);
             }
 
+            /*
             Wall testFWall = new Wall(
                 contentManager: contentManager,
                 mask: contentManager.Load<Texture2D>("object2Mask"),
@@ -61,7 +74,8 @@ namespace MonoPlayground
             testFWall.Physics.Vertices.Add(new Vector2(x: 118, y: 126));
             testFWall.Physics.Vertices.Add(new Vector2(x: 127, y: 127));
             Children.Add(testFWall);
-
+            */
+            /*
             Wall testEWall = new Wall(
                 contentManager: contentManager,
                 mask: contentManager.Load<Texture2D>("object3Mask"));
@@ -74,6 +88,7 @@ namespace MonoPlayground
             testEWall.Physics.Vertices.Add(new Vector2(x: 122, y: 90));
             testEWall.Physics.Vertices.Add(new Vector2(x: 127, y: 80));
             Children.Add(testEWall);
+            */
 
             Wall testAWall = new Wall(
                 contentManager: contentManager,
@@ -114,7 +129,6 @@ namespace MonoPlayground
             _player = new MonoKitty(
                 contentManager: contentManager);
             _player.Physics.Position = new Vector2(x: 500, y: -500);
-            Children.Add(_player);
 
             _camera = new CameraFeature(
                 gameObject: this, 
@@ -129,14 +143,14 @@ namespace MonoPlayground
             _player.Physics.CollidablePhysics.Add(testAWall.Physics);
             _player.Physics.CollidablePhysics.Add(testBWall.Physics);
             _player.Physics.CollidablePhysics.Add(testCWall.Physics);
-            _player.Physics.CollidablePhysics.Add(testEWall.Physics);
-            _player.Physics.CollidablePhysics.Add(testFWall.Physics);
 
             foreach (Wall wall in walls)
             {
                 Children.Add(wall);
                 _player.Physics.CollidablePhysics.Add(wall.Physics);
             }
+
+            Children.Add(_player);
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

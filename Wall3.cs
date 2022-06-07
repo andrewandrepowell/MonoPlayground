@@ -6,9 +6,9 @@ using System.Text;
 
 namespace MonoPlayground
 {
-    internal class WallB : Wall
+    internal class Wall3 : Wall
     {
-        public WallB(ContentManager contentManager) :
+        public Wall3(ContentManager contentManager) :
             base(
                 contentManager: contentManager,
                 mask: contentManager.Load<Texture2D>("object1Mask"),

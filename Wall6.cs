@@ -7,17 +7,14 @@ using System.Text;
 
 namespace MonoPlayground
 {
-    internal class WallA : Wall
+    internal class Wall6 : Wall
     {
-        public WallA(ContentManager contentManager) : 
+        public Wall6(ContentManager contentManager) :
             base(
                 contentManager: contentManager,
                 mask: contentManager.Load<Texture2D>("object1Mask"),
-                texture: contentManager.Load<Texture2D>("object1Texture"))
+                texture: contentManager.Load<Texture2D>("object6Texture"))
         {
-            Physics.Vertices.Add(new Vector2(x:0, y:0));
-            Physics.Vertices.Add(new Vector2(x: 63, y: 0));
-            Physics.Vertices.Add(new Vector2(x: 127, y: 0));
         }
     }
 }
