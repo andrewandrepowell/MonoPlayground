@@ -55,9 +55,6 @@ namespace MonoPlayground
             if (!_physics)
                 return;
 
-            _stickTotal = Vector2.Zero;
-            _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
-
             // The elapsed time is needed since position, velocity, and acceleration affect in each with respect to time.
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -71,6 +68,9 @@ namespace MonoPlayground
                 _velocity = Vector2.Normalize(_velocity) * _speed;
             }
             _position += (_velocity - _stickTotal) * timeElapsed; // Apply velocity to position.
+
+            _stickTotal = Vector2.Zero;
+            _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
         public Texture2D Mask { get => _mask; }

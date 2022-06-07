@@ -103,10 +103,9 @@ namespace MonoPlayground
             if (_visible)
             {
                 SpriteEffects spriteEffects = (_flip) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
                 spriteBatch.Draw(
                     texture: _textures[_currentIndex],
-                    position: Vector2.Round(_position),
+                    position: Vector2.Floor(_position), // Due to the fact the collision logic utilizes integers, all rounding is floored.
                     sourceRectangle: null,
                     color: Color.White,
                     rotation: _rotation,
