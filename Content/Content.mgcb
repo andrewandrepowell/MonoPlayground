@@ -985,6 +985,18 @@
 /processorParam:TextureFormat=Color
 /build:object3Mask.png
 
+#begin object3Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object3Texture.png
+
 #begin object4Mask.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -996,6 +1008,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:object4Mask.png
+
+#begin object4Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object4Texture.png
 
 #begin object5Mask.png
 /importer:TextureImporter
@@ -1009,6 +1033,18 @@
 /processorParam:TextureFormat=Color
 /build:object5Mask.png
 
+#begin object5Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object5Texture.png
+
 #begin object6Mask.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1020,6 +1056,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:object6Mask.png
+
+#begin object7Mask.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:object7Mask.png
 
 #begin scene0.png
 /importer:TextureImporter
