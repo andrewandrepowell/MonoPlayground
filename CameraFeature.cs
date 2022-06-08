@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,8 +23,8 @@ namespace MonoPlayground
         public Rectangle RoomBounds { get; set; }
         public Rectangle CameraBounds { get; set; }
         public PhysicsFeature Physics { get; set; }
-        public int Threshold { get; set; }
-        public CameraFeature(GameObject gameObject, Rectangle roomBounds, Rectangle cameraBounds, PhysicsFeature physics, int threshold) : base(gameObject)
+        public Point Threshold { get; set; }
+        public CameraFeature(GameObject gameObject, Rectangle roomBounds, Rectangle cameraBounds, PhysicsFeature physics, Point threshold) : base(gameObject)
         {
             RoomBounds = roomBounds;
             CameraBounds = cameraBounds;
@@ -35,6 +36,8 @@ namespace MonoPlayground
         }
         public override void Update(GameTime gameTime)
         {
+            Debug.Assert(Threshold.X >= 0 && Threshold.Y >= 0);
+            
             Point physicsCenter = Physics.Center.ToPoint();
 
             // Determine distances from camera bounds.
@@ -45,14 +48,14 @@ namespace MonoPlayground
 
             // Update camera if thresholds are met, in other words
             // if the physics being tracked gets close to the camera bounds.
-            if (leftDistance < Threshold)
-                X -= Threshold - leftDistance;
-            if (rightDistance < Threshold)
-                X += Threshold - rightDistance;
-            if (topDistance < Threshold)
-                Y -= Threshold - topDistance;
-            if (bottomDistance < Threshold)
-                Y += Threshold - bottomDistance;
+            if (leftDistance < Threshold.X)
+                X -= Threshold.X - leftDistance;
+            if (rightDistance < Threshold.X)
+                X += Threshold.X - rightDistance;
+            if (topDistance < Threshold.Y)
+                Y -= Threshold.Y - topDistance;
+            if (bottomDistance < Threshold.Y)
+                Y += Threshold.Y - bottomDistance;
 
             // Fix camera position to ensure it never leaves
             // the bounds of the room itself.

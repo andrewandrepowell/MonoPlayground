@@ -12,7 +12,7 @@ namespace MonoPlayground
         public Wall4(ContentManager contentManager) :
             base(
                 contentManager: contentManager,
-                mask: contentManager.Load<Texture2D>("object7Mask"),
+                mask: contentManager.Load<Texture2D>("object4Mask"),
                 texture: contentManager.Load<Texture2D>("object4Texture"))
         {
             Physics.Vertices.Add(new Vector2(x: 0, y: 127));

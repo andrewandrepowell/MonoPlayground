@@ -15,9 +15,9 @@ namespace MonoPlayground
     internal class MonoKitty : GameObject
     {
         private const float _orientationGroundThreshold = 0.25f;
-        private const float _jumpTimerThreshold = .35f;
+        private const float _jumpTimerThreshold = .25f;
         private const float _jumpEnableTimerThreshold = 0.1f;
-        private const float _jumpAccelerationScale = 5;
+        private const float _jumpAccelerationScale = 8;
         private const float _slideGroundThreshold = 0.25f;
         private const float _runAccelerationScale = 2.5f;
         private const float _accelerationMagnitude = 1000f;
@@ -50,11 +50,11 @@ namespace MonoPlayground
                 collisionHandle: HandleCollision);
             _physics.Physics = true;
             _physics.Solid = true;
-            _physics.Friction = 1000;
-            _physics.MaxSpeed = 300;
+            _physics.Friction = 600;
+            _physics.MaxSpeed = 600;
             _physics.Bounce = 0;
-            _physics.StickThreshold = 20f;
-            _physics.Stick = 30;
+            _physics.StickThreshold = 120f;
+            _physics.Stick = 140;
             Features.Add(_physics);
 
             // Construct all the animations.
