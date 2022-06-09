@@ -14,6 +14,8 @@ namespace MonoPlayground
 {
     internal class MonoKitty : GameObject
     {
+        private const float _stickGround = 140f;
+        private const float _stickDefault = 0;
         private const float _orientationGroundThreshold = 0.25f;
         private const float _jumpTimerThreshold = .25f;
         private const float _jumpEnableTimerThreshold = 0.1f;
@@ -54,7 +56,7 @@ namespace MonoPlayground
             _physics.MaxSpeed = 600;
             _physics.Bounce = 0;
             _physics.StickThreshold = 120f;
-            _physics.Stick = 140;
+            _physics.Stick = _stickDefault;
             Features.Add(_physics);
 
             // Construct all the animations.
@@ -135,7 +137,13 @@ namespace MonoPlayground
                 // The jump enable timer indicates the player is still on the ground.
                 _orientationNormal = _physics.CollisionNormal;
                 _jumpEnableTimer = _jumpEnableTimerThreshold;
+
+                // Stick is only applied when player is on ground.
+                _physics.Stick = _stickGround;
             }
+            else
+                // When not on ground, set to default stick.
+                _physics.Stick = _stickDefault;
         }
         private void ChangeAnimation(AnimationFeature animation, bool repeat)
         {
@@ -263,6 +271,7 @@ namespace MonoPlayground
                 // Set the position of the animation based on the position of the physics.
                 _animationCurrent.Position = _physics.Position + _physics.Mask.Bounds.Center.ToVector2();
             }
+            Console.WriteLine($"Kitty Position X: {_physics.Position.X / Wall.Width}, Y: {_physics.Position.Y / Wall.Width}");
 
             // Run the other updates.
             base.Update(gameTime);
