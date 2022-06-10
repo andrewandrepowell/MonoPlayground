@@ -29,119 +29,50 @@ namespace MonoPlayground
 
             List<Wall> walls = new List<Wall>();
             {
-                Wall wall;
-
-                for (int i = 5; i * Wall.Width <= _roomBounds.Height; i++)
+                Action<Type, float, float> AddWall = delegate (Type WallType, float x, float y)
                 {
-                    wall = new Wall15(contentManager: contentManager);
-                    wall.Physics.Position = new Vector2(
-                        x: Wall.Width * 0,
-                        y: _roomBounds.Height - Wall.Width * i);
+                    Wall wall = (Wall)Activator.CreateInstance(WallType, contentManager);
+                    wall.Physics.Position = new Vector2(x: x, y: y);
                     walls.Add(wall);
-                }
-
-                wall = new Wall14(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 0,
-                    y: _roomBounds.Height - Wall.Width * 4);
-                walls.Add(wall);
+                };
                 
-                wall = new Wall13(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 1,
-                    y: _roomBounds.Height - Wall.Width * 4);
-                walls.Add(wall);
-
+                for (int i = 5; i < 12; i++)
+                    AddWall(typeof(Wall15), Wall.Width * 0, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall14), Wall.Width * 0, _roomBounds.Height - Wall.Width * 4);
+                AddWall(typeof(Wall13), Wall.Width * 1, _roomBounds.Height - Wall.Width * 4);
                 for (int i = 2; i < 5; i++)
-                {
-                    wall = new Wall1(contentManager: contentManager);
-                    wall.Physics.Position = new Vector2(
-                        x: Wall.Width * i,
-                        y: _roomBounds.Height - Wall.Width * 4);
-                    walls.Add(wall);
-                }
-
-                wall = new Wall7(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 5,
-                    y: _roomBounds.Height - Wall.Width * 4);
-                walls.Add(wall);
-
-                wall = new Wall8(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 5,
-                    y: _roomBounds.Height - Wall.Width * 3);
-                walls.Add(wall);
-
+                    AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 4);
+                AddWall(typeof(Wall7), Wall.Width * 5, _roomBounds.Height - Wall.Width * 4);
+                AddWall(typeof(Wall8), Wall.Width * 5, _roomBounds.Height - Wall.Width * 3);
                 for (int i = 7; i < 10; i++)
-                {
-                    wall = new Wall1(contentManager: contentManager);
-                    wall.Physics.Position = new Vector2(
-                        x: Wall.Width * i,
-                        y: _roomBounds.Height - Wall.Width * 2);
-                    walls.Add(wall);
-                }
-
-                wall = new Wall9(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 10,
-                    y: _roomBounds.Height - Wall.Width * 3);
-                walls.Add(wall);
-
+                    AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 2);
+                AddWall(typeof(Wall9), Wall.Width * 10, _roomBounds.Height - Wall.Width * 3);
                 for (int i = 4; i < 8; i++)
-                {
-                    wall = new Wall5(contentManager: contentManager);
-                    wall.Physics.Position = new Vector2(
-                        x: Wall.Width * 11,
-                        y: _roomBounds.Height - Wall.Width * i);
-                    walls.Add(wall);
-                }
-
-                wall = new Wall19(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 11,
-                    y: _roomBounds.Height - Wall.Width * 8);
-                walls.Add(wall);
-
-                wall = new Wall18(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 8,
-                    y: _roomBounds.Height - Wall.Width * 6);
-                walls.Add(wall);
-
-                wall = new Wall17(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 7,
-                    y: _roomBounds.Height - Wall.Width * 6);
-                walls.Add(wall);
-
-                wall = new Wall16(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 6,
-                    y: _roomBounds.Height - Wall.Width * 6);
-                walls.Add(wall);
-
-                wall = new Wall20(contentManager: contentManager);
-                wall.Physics.Position = new Vector2(
-                    x: Wall.Width * 11,
-                    y: _roomBounds.Height - Wall.Width * 9);
-                walls.Add(wall);
-
+                    AddWall(typeof(Wall5), Wall.Width * 11, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall19), Wall.Width * 11, _roomBounds.Height - Wall.Width * 8);
+                AddWall(typeof(Wall18), Wall.Width * 8, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall17), Wall.Width * 7, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall16), Wall.Width * 6, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall20), Wall.Width * 11, _roomBounds.Height - Wall.Width * 9);
                 for (int i = 7; i < 11; i++)
-                {
-                    wall = new Wall21(contentManager: contentManager);
-                    wall.Physics.Position = new Vector2(
-                        x: Wall.Width * i,
-                        y: _roomBounds.Height - Wall.Width * 9);
-                    walls.Add(wall);
-                }
+                    AddWall(typeof(Wall21), Wall.Width * i, _roomBounds.Height - Wall.Width * 9);
+                AddWall(typeof(Wall18), Wall.Width * 3, _roomBounds.Height - Wall.Width * 7);
+                AddWall(typeof(Wall16), Wall.Width * 2, _roomBounds.Height - Wall.Width * 7);
+                AddWall(typeof(Wall23), Wall.Width * 5, _roomBounds.Height - Wall.Width * 10);
+                AddWall(typeof(Wall18), Wall.Width * 2, _roomBounds.Height - Wall.Width * 8);
+                AddWall(typeof(Wall16), Wall.Width * 1, _roomBounds.Height - Wall.Width * 8);
+                for (int i = 11; i < 14; i++)
+                    AddWall(typeof(Wall5), Wall.Width * 6, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall24), Wall.Width * 2, _roomBounds.Height - Wall.Width * 13);
+                AddWall(typeof(Wall21), Wall.Width * 1, _roomBounds.Height - Wall.Width * 12);
+                AddWall(typeof(Wall25), Wall.Width * 0, _roomBounds.Height - Wall.Width * 12);                
             }
 
             _player = new MonoKitty(
                 contentManager: contentManager);
             _player.Physics.Position = new Vector2(
-                        x: Wall.Width * 2,
-                        y: _roomBounds.Height - Wall.Width * 6);
+                x: Wall.Width * 2,
+                y: _roomBounds.Height - Wall.Width * 6);
 
             _camera = new CameraFeature(
                 gameObject: this, 
