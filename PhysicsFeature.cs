@@ -369,7 +369,6 @@ namespace MonoPlayground
                             .OrderBy(tuple => tuple.distance)
                             .Take(2).Select(tuple => (tuple.vertix, tuple.index))
                             .ToArray();
-                        
 
                         // Determine the start and end point based on the original order of the vertices.
                         // Handle the special when the selected vertices are the first and last.
