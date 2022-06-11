@@ -44,25 +44,25 @@ namespace MonoPlayground
                     AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 4);
                 AddWall(typeof(Wall7), Wall.Width * 5, _roomBounds.Height - Wall.Width * 4);
                 AddWall(typeof(Wall8), Wall.Width * 5, _roomBounds.Height - Wall.Width * 3);
-                for (int i = 7; i < 10; i++)
+                for (int i = 7; i < 14; i++)
                     AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 2);
-                AddWall(typeof(Wall9), Wall.Width * 10, _roomBounds.Height - Wall.Width * 3);
+                AddWall(typeof(Wall9), Wall.Width * 14, _roomBounds.Height - Wall.Width * 3);
                 for (int i = 4; i < 8; i++)
-                    AddWall(typeof(Wall5), Wall.Width * 11, _roomBounds.Height - Wall.Width * i);
-                AddWall(typeof(Wall19), Wall.Width * 11, _roomBounds.Height - Wall.Width * 8);
-                AddWall(typeof(Wall18), Wall.Width * 8, _roomBounds.Height - Wall.Width * 6);
-                AddWall(typeof(Wall17), Wall.Width * 7, _roomBounds.Height - Wall.Width * 6);
-                AddWall(typeof(Wall16), Wall.Width * 6, _roomBounds.Height - Wall.Width * 6);
-                AddWall(typeof(Wall20), Wall.Width * 11, _roomBounds.Height - Wall.Width * 9);
-                for (int i = 7; i < 11; i++)
+                    AddWall(typeof(Wall5), Wall.Width * 15, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall19), Wall.Width * 15, _roomBounds.Height - Wall.Width * 8);
+                AddWall(typeof(Wall18), Wall.Width * 11, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall17), Wall.Width * 10, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall16), Wall.Width * 9, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall20), Wall.Width * 15, _roomBounds.Height - Wall.Width * 9);
+                for (int i = 8; i < 15; i++)
                     AddWall(typeof(Wall21), Wall.Width * i, _roomBounds.Height - Wall.Width * 9);
+                AddWall(typeof(Wall18), Wall.Width * 6, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall16), Wall.Width * 5, _roomBounds.Height - Wall.Width * 6);
+                AddWall(typeof(Wall23), Wall.Width * 6, _roomBounds.Height - Wall.Width * 10);
                 AddWall(typeof(Wall18), Wall.Width * 3, _roomBounds.Height - Wall.Width * 7);
                 AddWall(typeof(Wall16), Wall.Width * 2, _roomBounds.Height - Wall.Width * 7);
-                AddWall(typeof(Wall23), Wall.Width * 5, _roomBounds.Height - Wall.Width * 10);
-                AddWall(typeof(Wall18), Wall.Width * 2, _roomBounds.Height - Wall.Width * 8);
-                AddWall(typeof(Wall16), Wall.Width * 1, _roomBounds.Height - Wall.Width * 8);
                 for (int i = 11; i < 14; i++)
-                    AddWall(typeof(Wall5), Wall.Width * 6, _roomBounds.Height - Wall.Width * i);
+                    AddWall(typeof(Wall5), Wall.Width * 7, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall24), Wall.Width * 2, _roomBounds.Height - Wall.Width * 13);
                 AddWall(typeof(Wall21), Wall.Width * 1, _roomBounds.Height - Wall.Width * 12);
                 AddWall(typeof(Wall25), Wall.Width * 0, _roomBounds.Height - Wall.Width * 12);                
@@ -70,9 +70,12 @@ namespace MonoPlayground
 
             _player = new MonoKitty(
                 contentManager: contentManager);
+            //_player.Physics.Position = new Vector2(
+            //    x: Wall.Width * 2,
+            //    y: _roomBounds.Height - Wall.Width * 6);
             _player.Physics.Position = new Vector2(
                 x: Wall.Width * 2,
-                y: _roomBounds.Height - Wall.Width * 6);
+                y: Wall.Width * 22);
 
             _camera = new CameraFeature(
                 gameObject: this, 

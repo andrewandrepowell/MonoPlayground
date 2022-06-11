@@ -122,5 +122,6 @@ namespace MonoPlayground
             spriteBatch.Draw(GetTexture(spriteBatch), point, null, color, angle, origin, scale, SpriteEffects.None, 0);
         }
         public static float Cross(Vector2 vector0, Vector2 vector1) => vector0.X * vector1.Y - vector1.X * vector0.X;
+        public static int Modulus(int value, int modulus) => (value % modulus + modulus) % modulus;
     }
 }

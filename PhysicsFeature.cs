@@ -349,18 +349,27 @@ namespace MonoPlayground
                     // to unambigiously know the directions of the normal vectors.
                     if (other.Vertices.Count >= 3)
                     {
-                        // Find the two vertices closest to the point of collision.
-                        // The original indices corresponding to each vertix is needed in order
-                        // to account for a special between the last and first vertix.
+                        // Find the closest vertex to the collision point and its index.
                         Vector2 localCollisionPoint = _collisionPoint - other.Position;
-                        IEnumerable<float> distances = other.Vertices.Select(x => Vector2.DistanceSquared(x, localCollisionPoint));
-                        (Vector2 vertix, int index)[] pairs = other.Vertices
-                            .Zip(distances, (vertix, distance) => (vertix, distance))
-                            .Zip(Enumerable.Range(0, other.Vertices.Count), (tuple, index) => (tuple.vertix, tuple.distance, index))
-                            .OrderBy(pair => pair.distance)
-                            .Take(2)
-                            .Select(tuple => (tuple.vertix, tuple.index))
+                        float[] distances = other.Vertices.Select(x => Vector2.DistanceSquared(x, localCollisionPoint)).ToArray();
+                        int minIndex = distances.IndexOfMin();
+
+                        // Find the adjacent vertices to the closest vertex.
+                        int indexLower = GameMath.Modulus((minIndex - 1), other.Vertices.Count);
+                        int indexHigher = GameMath.Modulus((minIndex + 1), other.Vertices.Count);
+                        (Vector2 vertix, float distance, int index)[] tuples = new (Vector2 vertix, float distance, int index)[]
+                        {
+                            (other.Vertices[minIndex], distances[minIndex], minIndex),
+                            (other.Vertices[indexLower], distances[indexLower], indexLower),
+                            (other.Vertices[indexHigher], distances[indexHigher], indexHigher)
+                        };
+
+                        // Find the closest vertex and the next closest vertex that's next to the closest vertex.
+                        (Vector2 vertix, int index)[] pairs = tuples
+                            .OrderBy(tuple => tuple.distance)
+                            .Take(2).Select(tuple => (tuple.vertix, tuple.index))
                             .ToArray();
+                        
 
                         // Determine the start and end point based on the original order of the vertices.
                         // Handle the special when the selected vertices are the first and last.
@@ -382,6 +391,7 @@ namespace MonoPlayground
                             x: direction.Y,
                             y: -direction.X));
                         Debug.Assert(!Double.IsNaN(_collisionNormal.X) && !Double.IsNaN(_collisionNormal.Y));
+                        
                     }
                 }
 
