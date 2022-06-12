@@ -1,11 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-#if DEBUG
-using System;
 using System.Diagnostics;
-#endif
 
 namespace MonoPlayground
 {

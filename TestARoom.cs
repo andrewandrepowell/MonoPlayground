@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace MonoPlayground
 {
@@ -63,9 +64,41 @@ namespace MonoPlayground
                 AddWall(typeof(Wall16), Wall.Width * 2, _roomBounds.Height - Wall.Width * 7);
                 for (int i = 11; i < 14; i++)
                     AddWall(typeof(Wall5), Wall.Width * 7, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall19), Wall.Width * 7, _roomBounds.Height - Wall.Width * 14);
+                AddWall(typeof(Wall20), Wall.Width * 7, _roomBounds.Height - Wall.Width * 15);
+                for (int i = 5; i < 7; i++)
+                    AddWall(typeof(Wall21), Wall.Width * i, _roomBounds.Height - Wall.Width * 15);
+                AddWall(typeof(Wall27), Wall.Width * 4, _roomBounds.Height - Wall.Width * 15);
+                for (int i = 16; i < 17; i++)
+                    AddWall(typeof(Wall28), Wall.Width * 4, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall12), Wall.Width * 4, _roomBounds.Height - Wall.Width * 17);
                 AddWall(typeof(Wall24), Wall.Width * 2, _roomBounds.Height - Wall.Width * 13);
                 AddWall(typeof(Wall21), Wall.Width * 1, _roomBounds.Height - Wall.Width * 12);
-                AddWall(typeof(Wall25), Wall.Width * 0, _roomBounds.Height - Wall.Width * 12);                
+                AddWall(typeof(Wall25), Wall.Width * 0, _roomBounds.Height - Wall.Width * 12);
+                for (int i = 14; i < 18; i++)
+                    AddWall(typeof(Wall26), Wall.Width * 2, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall29), Wall.Width * 2, _roomBounds.Height - Wall.Width * 18);
+                AddWall(typeof(Wall25), Wall.Width * 2, _roomBounds.Height - Wall.Width * 19);
+                for (int i = 3; i < 8; i++)
+                    AddWall(typeof(Wall21), Wall.Width * i, _roomBounds.Height - Wall.Width * 19);
+                AddWall(typeof(Wall11), Wall.Width * 8, _roomBounds.Height - Wall.Width * 19);
+                AddWall(typeof(Wall10), Wall.Width * 8, _roomBounds.Height - Wall.Width * 20);
+                AddWall(typeof(Wall30), Wall.Width * 6, _roomBounds.Height - Wall.Width * 21);
+
+                for (int i = 5; i < 8; i++)
+                    AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 17);
+                AddWall(typeof(Wall30), Wall.Width * 8, _roomBounds.Height - Wall.Width * 17);
+                AddWall(typeof(Wall30), Wall.Width * 10, _roomBounds.Height - Wall.Width * 16);
+                AddWall(typeof(Wall7), Wall.Width * 12, _roomBounds.Height - Wall.Width * 15);
+                for (int i = 12; i < 15; i++)
+                    AddWall(typeof(Wall26), Wall.Width * 12, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall8), Wall.Width * 12, _roomBounds.Height - Wall.Width * 11);
+                for (int i = 14; i < 20; i++)
+                    AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 10);
+
+                AddWall(typeof(Wall18), Wall.Width * 14, _roomBounds.Height - Wall.Width * 21);
+                AddWall(typeof(Wall16), Wall.Width * 13, _roomBounds.Height - Wall.Width * 21);
+
             }
             
             List<Bouncer> bouncers = new List<Bouncer>();
@@ -78,7 +111,11 @@ namespace MonoPlayground
                     bouncers.Add(bouncer);
                 };
 
-                AddBouncer(typeof(Bouncer), Wall.Width * 1, Wall.Width * 22, .8f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 1, _roomBounds.Height - Wall.Width * 8, .8f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 15, _roomBounds.Height - Wall.Width * 15, .5f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 18, _roomBounds.Height - Wall.Width * 18, -.3f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 19, _roomBounds.Height - Wall.Width * 21, -1f, -.2f);
+
             }
 
             _player = new MonoKitty(
@@ -86,9 +123,12 @@ namespace MonoPlayground
             //_player.Physics.Position = new Vector2(
             //    x: Wall.Width * 2,
             //    y: _roomBounds.Height - Wall.Width * 6);
+            //_player.Physics.Position = new Vector2(
+            //    x: Wall.Width * 3,
+            //    y: Wall.Width * 22);
             _player.Physics.Position = new Vector2(
-                x: Wall.Width * 3,
-                y: Wall.Width * 22);
+                x: Wall.Width * 6,
+                y: Wall.Width * 12);
 
             _camera = new CameraFeature(
                 gameObject: this, 
@@ -113,6 +153,31 @@ namespace MonoPlayground
             }
 
             Children.Add(_player);
+        }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);      
+            
+            // If debug is active, the mouse can be used to move the player.
+#if DEBUG
+            {
+                MouseState mouseState = Mouse.GetState();
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    Vector2 mouseDirection = new Vector2(
+                        x: mouseState.X,
+                        y: mouseState.Y) + _camera.Location.ToVector2() - _player.Physics.Center;
+                    mouseDirection.Normalize();
+                    Console.WriteLine($"Mouse Direction: {mouseDirection}");
+                    _player.ExternalAcceleration = mouseDirection * 1000f * 10f;
+                }
+                else
+                {
+                    _player.ExternalAcceleration = Vector2.Zero;
+                }
+            }
+#endif
+            
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,15 +7,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-#if DEBUG
-using System;
-#endif
+
 
 namespace MonoPlayground
 {
     internal class MonoKitty : GameObject
     {
-        private const float _stickGround = 140f;
+        private const float _stickGround = 120f;
         private const float _stickDefault = 0;
         private const float _orientationGroundThreshold = 0.25f;
         private const float _jumpTimerThreshold = .25f;
@@ -128,8 +127,10 @@ namespace MonoPlayground
             _jumpPressed = false;
             _bouncerOrientation = _orientationDefault;
             _bouncerTimer = 0f;
+            ExternalAcceleration = Vector2.Zero;
         }
         public PhysicsFeature Physics { get => _physics; }
+        public Vector2 ExternalAcceleration { get; set; }
         private void HandleCollision(PhysicsFeature other)
         {
             // Detect if collision with ground. Ground is any object below the player's orientation.
@@ -245,6 +246,9 @@ namespace MonoPlayground
                     _bouncerTimer -= timeElapsed;
                     _physics.Acceleration += _bouncerOrientation * _accelerationMagnitude * _bouncerAccelerationScale;
                 }
+
+                // Add the external acceleration. This is mainly for debugging purposes.
+                _physics.Acceleration += ExternalAcceleration;
 
                 // If jump state is active, the player can press jump to increase the player's
                 // acceleration in the direction of the jump's orientation.

@@ -20,7 +20,9 @@ namespace MonoPlayground
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+#if DEBUG
             AllocConsole();
+#endif
         }
 
         protected override void Initialize()

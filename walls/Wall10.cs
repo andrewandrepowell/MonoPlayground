@@ -16,8 +16,11 @@ namespace MonoPlayground
                 texture: contentManager.Load<Texture2D>("object10Texture"))
         {
             Physics.Vertices.Add(new Vector2(x: 0, y: 0));
-            Physics.Vertices.Add(new Vector2(x: 127, y: 0));
-            Physics.Vertices.Add(new Vector2(x: 127, y: 127));
+            Physics.Vertices.Add(new Vector2(x: 120, y: 0));
+            Physics.Vertices.Add(new Vector2(x: 124, y: 1));
+            Physics.Vertices.Add(new Vector2(x: 126, y: 3));
+            Physics.Vertices.Add(new Vector2(x: 127, y: 7));
+            Physics.Vertices.Add(new Vector2(x: 127, y: 127));  
         }
     }
 }
