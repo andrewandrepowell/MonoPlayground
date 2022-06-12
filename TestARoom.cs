@@ -78,7 +78,7 @@ namespace MonoPlayground
                     bouncers.Add(bouncer);
                 };
 
-                AddBouncer(typeof(Bouncer), Wall.Width * 1, Wall.Width * 22, 1, -1);
+                AddBouncer(typeof(Bouncer), Wall.Width * 1, Wall.Width * 22, .8f, -1f);
             }
 
             _player = new MonoKitty(

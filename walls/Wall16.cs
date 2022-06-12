@@ -21,7 +21,10 @@ namespace MonoPlayground
             Physics.Vertices.Add(new Vector2(x: 0, y: 92));
             Physics.Vertices.Add(new Vector2(x: 0, y: 61));
             Physics.Vertices.Add(new Vector2(x: 0, y: 31));
-            Physics.Vertices.Add(new Vector2(x: 0, y: 0));
+            Physics.Vertices.Add(new Vector2(x: 0, y: 7));
+            Physics.Vertices.Add(new Vector2(x: 1, y: 3));
+            Physics.Vertices.Add(new Vector2(x: 3, y: 1));
+            Physics.Vertices.Add(new Vector2(x: 7, y: 0));
             Physics.Vertices.Add(new Vector2(x: 31, y: 0));
             Physics.Vertices.Add(new Vector2(x: 96, y: 0));
             Physics.Vertices.Add(new Vector2(x: 127, y: 0));
