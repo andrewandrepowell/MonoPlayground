@@ -151,6 +151,18 @@
 /processorParam:TextureFormat=Color
 /build:bouncer/bouncer (9).png
 
+#begin bouncer0Mask.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bouncer0Mask.png
+
 #begin cat/Dead (1).png
 /importer:TextureImporter
 /processor:TextureProcessor

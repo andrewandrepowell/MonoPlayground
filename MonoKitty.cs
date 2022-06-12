@@ -23,6 +23,10 @@ namespace MonoPlayground
         private const float _slideGroundThreshold = 0.25f;
         private const float _runAccelerationScale = 2.5f;
         private const float _accelerationMagnitude = 1000f;
+        private const float _bouncerThreshold = .25f;
+        private const float _bouncerTimerThreshold = .60f;
+        private const float _bouncerBounce = 100f;
+        private const float _bouncerAccelerationScale = 8f;
         private static readonly Vector2 _gravity = new Vector2(x: 0, y: 2000);
         private static readonly Vector2 _orientationDefault = -Vector2.Normalize(_gravity);
         private readonly PhysicsFeature _physics;
@@ -38,12 +42,13 @@ namespace MonoPlayground
         private AnimationFeature _animationCurrent;
         private Vector2 _orientationNormal;
         private Vector2 _jumpOrientation;
+        private Vector2 _bouncerOrientation;
         private float _jumpTimer;
         private float _jumpEnableTimer;
         private bool _jumpPressed;
+        private float _bouncerTimer;
         
-        public MonoKitty(
-            ContentManager contentManager)
+        public MonoKitty(ContentManager contentManager)
         {
             // Construct the physics.
             _physics = new PhysicsFeature(
@@ -121,29 +126,53 @@ namespace MonoPlayground
             _orientationNormal = _orientationDefault;
             _jumpEnableTimer = 0f;
             _jumpPressed = false;
+            _bouncerOrientation = _orientationDefault;
+            _bouncerTimer = 0f;
         }
         public PhysicsFeature Physics { get => _physics; }
         private void HandleCollision(PhysicsFeature other)
         {
-            // Detect if collision with ground.
-            float dotProduct = Vector2.Dot(_orientationNormal, _physics.CollisionNormal);
-            if (dotProduct > _orientationGroundThreshold)
+            // Detect if collision with ground. Ground is any object below the player.
             {
-                // If previously in air, play landing sound.
-                if (_jumpEnableTimer <= 0)
-                    _soundLand.Play();
+                float dot = Vector2.Dot(_orientationNormal, _physics.CollisionNormal);
+                if (dot > _orientationGroundThreshold)
+                {
+                    // If previously in air, play landing sound.
+                    if (_jumpEnableTimer <= 0)
+                        _soundLand.Play();
 
-                // Orientation normal of the player is the collision normal.
-                // The jump enable timer indicates the player is still on the ground.
-                _orientationNormal = _physics.CollisionNormal;
-                _jumpEnableTimer = _jumpEnableTimerThreshold;
+                    // Orientation normal of the player is the collision normal.
+                    // The jump enable timer indicates the player is still on the ground.
+                    _orientationNormal = _physics.CollisionNormal;
+                    _jumpEnableTimer = _jumpEnableTimerThreshold;
 
-                // Stick is only applied when player is on ground.
-                _physics.Stick = _stickGround;
+                    // Stick is only applied when player is on ground.
+                    _physics.Stick = _stickGround;
+                }
+                else
+                    // When not on ground, set to default stick.
+                    _physics.Stick = _stickDefault;
             }
-            else
-                // When not on ground, set to default stick.
-                _physics.Stick = _stickDefault;
+
+            // There's a special case if other is a bouncer.
+            {
+                Bouncer bouncer = other.GameObject as Bouncer;
+                if (bouncer != null)
+                {
+                    float dot = Vector2.Dot(_physics.CollisionNormal, bouncer.Direction);
+                    if (dot >= _bouncerThreshold)
+                    {
+                        bouncer.Physics.Bounce = _bouncerBounce;
+                        bouncer.Activate();
+                        _bouncerTimer = _bouncerTimerThreshold;
+                        _bouncerOrientation = bouncer.Direction;
+                    }
+                    else
+                    {
+                        bouncer.Physics.Bounce = 0;
+                    }
+                }
+            }
         }
         private void ChangeAnimation(AnimationFeature animation, bool repeat)
         {
@@ -203,6 +232,12 @@ namespace MonoPlayground
                 // The orientation of the player is always set to the default orientation when in air.
                 else
                     _orientationNormal = _orientationDefault;
+
+                if (_bouncerTimer > 0)
+                {
+                    _bouncerTimer -= timeElapsed;
+                    _physics.Acceleration += _bouncerOrientation * _accelerationMagnitude * _bouncerAccelerationScale;
+                }
 
                 // If jump state is active, the player can press jump to increase the player's
                 // acceleration in the direction of the jump's orientation.

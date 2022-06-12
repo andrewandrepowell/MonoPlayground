@@ -67,6 +67,19 @@ namespace MonoPlayground
                 AddWall(typeof(Wall21), Wall.Width * 1, _roomBounds.Height - Wall.Width * 12);
                 AddWall(typeof(Wall25), Wall.Width * 0, _roomBounds.Height - Wall.Width * 12);                
             }
+            
+            List<Bouncer> bouncers = new List<Bouncer>();
+            {
+                Action<Type, float, float, float, float> AddBouncer = delegate(Type BouncerType, float posx, float posy, float dirx, float diry)
+                {
+                    Bouncer bouncer = (Bouncer)Activator.CreateInstance(BouncerType, contentManager);
+                    bouncer.Physics.Position = new Vector2(x: posx, y: posy);
+                    bouncer.Direction = new Vector2(x: dirx, y: diry);
+                    bouncers.Add(bouncer);
+                };
+
+                AddBouncer(typeof(Bouncer), Wall.Width * 1, Wall.Width * 22, 1, -1);
+            }
 
             _player = new MonoKitty(
                 contentManager: contentManager);
@@ -74,7 +87,7 @@ namespace MonoPlayground
             //    x: Wall.Width * 2,
             //    y: _roomBounds.Height - Wall.Width * 6);
             _player.Physics.Position = new Vector2(
-                x: Wall.Width * 2,
+                x: Wall.Width * 3,
                 y: Wall.Width * 22);
 
             _camera = new CameraFeature(
@@ -91,6 +104,12 @@ namespace MonoPlayground
             {
                 Children.Add(wall);
                 _player.Physics.CollidablePhysics.Add(wall.Physics);
+            }
+
+            foreach (Bouncer bouncer in bouncers)
+            {
+                Children.Add(bouncer);
+                _player.Physics.CollidablePhysics.Add(bouncer.Physics);
             }
 
             Children.Add(_player);
