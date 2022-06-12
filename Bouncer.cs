@@ -12,9 +12,9 @@ namespace MonoPlayground
     internal class Bouncer : GameObject
     {
         private const int _verticesPerMask = 32;
-        private readonly AnimationFeature _animation;
         private Vector2 _direction;
         public PhysicsFeature Physics { get; private set; }
+        public AnimationFeature Animation { get; private set; }
         public Vector2 Direction
         {
             get => _direction;
@@ -37,24 +37,24 @@ namespace MonoPlayground
                     x: (float)pair.x, 
                     y: (float)pair.y)));
 
-            _animation = new AnimationFeature(
+            Animation = new AnimationFeature(
                 gameObject: this,
                 textures: Enumerable
                     .Range(0, 11)
                     .Select( i => contentManager.Load<Texture2D>($"bouncer/bouncer ({i})") )
                     .ToList());
-            _animation.Visible = true;
+            Animation.Visible = true;
 
             Direction = -Vector2.UnitY;
 
             Features.Add(Physics);
-            Features.Add(_animation);
+            Features.Add(Animation);
         }
-        public void Activate()
+        public void RunMedia()
         {
-            _animation.Reset();
-            _animation.Visible = true;
-            _animation.Play = true;
+            Animation.Reset();
+            Animation.Visible = true;
+            Animation.Play = true;
         }
         private void HandleCollision(PhysicsFeature other)
         {
@@ -62,8 +62,8 @@ namespace MonoPlayground
         }
         public override void Update(GameTime gameTime)
         {
-            _animation.Rotation = (float)Math.Atan2(y: _direction.Y, x: _direction.X) + MathHelper.PiOver2;
-            _animation.Position = Physics.Position + Physics.Mask.Bounds.Center.ToVector2();
+            Animation.Rotation = (float)Math.Atan2(y: _direction.Y, x: _direction.X) + MathHelper.PiOver2;
+            Animation.Position = Physics.Position + Physics.Mask.Bounds.Center.ToVector2();
             base.Update(gameTime);
         }
     }

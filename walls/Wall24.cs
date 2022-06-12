@@ -25,11 +25,14 @@ namespace MonoPlayground
             Physics.Vertices.Add(new Vector2(x: 187, y: 121));
             Physics.Vertices.Add(new Vector2(x: 209, y: 125));
             Physics.Vertices.Add(new Vector2(x: 229, y: 127));
-            Physics.Vertices.Add(new Vector2(x: 255, y: 128));
+            Physics.Vertices.Add(new Vector2(x: 248, y: 128));
+            Physics.Vertices.Add(new Vector2(x: 252, y: 129));
+            Physics.Vertices.Add(new Vector2(x: 254, y: 131));
+            Physics.Vertices.Add(new Vector2(x: 255, y: 135));
             Physics.Vertices.Add(new Vector2(x: 255, y: 154));
             Physics.Vertices.Add(new Vector2(x: 255, y: 180));
             Physics.Vertices.Add(new Vector2(x: 255, y: 206));
-            Physics.Vertices.Add(new Vector2(x: 255, y: 255));            
+            Physics.Vertices.Add(new Vector2(x: 255, y: 255));
         }
     }
 }

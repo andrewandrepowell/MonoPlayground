@@ -23,7 +23,7 @@ namespace MonoPlayground
         private const float _slideGroundThreshold = 0.25f;
         private const float _runAccelerationScale = 2.5f;
         private const float _accelerationMagnitude = 1000f;
-        private const float _bouncerThreshold = .25f;
+        private const float _bouncerThreshold = .70f;
         private const float _bouncerTimerThreshold = .60f;
         private const float _bouncerBounce = 100f;
         private const float _bouncerAccelerationScale = 8f;
@@ -132,7 +132,7 @@ namespace MonoPlayground
         public PhysicsFeature Physics { get => _physics; }
         private void HandleCollision(PhysicsFeature other)
         {
-            // Detect if collision with ground. Ground is any object below the player.
+            // Detect if collision with ground. Ground is any object below the player's orientation.
             {
                 float dot = Vector2.Dot(_orientationNormal, _physics.CollisionNormal);
                 if (dot > _orientationGroundThreshold)
@@ -159,16 +159,22 @@ namespace MonoPlayground
                 Bouncer bouncer = other.GameObject as Bouncer;
                 if (bouncer != null)
                 {
+                    // Check and see if player is on top of bouncer.
                     float dot = Vector2.Dot(_physics.CollisionNormal, bouncer.Direction);
                     if (dot >= _bouncerThreshold)
                     {
+                        // Add bounce to bouncer and run its media.
                         bouncer.Physics.Bounce = _bouncerBounce;
-                        bouncer.Activate();
+                        bouncer.RunMedia();
+
+                        // Bouncing from a bouncing also applies
+                        // acceleration to the player in the direction of the bouncer.
                         _bouncerTimer = _bouncerTimerThreshold;
                         _bouncerOrientation = bouncer.Direction;
                     }
                     else
                     {
+                        // If the player isn't on top of the bouncer, disable any bounce.
                         bouncer.Physics.Bounce = 0;
                     }
                 }
@@ -211,7 +217,7 @@ namespace MonoPlayground
                 {
                     _jumpEnableTimer -= timeElapsed;
 
-                    // If up is pressed, immediately go into air and jump states.
+                    // If up is pressed, immediately go into jump state.
                     // The current orientation of the player is stored as the jump
                     // orientation.
                     if (keyboardState.IsKeyDown(Keys.Up))
@@ -233,6 +239,7 @@ namespace MonoPlayground
                 else
                     _orientationNormal = _orientationDefault;
 
+                // If the bouncer state is active, apply acceleration in the direction of the bouncer.
                 if (_bouncerTimer > 0)
                 {
                     _bouncerTimer -= timeElapsed;
