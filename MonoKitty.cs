@@ -13,7 +13,7 @@ namespace MonoPlayground
 {
     internal class MonoKitty : GameObject
     {
-        private const float _stickGround = 120f;
+        private const float _stickGround = 120;
         private const float _stickDefault = 0;
         private const float _orientationGroundThreshold = 0.25f;
         private const float _jumpTimerThreshold = .25f;
@@ -147,12 +147,8 @@ namespace MonoPlayground
                     _orientationNormal = _physics.CollisionNormal;
                     _jumpEnableTimer = _jumpEnableTimerThreshold;
 
-                    // Stick is only applied when player is on ground.
-                    _physics.Stick = _stickGround;
+                    
                 }
-                else
-                    // When not on ground, set to default stick.
-                    _physics.Stick = _stickDefault;
             }
 
             // There's a special case if other is a bouncer.
@@ -218,9 +214,14 @@ namespace MonoPlayground
                 {
                     _jumpEnableTimer -= timeElapsed;
 
+                    // Stick is only applied when player is on ground.
+                    _physics.Stick = _stickGround;
+
                     // If up is pressed, immediately go into jump state.
                     // The current orientation of the player is stored as the jump
                     // orientation.
+                    // The player's stick is also reset back to default to ensure
+                    // the player isn't stuck to the ground when they try to jump.
                     if (keyboardState.IsKeyDown(Keys.Up))
                     {
                         if (!_jumpPressed)
@@ -229,16 +230,22 @@ namespace MonoPlayground
                             _jumpEnableTimer = 0;
                             _jumpTimer = _jumpTimerThreshold;
                             _jumpOrientation = _orientationNormal;
+                            _physics.Stick = _stickDefault;
                         }
                     }
                     else
                         _jumpPressed = false;
                 }
                 // If there's no time on the jump enable timer, the player is 
-                // in the air state.
-                // The orientation of the player is always set to the default orientation when in air.
+                // in the air state.              
                 else
+                {
+                    // The orientation of the player is always set to the default orientation when in air.
                     _orientationNormal = _orientationDefault;
+
+                    // When not on ground, set to default stick.
+                    _physics.Stick = _stickDefault;
+                }
 
                 // If the bouncer state is active, apply acceleration in the direction of the bouncer.
                 if (_bouncerTimer > 0)
@@ -318,7 +325,7 @@ namespace MonoPlayground
                 _animationCurrent.Position = _physics.Position + _physics.Mask.Bounds.Center.ToVector2();
             }
 #if DEBUG
-            Console.WriteLine($"Kitty Position X: {_physics.Position.X / Wall.Width}, Y: {30 - _physics.Position.Y / Wall.Width}");
+           //  Console.WriteLine($"Kitty Position X: {_physics.Position.X / Wall.Width}, Y: {30 - _physics.Position.Y / Wall.Width}");
 #endif
             // Run the other updates.
             base.Update(gameTime);

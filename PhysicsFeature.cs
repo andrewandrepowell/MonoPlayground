@@ -18,7 +18,7 @@ namespace MonoPlayground
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _acceleration;
-        private Vector2 _stickTotal;
+        private Vector2 _stickApplied;
         private float _maxSpeed;
         private float _friction;
         private float _stick;
@@ -37,7 +37,7 @@ namespace MonoPlayground
             _position = Vector2.Zero;
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
-            _stickTotal = Vector2.Zero;
+            _stickApplied = Vector2.Zero;
             _friction = 0f;
             _maxSpeed = 0f;
             _stick = 0f;
@@ -65,9 +65,11 @@ namespace MonoPlayground
                 float _speed = GameMath.Min(_velocity.Length(), _maxSpeed);
                 _velocity = Vector2.Normalize(_velocity) * _speed;
             }
-            _position += (_velocity - _stickTotal) * timeElapsed; // Apply velocity to position.
 
-            _stickTotal = Vector2.Zero;
+            // Apply velocity and stick to position.
+            _position += (_velocity - _stickApplied) * timeElapsed; 
+
+            _stickApplied = Vector2.Zero;
             _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
@@ -414,8 +416,9 @@ namespace MonoPlayground
                     float totalFriction = _friction + other.Friction;
                     float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    _stickTotal += (Math.Abs(orthogScalar) > _stickThreshold ? (_stick + other.Stick) : 0) * _collisionNormal;
-
+                    if (Math.Abs(orthogScalar) > _stickThreshold)
+                        _stickApplied = (_stick + other.Stick) * _collisionNormal;
+                    
                     _velocity =  
                         - totalBounce * normalScalar * _collisionNormal // bounce component
                         + Math.Sign(orthogScalar) * GameMath.Max(Math.Abs(orthogScalar) - totalFriction * timeElapsed, 0) * collisionOrthog; // orthog component

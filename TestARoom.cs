@@ -117,6 +117,15 @@ namespace MonoPlayground
                 AddWall(typeof(Wall11), Wall.Width * 17, _roomBounds.Height - Wall.Width * 27);
                 for (int i = 22; i < 24; i++)
                     AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 28);
+                AddWall(typeof(Wall10), Wall.Width * 24, _roomBounds.Height - Wall.Width * 28);
+                for (int i = 15; i < 28; i++)
+                    AddWall(typeof(Wall15), Wall.Width * 24, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall14), Wall.Width * 24, _roomBounds.Height - Wall.Width * 14);
+                AddWall(typeof(Wall13), Wall.Width * 25, _roomBounds.Height - Wall.Width * 14);
+                for (int i = 25; i < 30; i++)
+                    AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 14);
+                AddWall(typeof(Wall18), Wall.Width * 31, _roomBounds.Height - Wall.Width * 28);
+                AddWall(typeof(Wall16), Wall.Width * 30, _roomBounds.Height - Wall.Width * 28);
             }
             
             List<Bouncer> bouncers = new List<Bouncer>();
@@ -135,7 +144,11 @@ namespace MonoPlayground
                 AddBouncer(typeof(Bouncer), Wall.Width * 19, _roomBounds.Height - Wall.Width * 21, -1f, -.2f);
                 AddBouncer(typeof(Bouncer), Wall.Width * 9, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
                 AddBouncer(typeof(Bouncer), Wall.Width * 14, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
-
+                AddBouncer(typeof(Bouncer), Wall.Width * 25, _roomBounds.Height - Wall.Width * 15, 0f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 26, _roomBounds.Height - Wall.Width * 19, 0f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 25, _roomBounds.Height - Wall.Width * 22, 0f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 27, _roomBounds.Height - Wall.Width * 26, -.75f, -1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 23, _roomBounds.Height - Wall.Width * 30, 1f, -0.1f);
             }
 
             _player = new MonoKitty(
@@ -189,9 +202,7 @@ namespace MonoPlayground
                 if (mouseState.LeftButton == ButtonState.Pressed && mouseDirection.LengthSquared() > 800)
                 {
                         mouseDirection.Normalize();
-                        Console.WriteLine($"Mouse Direction: {mouseDirection}");
                         _player.ExternalAcceleration = mouseDirection * 1000f * 10f;
-
                 }
                 else
                 {
