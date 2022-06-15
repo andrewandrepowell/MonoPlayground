@@ -122,10 +122,25 @@ namespace MonoPlayground
                     AddWall(typeof(Wall15), Wall.Width * 24, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall14), Wall.Width * 24, _roomBounds.Height - Wall.Width * 14);
                 AddWall(typeof(Wall13), Wall.Width * 25, _roomBounds.Height - Wall.Width * 14);
-                for (int i = 25; i < 30; i++)
+                for (int i = 25; i < 36; i++)
                     AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 14);
+                AddWall(typeof(Wall32), Wall.Width * 36, _roomBounds.Height - Wall.Width * 14);
+                for (int i = 15; i < 25; i++)
+                    AddWall(typeof(Wall28), Wall.Width * 36, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall18), Wall.Width * 31, _roomBounds.Height - Wall.Width * 28);
                 AddWall(typeof(Wall16), Wall.Width * 30, _roomBounds.Height - Wall.Width * 28);
+
+                AddWall(typeof(Wall12), Wall.Width * 36, _roomBounds.Height - Wall.Width * 25);
+                AddWall(typeof(Wall10), Wall.Width * 37, _roomBounds.Height - Wall.Width * 25);
+                for (int i = 14; i < 25; i++)
+                    AddWall(typeof(Wall15), Wall.Width * 37, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall11), Wall.Width * 37, _roomBounds.Height - Wall.Width * 13);
+
+                for (int i = 4; i < _roomBounds.Height; i++)
+                    AddWall(typeof(Wall5), Wall.Width * 39, _roomBounds.Height - Wall.Width * i);
+                AddWall(typeof(Wall9), Wall.Width * 38, _roomBounds.Height - Wall.Width * 3);
+                for (int i = 30; i < 38; i++)
+                    AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 2);
             }
             
             List<Bouncer> bouncers = new List<Bouncer>();
@@ -149,19 +164,20 @@ namespace MonoPlayground
                 AddBouncer(typeof(Bouncer), Wall.Width * 25, _roomBounds.Height - Wall.Width * 22, 0f, -1f);
                 AddBouncer(typeof(Bouncer), Wall.Width * 27, _roomBounds.Height - Wall.Width * 26, -.75f, -1f);
                 AddBouncer(typeof(Bouncer), Wall.Width * 23, _roomBounds.Height - Wall.Width * 30, 1f, -0.1f);
+                AddBouncer(typeof(Bouncer), Wall.Width * 36, _roomBounds.Height - Wall.Width * 26, -.5f, -1f);
             }
 
             _player = new MonoKitty(
                 contentManager: contentManager);
-            //_player.Physics.Position = new Vector2(
-            //    x: Wall.Width * 2,
-            //    y: _roomBounds.Height - Wall.Width * 6);
+            _player.Physics.Position = new Vector2(
+                x: Wall.Width * 2,
+                y: _roomBounds.Height - Wall.Width * 6);
             //_player.Physics.Position = new Vector2(
             //    x: Wall.Width * 3,
             //    y: Wall.Width * 22);
-            _player.Physics.Position = new Vector2(
-                x: Wall.Width * 6,
-                y: Wall.Width * 12);
+            //_player.Physics.Position = new Vector2(
+            //    x: Wall.Width * 6,
+            //    y: Wall.Width * 12);
 
             _camera = new CameraFeature(
                 gameObject: this, 
