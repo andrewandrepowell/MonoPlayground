@@ -163,6 +163,12 @@
 /processorParam:TextureFormat=Color
 /build:bouncer0Mask.png
 
+#begin bounceSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:bounceSound.mp3
+
 #begin cat/Dead (1).png
 /importer:TextureImporter
 /processor:TextureProcessor

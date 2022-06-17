@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoPlayground
 {
@@ -15,6 +16,7 @@ namespace MonoPlayground
         private Vector2 _direction;
         public PhysicsFeature Physics { get; private set; }
         public AnimationFeature Animation { get; private set; }
+        public SoundEffectInstance SoundEffect { get; private set; }
         public Vector2 Direction
         {
             get => _direction;
@@ -45,6 +47,9 @@ namespace MonoPlayground
                     .ToList());
             Animation.Visible = true;
 
+            SoundEffect = contentManager.Load<SoundEffect>("bounceSound").CreateInstance();
+            SoundEffect.Volume = 0.01f;
+
             Direction = -Vector2.UnitY;
 
             Features.Add(Physics);
@@ -55,6 +60,7 @@ namespace MonoPlayground
             Animation.Reset();
             Animation.Visible = true;
             Animation.Play = true;
+            SoundEffect.Play();
         }
         private void HandleCollision(PhysicsFeature other)
         {
