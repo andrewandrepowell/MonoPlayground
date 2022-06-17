@@ -93,7 +93,7 @@ namespace MonoPlayground
                 for (int i = 4; i < 7; i++)
                     AddWall(typeof(Wall34), Wall.Width * i, _roomBounds.Height - Wall.Width * 28);
                 AddWall(typeof(Wall35), Wall.Width * 7, _roomBounds.Height - Wall.Width * 28);
-                for (int i = 29; i < _roomBounds.Height; i++)
+                for (int i = 29; i * Wall.Width <= _roomBounds.Height; i++)
                     AddWall(typeof(Wall15), Wall.Width * 7, _roomBounds.Height - Wall.Width * i);
                 for (int i = 5; i < 8; i++)
                     AddWall(typeof(Wall1), Wall.Width * i, _roomBounds.Height - Wall.Width * 17);
@@ -136,7 +136,7 @@ namespace MonoPlayground
                 for (int i = 14; i < 25; i++)
                     AddWall(typeof(Wall15), Wall.Width * 37, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall11), Wall.Width * 37, _roomBounds.Height - Wall.Width * 13);
-                for (int i = 4; i < _roomBounds.Height; i++)
+                for (int i = 4; Wall.Width * i < _roomBounds.Height; i++)
                     AddWall(typeof(Wall5), Wall.Width * 39, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall9), Wall.Width * 38, _roomBounds.Height - Wall.Width * 3);
                 for (int i = 18; i < 38; i++)
@@ -175,7 +175,32 @@ namespace MonoPlayground
                 AddWall(typeof(Wall11), Wall.Width * 35, _roomBounds.Height - Wall.Width * 9);
                 AddWall(typeof(Wall4), Wall.Width * 34, _roomBounds.Height - Wall.Width * 11);
             }
-            
+
+            List<DisplayFeature> textures = new List<DisplayFeature>();
+            {
+                Action<string, float, float> AddTexture = delegate (string texture, float x, float y)
+                {
+                    DisplayFeature display = new DisplayFeature(
+                        gameObject: this, 
+                        texture: _contentManager.Load<Texture2D>(texture));
+                    display.Position = new Vector2(x, y);
+                    textures.Add(display);
+                };
+                for (int i = 0; Wall.Width * i < _roomBounds.Width; i++)
+                    AddTexture("object3Texture", Wall.Width * i, _roomBounds.Height - Wall.Width * 1);
+                for (int x = 0; x < 5; x++)
+                    for (int y = 0; y < 4; y++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+                for (int x = 0; x < 2; x++)
+                    for (int y = 12; Wall.Width * y <= _roomBounds.Height; y++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+                for (int i = 2; i < 6; i++)
+                    AddTexture("object3Texture", Wall.Width * i, _roomBounds.Height - Wall.Width * 20);
+                for (int x = 2; x < 7; x++)
+                    for (int y = 28; Wall.Width * y <= _roomBounds.Height; y++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+            }
+
             List<Bouncer> bouncers = new List<Bouncer>();
             {
                 Action<Type, float, float, float, float> AddBouncer = delegate(Type BouncerType, float posx, float posy, float dirx, float diry)
@@ -233,6 +258,11 @@ namespace MonoPlayground
             {
                 Children.Add(wall);
                 _player.Physics.CollidablePhysics.Add(wall.Physics);
+            }
+
+            foreach (DisplayFeature texture in textures)
+            {
+                Features.Add(texture);
             }
 
             foreach (Bouncer bouncer in bouncers)
