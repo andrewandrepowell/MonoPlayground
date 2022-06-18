@@ -15,8 +15,6 @@ namespace MonoPlayground
             width: Wall.Width * 40, 
             height: Wall.Width * 30);
         private readonly ContentManager _contentManager;
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly SpriteBatch _spriteBatch;
         private readonly MonoKitty _player;
         private readonly CameraFeature _camera;
         private readonly Texture2D _background;
@@ -24,8 +22,6 @@ namespace MonoPlayground
         public TestARoom(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             _contentManager = contentManager;
-            _graphicsDevice = graphicsDevice;
-            _spriteBatch = new SpriteBatch(graphicsDevice);
             _disposed = false;
 
             List<Wall> walls = new List<Wall>();
@@ -136,7 +132,7 @@ namespace MonoPlayground
                 for (int i = 14; i < 25; i++)
                     AddWall(typeof(Wall15), Wall.Width * 37, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall11), Wall.Width * 37, _roomBounds.Height - Wall.Width * 13);
-                for (int i = 4; Wall.Width * i < _roomBounds.Height; i++)
+                for (int i = 4; Wall.Width * i <= _roomBounds.Height; i++)
                     AddWall(typeof(Wall5), Wall.Width * 39, _roomBounds.Height - Wall.Width * i);
                 AddWall(typeof(Wall9), Wall.Width * 38, _roomBounds.Height - Wall.Width * 3);
                 for (int i = 18; i < 38; i++)
@@ -199,6 +195,25 @@ namespace MonoPlayground
                 for (int x = 2; x < 7; x++)
                     for (int y = 28; Wall.Width * y <= _roomBounds.Height; y++)
                         AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+                for (int i = 5; i < 8; i++)
+                    AddTexture("object3Texture", Wall.Width * i, _roomBounds.Height - Wall.Width * 16);
+                AddTexture("object3Texture", Wall.Width * 8, _roomBounds.Height - Wall.Width * 15);
+                AddTexture("object3Texture", Wall.Width * 9, _roomBounds.Height - Wall.Width * 15);
+                for (int i = 8; i < 12; i++)
+                    AddTexture("object3Texture", Wall.Width * i, _roomBounds.Height - Wall.Width * 14);
+                for (int y = 10; y < 14; y++)
+                    for (int x = 8; x < 12; x++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+                AddTexture("object3Texture", Wall.Width * 16, _roomBounds.Height - Wall.Width * 9);
+                for (int y = 10; y < 12; y++)
+                    for (int x = 12; x < 17; x++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+                for (int y = 14; y < 28; y++)
+                    for (int x = 22; x < 24; x++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
+                for (int y = 6; y < 9; y++)
+                    for (int x = 21; x < 23; x++)
+                        AddTexture("object3Texture", Wall.Width * x, _roomBounds.Height - Wall.Width * y);
             }
 
             List<Bouncer> bouncers = new List<Bouncer>();
@@ -228,9 +243,9 @@ namespace MonoPlayground
 
             _player = new MonoKitty(
                 contentManager: contentManager);
-            //_player.Physics.Position = new Vector2(
-            //    x: Wall.Width * 2,
-            //    y: _roomBounds.Height - Wall.Width * 6);
+            _player.Physics.Position = new Vector2(
+                x: Wall.Width * 2,
+                y: _roomBounds.Height - Wall.Width * 6);
             //_player.Physics.Position = new Vector2(
             //    x: Wall.Width * 3,
             //    y: Wall.Width * 22);
@@ -240,9 +255,9 @@ namespace MonoPlayground
             //_player.Physics.Position = new Vector2(
             //    x: Wall.Width * 19,
             //    y: _roomBounds.Height - Wall.Width * 3);
-            _player.Physics.Position = new Vector2(
-                x: Wall.Width * 4,
-                y: _roomBounds.Height - Wall.Width * 21);
+            //_player.Physics.Position = new Vector2(
+            //    x: Wall.Width * 4,
+            //    y: _roomBounds.Height - Wall.Width * 21);
 
             _camera = new CameraFeature(
                 gameObject: this, 
@@ -281,10 +296,9 @@ namespace MonoPlayground
 #if DEBUG
             {
                 MouseState mouseState = Mouse.GetState();
-                Vector2 mouseDirection = new Vector2(
-                    x: mouseState.X,
-                    y: mouseState.Y) + _camera.Location.ToVector2() - _player.Physics.Center;
-                
+                Vector2 mousePosition = mouseState.Position.ToVector2() + _camera.Location.ToVector2();
+                Vector2 mouseDirection = mousePosition - _player.Physics.Center;
+                Console.WriteLine($"Mouse Position X: {mousePosition.X / Wall.Width}, Y: {(_roomBounds.Height - mousePosition.Y) / Wall.Width}");
                 if (mouseState.LeftButton == ButtonState.Pressed && mouseDirection.LengthSquared() > 800)
                 {
                         mouseDirection.Normalize();

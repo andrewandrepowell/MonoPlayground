@@ -323,7 +323,7 @@ namespace MonoPlayground
                 _animationCurrent.Position = _physics.Position + _physics.Mask.Bounds.Center.ToVector2();
             }
 #if DEBUG
-             Console.WriteLine($"Kitty Position X: {_physics.Position.X / Wall.Width}, Y: {30 - _physics.Position.Y / Wall.Width}");
+             // Console.WriteLine($"Kitty Position X: {_physics.Position.X / Wall.Width}, Y: {30 - _physics.Position.Y / Wall.Width}");
 #endif
             // Run the other updates.
             base.Update(gameTime);

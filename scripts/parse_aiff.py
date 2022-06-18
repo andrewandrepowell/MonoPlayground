@@ -14,6 +14,8 @@ import pydub
 # https://freesound.org/people/bennychico11/sounds/110930/
 # https://creativecommons.org/licenses/by/4.0/
 # https://freesound.org/people/ProjectsU012/sounds/341025/
+# http://rbwhitaker.wikidot.com/monogame-drawing-text-with-spritefonts
+# https://www.fontspace.com/montserrat-font-f16544
 # Using ffmpeg to convert wav to mp3 
 # ffmpeg -i <track>.wav -acodec mp3 <track>.mp3
 
