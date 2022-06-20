@@ -1,84 +1,69 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 
 namespace MonoPlayground
 {
-    internal class Bouncer : GameObject
+    internal class Cookie : GameObject
     {
-        private static readonly Random _random = new Random();
-        private const int _verticesPerMask = 32;
+        private readonly static Random _random = new Random();
         private const float _floatingTimerThreshold = 0.2f;
         private const float _floatingOffsetThreshold = 3f;
         private const float _floatingOffsetChange = 1f;
-        private Vector2 _direction;
         private float _floatingTimer;
         private float _floatingOffset;
         private float _floatingDirection;
-        public PhysicsFeature Physics { get; private set; }
+        public bool Eaten { get; private set; }
         public AnimationFeature Animation { get; private set; }
-        public SoundEffectInstance SoundEffect { get; private set; }
-        public Vector2 Direction
-        {
-            get => _direction;
-            set => _direction = Vector2.Normalize(value);
-        }
-        public Bouncer(ContentManager contentManager)
+        public PhysicsFeature Physics { get; private set; }
+        public Cookie(ContentManager contentManager)
         {
             Physics = new PhysicsFeature(
                 gameObject: this,
-                mask: contentManager.Load<Texture2D>("bouncer0Mask"),
+                mask: contentManager.Load<Texture2D>("cookie0Mask"),
                 collisionHandle: HandleCollision);
-            Physics.Physics = false;
             Physics.Solid = true;
-            Physics.Bounce = 0;
-            Enumerable.Range(0, _verticesPerMask)
-                .Select((i) => (
-                    x: (Math.Cos(MathHelper.TwoPi * i / _verticesPerMask - MathHelper.Pi) + 1) * Physics.Mask.Width / 2, 
-                    y: (Math.Sin(MathHelper.TwoPi * i / _verticesPerMask - MathHelper.Pi) + 1) * Physics.Mask.Height / 2))
-                .ForEach(pair => Physics.Vertices.Add(new Vector2(
-                    x: (float)pair.x, 
-                    y: (float)pair.y)));
-            Features.Add(Physics);
-
+            Physics.Physics = false;
             Animation = new AnimationFeature(
                 gameObject: this,
                 textures: Enumerable
-                    .Range(0, 11)
-                    .Select( i => contentManager.Load<Texture2D>($"bouncer/bouncer ({i})") )
+                    .Range(1, 11)
+                    .Select(x => contentManager.Load<Texture2D>($"cookie/cookie ({x})"))
                     .ToList());
             Animation.Visible = true;
-            Features.Add(Animation);
-
-            SoundEffect = contentManager.Load<SoundEffect>("bounceSound").CreateInstance();
-            SoundEffect.Volume = 0.01f;
-
-            Direction = -Vector2.UnitY;
+            Animation.InvisibleOnEnd = true;
+            Animation.AnimationTimerThreshold = .20f;
+            Eaten = false;
 
             _floatingTimer = _floatingTimerThreshold;
             _floatingDirection = (float)(2 * _random.Next(0, 2) - 1);
             _floatingOffset = _floatingDirection * (float)_random.NextDouble() * _floatingOffsetThreshold;
+
+            Features.Add(Physics);
+            Features.Add(Animation);
         }
-        public void RunMedia()
+        public void Eat()
         {
-            Animation.Reset();
-            Animation.Visible = true;
+            if (Eaten)
+                return;
+            Physics.Solid = false;
             Animation.Play = true;
-            SoundEffect.Play();
+            Eaten = true;
         }
         private void HandleCollision(PhysicsFeature other)
         {
-            
         }
         public override void Update(GameTime gameTime)
         {
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // If destroyed, don't run any updates.
+            if (Destroyed)
+                return;
 
             // Perform calculations related to the bouncer floating.
             if (_floatingTimer > 0)
@@ -98,13 +83,24 @@ namespace MonoPlayground
                     _floatingDirection = 1f;
                 }
             }
-            
-            // Update the animation rotation and position.
-            Animation.Rotation = (float)Math.Atan2(y: _direction.Y, x: _direction.X) + MathHelper.PiOver2;
+
+            // If the cookie was eaten and the animation is finished, destroy the cookie.
+            if (Eaten && !Animation.Play)
+                Destroy();
+
+            // Set the position of the sprite. 
             Animation.Position = Physics.Position + Physics.Mask.Bounds.Center.ToVector2() + new Vector2(x: 0, y: _floatingOffset);
 
-            // Perform the reset of the updates.
+            // Perform the other updatess.
             base.Update(gameTime);
+        }
+        public override void Destroy()
+        {
+            if (Destroyed)
+                return;
+            Animation.Destroy();
+            Physics.Destroy();
+            base.Destroy();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace MonoPlayground
         private const int _gameHeight = 720; // 720p
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private TestARoom _testARoom;
+        private Room _testARoom;
 
         public Game1()
         {
@@ -41,7 +41,7 @@ namespace MonoPlayground
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            _testARoom = new TestARoom(
+            _testARoom = new Room(
                 contentManager: Content,
                 graphicsDevice: GraphicsDevice);
         }

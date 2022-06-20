@@ -46,7 +46,7 @@ namespace MonoPlayground
         private float _jumpEnableTimer;
         private bool _jumpPressed;
         private float _bouncerTimer;
-        
+        public Scoreboard Scoreboard { get; set; }
         public MonoKitty(ContentManager contentManager)
         {
             // Construct the physics.
@@ -133,7 +133,9 @@ namespace MonoPlayground
         public Vector2 ExternalAcceleration { get; set; }
         private void HandleCollision(PhysicsFeature other)
         {
-            // Detect if collision with ground. Ground is any object below the player's orientation.
+            // Detect if collision with ground.
+            // Ground is any object besides the cookie below the player's orientation.
+            if (!(other.GameObject is Cookie))
             {
                 float dot = Vector2.Dot(_orientationNormal, _physics.CollisionNormal);
                 if (dot > _orientationGroundThreshold)
@@ -150,30 +152,42 @@ namespace MonoPlayground
             }
 
             // There's a special case if other is a bouncer.
+            if (other.GameObject is Bouncer)
             {
                 Bouncer bouncer = other.GameObject as Bouncer;
-                if (bouncer != null)
-                {
-                    // Check and see if player is on top of bouncer.
-                    float dot = Vector2.Dot(_physics.CollisionNormal, bouncer.Direction);
-                    if (dot >= _bouncerThreshold)
-                    {
-                        // Add bounce to bouncer and run its media.
-                        bouncer.Physics.Bounce = _bouncerBounce;
-                        bouncer.RunMedia();
 
-                        // Bouncing from a bouncing also applies
-                        // acceleration to the player in the direction of the bouncer.
-                        _bouncerTimer = _bouncerTimerThreshold;
-                        _bouncerOrientation = bouncer.Direction;
-                    }
-                    else
-                    {
-                        // If the player isn't on top of the bouncer, disable any bounce.
-                        bouncer.Physics.Bounce = 0;
-                    }
+                // Check and see if player is on top of bouncer.
+                float dot = Vector2.Dot(_physics.CollisionNormal, bouncer.Direction);
+                if (dot >= _bouncerThreshold)
+                {
+                    // Add bounce to bouncer and run its media.
+                    bouncer.Physics.Bounce = _bouncerBounce;
+                    bouncer.RunMedia();
+
+                    // Bouncing from a bouncing also applies
+                    // acceleration to the player in the direction of the bouncer.
+                    _bouncerTimer = _bouncerTimerThreshold;
+                    _bouncerOrientation = bouncer.Direction;
+                }
+                else
+                {
+                    // If the player isn't on top of the bouncer, disable any bounce.
+                    bouncer.Physics.Bounce = 0;
                 }
             }
+            
+            
+            if (other.GameObject is Cookie)
+            {
+                Cookie cookie = other.GameObject as Cookie;
+                if (!cookie.Eaten)
+                {
+                    cookie.Eat();
+                    Scoreboard.Score += 10;
+                }
+                
+            }
+            
         }
         private void ChangeAnimation(AnimationFeature animation, bool repeat)
         {

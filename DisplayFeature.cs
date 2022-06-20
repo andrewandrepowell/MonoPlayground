@@ -27,7 +27,7 @@ namespace MonoPlayground
         }
         public override void Update(GameTime gameTime)
         {
-            return;
+            
         }
     }
 }

@@ -6,26 +6,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoPlayground
 {
-    internal abstract class GameObject
+    internal abstract class GameObject 
     {
-        private readonly ICollection<GameObject> _children;
-        private readonly ICollection<GameFeature> _features;
+        public IList<GameObject> Children { get; private set; }
+        public IList<GameFeature> Features { get; private set; }
+        public bool Destroyed { get; private set; }
         public GameObject()
         {
-            _children = new List<GameObject>();
-            _features = new List<GameFeature>();
+            Children = new List<GameObject>();
+            Features = new List<GameFeature>();
+            Destroyed = false;
         }
-        public ICollection<GameObject> Children { get => _children; }
-        public ICollection<GameFeature> Features { get => _features;  }
+
         public virtual void Update(GameTime gameTime)
         {
-            _features.ForEach(x => x.Update(gameTime));
-            _children.ForEach(x => x.Update(gameTime));
+            Features.ForEach(x => x.Update(gameTime));
+            Children.ForEach(x => x.Update(gameTime));
         }
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _features.ForEach(x => x.Draw(gameTime, spriteBatch));
-            _children.ForEach(x => x.Draw(gameTime, spriteBatch));
+            Features.ForEach(x => x.Draw(gameTime, spriteBatch));
+            Children.ForEach(x => x.Draw(gameTime, spriteBatch));
+        }
+        public virtual void Destroy()
+        {
+            if (Destroyed)
+                return;
+            Destroyed = true;
+            Features.ForEach(x => x.Destroy());
+            Children.ForEach(x => x.Destroy());
         }
     }
 }

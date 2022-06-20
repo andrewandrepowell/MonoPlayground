@@ -6,13 +6,16 @@ namespace MonoPlayground
 {
     internal abstract class GameFeature
     {
-        private readonly GameObject _gameObject;
+        public GameObject GameObject { get; private set; }
         public GameFeature(GameObject gameObject)
         {
-            _gameObject = gameObject;
+            GameObject = gameObject;
         }
-        public GameObject GameObject { get => _gameObject; }
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        public virtual void Destroy()
+        {
+
+        }
     }
 }

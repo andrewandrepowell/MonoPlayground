@@ -22,6 +22,7 @@ namespace MonoPlayground
         private bool _play;
         private bool _repeat;
         private bool _visible;
+        private bool _destroyed;
         public AnimationFeature(
             GameObject gameObject,
             IList<Texture2D> textures,
@@ -37,6 +38,7 @@ namespace MonoPlayground
             _scale = scale;
             _origin = _textures[0].Bounds.Center.ToVector2();
             _animationTimerThreshold = animationTimerThreshold;
+            _destroyed = false;
             Reset();
         }
         public Point Size { get => _textures[0].Bounds.Size; }
@@ -48,6 +50,7 @@ namespace MonoPlayground
         public bool Play { get => _play; set => _play = value; }
         public bool Repeat { get => _repeat; set => _repeat = value; }
         public bool Visible { get => _visible; set => _visible = value; }
+        public bool InvisibleOnEnd { get; set; }
         public float Scale { 
             get => _scale; 
             set
@@ -73,9 +76,13 @@ namespace MonoPlayground
             _play = false;
             _repeat = false;
             _visible = false;
+            InvisibleOnEnd = false;
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (_destroyed)
+                return;
+            
             if (_play)
             {
                 float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -95,7 +102,11 @@ namespace MonoPlayground
                     {
                         _currentIndex = 0;
                         if (!_repeat)
+                        {
                             _play = false;
+                            if (InvisibleOnEnd)
+                                _visible = false;
+                        }
                     }
                 }
             }
@@ -115,10 +126,16 @@ namespace MonoPlayground
                     layerDepth: 0f);
             }
         }
-
         public override void Update(GameTime gameTime)
         {
             
+        }
+        public override void Destroy()
+        {
+            if (_destroyed)
+                return;
+            _destroyed = true;
+            _textures.ForEach(x => x.Dispose());
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoPlayground
 {
-    internal class TestARoom : GameObject, IDisposable
+    internal class Room : GameObject
     {
         private static readonly Rectangle _roomBounds = new Rectangle(
             x: 0, y: 0, 
@@ -17,12 +17,11 @@ namespace MonoPlayground
         private readonly ContentManager _contentManager;
         private readonly MonoKitty _player;
         private readonly CameraFeature _camera;
-        private readonly Texture2D _background;
-        private bool _disposed;
-        public TestARoom(ContentManager contentManager, GraphicsDevice graphicsDevice)
+        private readonly DisplayFeature _background;
+        private readonly Scoreboard _scoreboard;
+        public Room(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             _contentManager = contentManager;
-            _disposed = false;
 
             List<Wall> walls = new List<Wall>();
             {
@@ -218,31 +217,46 @@ namespace MonoPlayground
 
             List<Bouncer> bouncers = new List<Bouncer>();
             {
-                Action<Type, float, float, float, float> AddBouncer = delegate(Type BouncerType, float posx, float posy, float dirx, float diry)
+                Action<float, float, float, float> AddBouncer = delegate(float posx, float posy, float dirx, float diry)
                 {
-                    Bouncer bouncer = (Bouncer)Activator.CreateInstance(BouncerType, contentManager);
+                    Bouncer bouncer = new Bouncer(contentManager);
                     bouncer.Physics.Position = new Vector2(x: posx, y: posy);
                     bouncer.Direction = new Vector2(x: dirx, y: diry);
                     bouncers.Add(bouncer);
                 };
 
-                AddBouncer(typeof(Bouncer), Wall.Width * 1, _roomBounds.Height - Wall.Width * 8, .8f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 15, _roomBounds.Height - Wall.Width * 15, .5f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 18, _roomBounds.Height - Wall.Width * 18, -.3f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 19, _roomBounds.Height - Wall.Width * 21, -1f, -.2f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 9, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 14, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 25, _roomBounds.Height - Wall.Width * 15, 0f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 26, _roomBounds.Height - Wall.Width * 19, 0f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 25, _roomBounds.Height - Wall.Width * 22, 0f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 27, _roomBounds.Height - Wall.Width * 26, -.75f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 23, _roomBounds.Height - Wall.Width * 30, 1f, -0.1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 36, _roomBounds.Height - Wall.Width * 26, -.5f, -1f);
-                AddBouncer(typeof(Bouncer), Wall.Width * 29, _roomBounds.Height - Wall.Width * 6, 0f, -1f); 
+                AddBouncer(Wall.Width * 1, _roomBounds.Height - Wall.Width * 8, .8f, -1f);
+                AddBouncer(Wall.Width * 15, _roomBounds.Height - Wall.Width * 15, .5f, -1f);
+                AddBouncer(Wall.Width * 18, _roomBounds.Height - Wall.Width * 18, -.3f, -1f);
+                AddBouncer(Wall.Width * 19, _roomBounds.Height - Wall.Width * 21, -1f, -.2f);
+                AddBouncer(Wall.Width * 9, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
+                AddBouncer(Wall.Width * 14, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
+                AddBouncer(Wall.Width * 25, _roomBounds.Height - Wall.Width * 15, 0f, -1f);
+                AddBouncer(Wall.Width * 26, _roomBounds.Height - Wall.Width * 19, 0f, -1f);
+                AddBouncer(Wall.Width * 25, _roomBounds.Height - Wall.Width * 22, 0f, -1f);
+                AddBouncer(Wall.Width * 27, _roomBounds.Height - Wall.Width * 26, -.75f, -1f);
+                AddBouncer(Wall.Width * 23, _roomBounds.Height - Wall.Width * 30, 1f, -0.1f);
+                AddBouncer(Wall.Width * 36, _roomBounds.Height - Wall.Width * 26, -.5f, -1f);
+                AddBouncer(Wall.Width * 29, _roomBounds.Height - Wall.Width * 6, 0f, -1f); 
             }
+
+            List<Cookie> cookies = new List<Cookie>();
+            {
+                Action<float, float> AddCookie = delegate (float x, float y)
+                {
+                    Cookie cookie = new Cookie(contentManager);
+                    cookie.Physics.Position = new Vector2(x, y);
+                    cookies.Add(cookie);
+                };
+
+                AddCookie(Wall.Width * 3, _roomBounds.Height - Wall.Width * 6);
+            }
+
+            _scoreboard = new Scoreboard(contentManager);
 
             _player = new MonoKitty(
                 contentManager: contentManager);
+            _player.Scoreboard = _scoreboard;
             _player.Physics.Position = new Vector2(
                 x: Wall.Width * 2,
                 y: _roomBounds.Height - Wall.Width * 6);
@@ -267,7 +281,8 @@ namespace MonoPlayground
                 threshold: new Point(x:600, y: 200));
             Features.Add(_camera);
 
-            _background = contentManager.Load<Texture2D>("scene0");
+            _background = new DisplayFeature(gameObject: this, texture: contentManager.Load<Texture2D>("scene0"));
+            Features.Add(_background);
 
             foreach (Wall wall in walls)
             {
@@ -286,7 +301,14 @@ namespace MonoPlayground
                 _player.Physics.CollidablePhysics.Add(bouncer.Physics);
             }
 
+            foreach (Cookie cookie in cookies)
+            {
+                Children.Add(cookie);
+                _player.Physics.CollidablePhysics.Add(cookie.Physics);
+            }
+
             Children.Add(_player);
+            Children.Add(_scoreboard);
         }
         public override void Update(GameTime gameTime)
         {
@@ -310,47 +332,26 @@ namespace MonoPlayground
                 }
             }
 #endif
-            
+
+            // Clean up destroyed game objects.            
+            List<GameObject> destroyed = Children.Where(x => x.Destroyed).ToList();
+            destroyed.ForEach(x => Children.Remove(x));
+            destroyed.ForEach(a => _player.Physics.CollidablePhysics.Remove(_player.Physics.CollidablePhysics.Where(b => b.GameObject == a).First()));
+
+            // Update positions of background and scoreboard based on where the camera is.
+            _background.Position = _camera.Location.ToVector2();
+            _scoreboard.Position = _camera.Location.ToVector2();
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            // Transform matrix from the camera is applied to implement camera movement.
             spriteBatch.Begin(transformMatrix: _camera.Transform);
-            
-            // Draw Background.
-            spriteBatch.Draw(
-                texture: _background, 
-                destinationRectangle: new Rectangle(
-                    location: _camera.Location, 
-                    size: _camera.CameraBounds.Size),
-                color: Color.White);
 
             // Draw the rest of the game objects.
             base.Draw(gameTime, spriteBatch);
             
             
             spriteBatch.End();
-        }
-        public virtual void Dispose(bool disposing)
-        {
-            if (_disposed)
-                return;
-
-            // managed resources.
-            if (disposing)
-            {
-               
-                _contentManager.Unload();
-            }
-
-            // unmanaged resources.
-            {
-
-            }
-            _disposed = true;
-        }
-        public void Dispose()
-        {
-            Dispose(disposing: true);
         }
     }
 }
