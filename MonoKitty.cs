@@ -183,7 +183,7 @@ namespace MonoPlayground
                 if (!cookie.Eaten)
                 {
                     cookie.Eat();
-                    Scoreboard.Score += 10;
+                    Scoreboard.AwardPoints();
                 }
                 
             }

@@ -135,7 +135,6 @@ namespace MonoPlayground
             if (_destroyed)
                 return;
             _destroyed = true;
-            _textures.ForEach(x => x.Dispose());
         }
     }
 }

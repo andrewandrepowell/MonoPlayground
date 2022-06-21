@@ -11,7 +11,7 @@ namespace MonoPlayground
     internal class Cookie : GameObject
     {
         private readonly static Random _random = new Random();
-        private const float _floatingTimerThreshold = 0.2f;
+        private const float _floatingTimerThreshold = 0.1f;
         private const float _floatingOffsetThreshold = 3f;
         private const float _floatingOffsetChange = 1f;
         private float _floatingTimer;
@@ -36,7 +36,7 @@ namespace MonoPlayground
                     .ToList());
             Animation.Visible = true;
             Animation.InvisibleOnEnd = true;
-            Animation.AnimationTimerThreshold = .20f;
+            Animation.AnimationTimerThreshold = .10f;
             Eaten = false;
 
             _floatingTimer = _floatingTimerThreshold;

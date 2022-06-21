@@ -26,7 +26,6 @@ namespace MonoPlayground
         private float _bounce;
         private bool _solid;
         private bool _physics;
-        private bool _destroyed;
         public PhysicsFeature(GameObject gameObject, Texture2D mask, Action<PhysicsFeature> collisionHandle) : base(gameObject: gameObject)
         {
             _mask = mask;
@@ -46,15 +45,10 @@ namespace MonoPlayground
             _bounce = 0f;
             _solid = false;
             _physics = false;
-            _destroyed = false;
             // https://codepen.io/OliverBalfour/post/implementing-velocity-acceleration-and-friction-on-a-canvas
         }
         public override void Update(GameTime gameTime)
-        {
-            // Don't apply any physics if destroyed.
-            if (_destroyed)
-                return;
-            
+        {            
             // Only apply the physic operations if physics is enabled in the first place.
             if (!_physics)
                 return;
@@ -73,8 +67,12 @@ namespace MonoPlayground
             }
 
             // Apply velocity and stick to position.
-            _position += (_velocity - _stickApplied) * timeElapsed; 
+            _position += (_velocity - _stickApplied) * timeElapsed;
 
+            // Remove any physics whose game objects are destroyed.
+            _collidablePhysics.Where(x => x.GameObject.Destroyed).ToList().ForEach(x => _collidablePhysics.Remove(x));
+
+            // Check for any collisions and apply physic operations.
             _stickApplied = Vector2.Zero;
             _collidablePhysics.ForEach(x => Collide(gameTime, x)); // Apply collision to position and velocity.
         }
@@ -431,13 +429,6 @@ namespace MonoPlayground
                     Debug.Assert(!Double.IsNaN(_velocity.X) && !Double.IsNaN(_velocity.Y));
                 }
             }
-        }
-        public override void Destroy()
-        {
-            if (_destroyed)
-                return;
-            _destroyed = true;
-            _mask.Dispose();
         }
     }
 }

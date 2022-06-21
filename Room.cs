@@ -249,7 +249,9 @@ namespace MonoPlayground
                     cookies.Add(cookie);
                 };
 
-                AddCookie(Wall.Width * 3, _roomBounds.Height - Wall.Width * 6);
+                AddCookie(Wall.Width * 3, _roomBounds.Height - Wall.Width * 5);
+                AddCookie(Wall.Width * 10, _roomBounds.Height - Wall.Width * 3);
+                AddCookie(Wall.Width * 14, _roomBounds.Height - Wall.Width * 8);
             }
 
             _scoreboard = new Scoreboard(contentManager);
@@ -334,9 +336,7 @@ namespace MonoPlayground
 #endif
 
             // Clean up destroyed game objects.            
-            List<GameObject> destroyed = Children.Where(x => x.Destroyed).ToList();
-            destroyed.ForEach(x => Children.Remove(x));
-            destroyed.ForEach(a => _player.Physics.CollidablePhysics.Remove(_player.Physics.CollidablePhysics.Where(b => b.GameObject == a).First()));
+            Children.Where(x => x.Destroyed).ToList().ForEach(x => Children.Remove(x));
 
             // Update positions of background and scoreboard based on where the camera is.
             _background.Position = _camera.Location.ToVector2();
