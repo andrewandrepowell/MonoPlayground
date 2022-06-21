@@ -271,6 +271,21 @@ namespace MonoPlayground
                 AddCookie(Wall.Width * 5f, _roomBounds.Height - Wall.Width * 27);
                 AddCookie(Wall.Width * 6f, _roomBounds.Height - Wall.Width * 27);
                 AddCookie(Wall.Width * 7f, _roomBounds.Height - Wall.Width * 27);
+                AddCookie(Wall.Width * 11f, _roomBounds.Height - Wall.Width * 27);
+                AddCookie(Wall.Width * 15, _roomBounds.Height - Wall.Width * 28);
+                AddCookie(Wall.Width * 15.3f, _roomBounds.Height - Wall.Width * 29.5f);
+                AddCookie(Wall.Width * 16.5f, _roomBounds.Height - Wall.Width * 30f);
+                AddCookie(Wall.Width * 27.5f, _roomBounds.Height - Wall.Width * 30f);
+                AddCookie(Wall.Width * 31.5f, _roomBounds.Height - Wall.Width * 29f);
+                AddCookie(Wall.Width * 35f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 34.5f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 34f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 33.5f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 33f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 32.5f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 32f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 31.5f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 31f, _roomBounds.Height - Wall.Width * 15f);
             }
 
             _scoreboard = new Scoreboard(contentManager);

@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoPlayground
 {
@@ -17,6 +18,7 @@ namespace MonoPlayground
         private float _floatingTimer;
         private float _floatingOffset;
         private float _floatingDirection;
+        private readonly SoundEffectInstance _soundCrunch;
         public bool Eaten { get; private set; }
         public AnimationFeature Animation { get; private set; }
         public PhysicsFeature Physics { get; private set; }
@@ -26,8 +28,9 @@ namespace MonoPlayground
                 gameObject: this,
                 mask: contentManager.Load<Texture2D>("cookie0Mask"),
                 collisionHandle: HandleCollision);
-            Physics.Solid = true;
+            Physics.Solid = false;
             Physics.Physics = false;
+
             Animation = new AnimationFeature(
                 gameObject: this,
                 textures: Enumerable
@@ -43,6 +46,10 @@ namespace MonoPlayground
             _floatingDirection = (float)(2 * _random.Next(0, 2) - 1);
             _floatingOffset = _floatingDirection * (float)_random.NextDouble() * _floatingOffsetThreshold;
 
+            _soundCrunch = contentManager.Load<SoundEffect>("crunchSound").CreateInstance();
+            _soundCrunch.Volume = 0.005f;
+            _soundCrunch.Pitch = -1.0f;
+
             Features.Add(Physics);
             Features.Add(Animation);
         }
@@ -50,9 +57,9 @@ namespace MonoPlayground
         {
             if (Eaten)
                 return;
-            Physics.Solid = false;
             Animation.Play = true;
             Eaten = true;
+            _soundCrunch.Play();
         }
         private void HandleCollision(PhysicsFeature other)
         {

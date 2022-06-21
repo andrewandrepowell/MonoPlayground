@@ -1201,6 +1201,12 @@
 /processorParam:TextureFormat=Color
 /build:cookie0Mask.png
 
+#begin crunchSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:crunchSound.mp3
+
 #begin font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
