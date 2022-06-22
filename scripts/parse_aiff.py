@@ -72,10 +72,39 @@ if __name__ == "__main__":
         # write(file='run.mp3', data=run_data, frame_rate=frame_rate)
         # pyplot.plot(run_data)
         
-        white_noise = numpy.random.normal(loc=0, scale=17500000, size=(60000, channels_per_sound)).astype(numpy.int32)
-        sounddevice.play(white_noise, frame_rate)
-        pyplot.plot(white_noise)
-        write(file='noiseSound.mp3', data=white_noise, frame_rate=frame_rate)
-        
+        # white_noise = numpy.random.normal(loc=0, scale=17500000, size=(60000, channels_per_sound)).astype(numpy.int32)
+        # sounddevice.play(white_noise, frame_rate)
+        # pyplot.plot(white_noise)
+        # write(file='noiseSound.mp3', data=white_noise, frame_rate=frame_rate)
+
+        sample_rate, data = wavfile.read("404781__owlstorm__retro-video-game-sfx-slap.wav")
+        data0 = data[370:6162]
+        data1: numpy.ndarray = numpy.concatenate((data0, data0, data0, data0))
+        wavfile.write('crunchSound.wav', sample_rate, data1)
+        data2 = numpy.fft.fft(data1.astype(numpy.float64))
+        print("read wav")
+        print(f"{type(data1)}")
+        print(f"data1 type={data1.dtype}")
+        print(f"data2 type={data2.dtype}")
+        fil = numpy.ones(data1.shape)
+        amount_to_change = int(data2.shape[0] * 0.25)
+        value_to_change = 1
+        fil[:amount_to_change] *= value_to_change
+        fil[-amount_to_change:] *= value_to_change
+        data3 = numpy.multiply(data2, fil)
+        data4 = numpy.real(numpy.fft.ifft(data3)).astype(numpy.int16)
+        print(f"data3 type={data3.dtype}")
+        print(f"data4 type={data4.dtype}")
+        print(f"Dimension: {data1.shape}")
+        sounddevice.play(data1, sample_rate)
+        # sounddevice.play(data4, sample_rate)
+        pyplot.figure()
+        pyplot.plot(data1)
+        pyplot.figure()
+        pyplot.plot(numpy.abs(data2))
+        pyplot.figure()
+        pyplot.plot(numpy.abs(data3))
+        pyplot.figure()
+        pyplot.plot(numpy.abs(data4))
         pyplot.show()
         pass

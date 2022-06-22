@@ -12,13 +12,14 @@ namespace MonoPlayground
     internal class Cookie : GameObject
     {
         private readonly static Random _random = new Random();
+        private static SoundEffectInstance _soundCrunch;
         private const float _floatingTimerThreshold = 0.1f;
         private const float _floatingOffsetThreshold = 3f;
         private const float _floatingOffsetChange = 1f;
         private float _floatingTimer;
         private float _floatingOffset;
         private float _floatingDirection;
-        private readonly SoundEffectInstance _soundCrunch;
+        
         public bool Eaten { get; private set; }
         public AnimationFeature Animation { get; private set; }
         public PhysicsFeature Physics { get; private set; }
@@ -39,7 +40,7 @@ namespace MonoPlayground
                     .ToList());
             Animation.Visible = true;
             Animation.InvisibleOnEnd = true;
-            Animation.AnimationTimerThreshold = .10f;
+            Animation.AnimationTimerThreshold = .05f;
             Eaten = false;
 
             _floatingTimer = _floatingTimerThreshold;
