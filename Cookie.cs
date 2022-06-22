@@ -12,7 +12,7 @@ namespace MonoPlayground
     internal class Cookie : GameObject
     {
         private readonly static Random _random = new Random();
-        private static SoundEffectInstance _soundCrunch;
+        private static SoundEffectInstance _soundCrunch; // Intentionally static so that every cookie shares the same crunch sound instance.
         private const float _floatingTimerThreshold = 0.1f;
         private const float _floatingOffsetThreshold = 3f;
         private const float _floatingOffsetChange = 1f;
