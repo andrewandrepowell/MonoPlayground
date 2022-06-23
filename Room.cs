@@ -294,6 +294,13 @@ namespace MonoPlayground
                 AddCookie(Wall.Width * 38f, _roomBounds.Height - Wall.Width * 17f);
                 AddCookie(Wall.Width * 38f, _roomBounds.Height - Wall.Width * 16f);
                 AddCookie(Wall.Width * 38f, _roomBounds.Height - Wall.Width * 15f);
+                AddCookie(Wall.Width * 30f, _roomBounds.Height - Wall.Width * 3f);
+                AddCookie(Wall.Width * 29f, _roomBounds.Height - Wall.Width * 3f);
+                AddCookie(Wall.Width * 28f, _roomBounds.Height - Wall.Width * 3f);
+                AddCookie(Wall.Width * 17f, _roomBounds.Height - Wall.Width * 7f);
+                AddCookie(Wall.Width * 23f, _roomBounds.Height - Wall.Width * 10f);
+                AddCookie(Wall.Width * 29f, _roomBounds.Height - Wall.Width * 7f);
+                AddCookie(Wall.Width * 33f, _roomBounds.Height - Wall.Width * 10f);
             }
 
             _scoreboard = new Scoreboard(contentManager);

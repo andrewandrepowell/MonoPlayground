@@ -48,7 +48,7 @@ namespace MonoPlayground
             _floatingOffset = _floatingDirection * (float)_random.NextDouble() * _floatingOffsetThreshold;
 
             _soundCrunch = contentManager.Load<SoundEffect>("crunchSound").CreateInstance();
-            _soundCrunch.Volume = 0.005f;
+            _soundCrunch.Volume = 0.01f;
             _soundCrunch.Pitch = -1.0f;
 
             Features.Add(Physics);
@@ -60,6 +60,7 @@ namespace MonoPlayground
                 return;
             Animation.Play = true;
             Eaten = true;
+            _soundCrunch.Stop();
             _soundCrunch.Play();
         }
         private void HandleCollision(PhysicsFeature other)
