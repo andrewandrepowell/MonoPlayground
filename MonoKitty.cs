@@ -184,6 +184,8 @@ namespace MonoPlayground
                 {
                     cookie.Eat();
                     Scoreboard.AwardPoints();
+                    if (Cookie.AllCookiesEaten())
+                        Scoreboard.AwardSuperPoints();
                 }
                 
             }

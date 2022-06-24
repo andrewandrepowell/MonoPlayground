@@ -10,7 +10,8 @@ namespace MonoPlayground
     internal class Scoreboard : GameObject
     {
         private const int _award = 10;
-        private const int _scoreInitial = 100;
+        private const int _awardSuper = 100;
+        private const int _scoreInitial = 360;
         private const float _scoreDecreaseTimerThreshold = 1.0f;
         private const int _scoreDecreaseRate = 1;
         private static readonly Vector2 _textOffset = new Vector2(x: 35, y: 20); 
@@ -30,6 +31,10 @@ namespace MonoPlayground
         public void AwardPoints()
         {
             Score += _award;
+        }
+        public void AwardSuperPoints()
+        {
+            Score += _awardSuper;
         }
         public override void Update(GameTime gameTime)
         {

@@ -11,6 +11,8 @@ namespace MonoPlayground
 {
     internal class Cookie : GameObject
     {
+        private static int _totalCookies = 0;
+        private static int _totalEaten = 0;
         private readonly static Random _random = new Random();
         private static SoundEffectInstance _soundCrunch; // Intentionally static so that every cookie shares the same crunch sound instance.
         private const float _floatingTimerThreshold = 0.1f;
@@ -50,6 +52,7 @@ namespace MonoPlayground
             _soundCrunch = contentManager.Load<SoundEffect>("crunchSound").CreateInstance();
             _soundCrunch.Volume = 0.01f;
             _soundCrunch.Pitch = -1.0f;
+            _totalCookies += 1;
 
             Features.Add(Physics);
             Features.Add(Animation);
@@ -62,7 +65,9 @@ namespace MonoPlayground
             Eaten = true;
             _soundCrunch.Stop();
             _soundCrunch.Play();
+            _totalEaten += 1;
         }
+        public static bool AllCookiesEaten() => _totalCookies == _totalEaten;
         private void HandleCollision(PhysicsFeature other)
         {
         }
@@ -74,7 +79,7 @@ namespace MonoPlayground
             if (Destroyed)
                 return;
 
-            // Perform calculations related to the bouncer floating.
+            // Perform calculations related to the cookie floating.
             if (_floatingTimer > 0)
             {
                 _floatingTimer -= timeElapsed;
