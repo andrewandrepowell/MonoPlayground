@@ -16,6 +16,7 @@ namespace MonoPlayground
             height: Wall.Width * 30);
         private readonly ContentManager _contentManager;
         private readonly MonoKitty _player;
+        private readonly Flag _flag;
         private readonly CameraFeature _camera;
         private readonly DisplayFeature _background;
         private readonly Scoreboard _scoreboard;
@@ -303,6 +304,9 @@ namespace MonoPlayground
                 AddCookie(Wall.Width * 33f, _roomBounds.Height - Wall.Width * 10f);
             }
 
+            _flag = new Flag(contentManager: contentManager);
+            _flag.Physics.Position = new Vector2(x: Wall.Width * 35, y: _roomBounds.Height - Wall.Width * 12);
+
             _scoreboard = new Scoreboard(contentManager);
 
             _player = new MonoKitty(
@@ -357,6 +361,8 @@ namespace MonoPlayground
                 Children.Add(cookie);
                 _player.Physics.CollidablePhysics.Add(cookie.Physics);
             }
+            Children.Add(_flag);
+            _player.Physics.CollidablePhysics.Add(_flag.Physics);
 
             Children.Add(_player);
             Children.Add(_scoreboard);

@@ -134,8 +134,8 @@ namespace MonoPlayground
         private void HandleCollision(PhysicsFeature other)
         {
             // Detect if collision with ground.
-            // Ground is any object besides the cookie below the player's orientation.
-            if (!(other.GameObject is Cookie))
+            // Ground is any object besides the cookie and flag below the player's orientation.
+            if (!(other.GameObject is Cookie || other.GameObject is Flag))
             {
                 float dot = Vector2.Dot(_orientationNormal, _physics.CollisionNormal);
                 if (dot > _orientationGroundThreshold)
@@ -188,6 +188,16 @@ namespace MonoPlayground
                         Scoreboard.AwardSuperPoints();
                 }
                 
+            }
+
+            if (other.GameObject is Flag)
+            {
+                Flag flag = other.GameObject as Flag;
+                if (!flag.Touched)
+                {
+                    flag.Touch();
+                    Scoreboard.Freeze();
+                }
             }
             
         }
