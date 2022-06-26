@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -21,6 +22,7 @@ namespace MonoPlayground
         private readonly DisplayFeature _background;
         private readonly Scoreboard _scoreboard;
         private readonly Fader _fader;
+        private readonly SoundEffectInstance _soundGameOver;
         public bool GameOver { get; private set; }
         public Room(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
@@ -346,6 +348,9 @@ namespace MonoPlayground
             _fader.Alpha = 1.0f;
             _fader.FadeIn();
 
+            _soundGameOver = contentManager.Load<SoundEffect>("endSound").CreateInstance();
+            _soundGameOver.Volume = 0.01f;
+
             foreach (Wall wall in walls)
             {
                 Children.Add(wall);
@@ -401,7 +406,10 @@ namespace MonoPlayground
             if (_flag.Touched)
             {
                 if (_fader.Alpha == 0.0f)
+                {
                     _fader.FadeOut();
+                    _soundGameOver.Play();
+                }
                 else if (_fader.Alpha == 1.0f)
                     GameOver = true;
             }

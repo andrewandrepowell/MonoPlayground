@@ -1207,6 +1207,12 @@
 /processorParam:Quality=Best
 /build:crunchSound.mp3
 
+#begin endSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:endSound.mp3
+
 #begin flag/flag (1).png
 /importer:TextureImporter
 /processor:TextureProcessor
