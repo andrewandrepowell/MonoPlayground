@@ -66,6 +66,7 @@ namespace MonoPlayground
             if (_roomLevel != null)
                 if (_roomLevel.GameOver)
                 {
+                    Content.Unload();
                     _roomEnd = new EndRoom(game: this, score: _roomLevel.Score.Score);
                     _roomLevel = null;
                 }
