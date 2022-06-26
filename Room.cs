@@ -20,9 +20,12 @@ namespace MonoPlayground
         private readonly CameraFeature _camera;
         private readonly DisplayFeature _background;
         private readonly Scoreboard _scoreboard;
+        private readonly Fader _fader;
+        public bool GameOver { get; private set; }
         public Room(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             _contentManager = contentManager;
+            GameOver = false;
 
             List<Wall> walls = new List<Wall>();
             {
@@ -339,6 +342,10 @@ namespace MonoPlayground
             _background = new DisplayFeature(gameObject: this, texture: contentManager.Load<Texture2D>("scene0"));
             Features.Add(_background);
 
+            _fader = new Fader(cameraBounds: _camera.CameraBounds, color: Color.White);
+            _fader.Alpha = 1.0f;
+            _fader.FadeIn();
+
             foreach (Wall wall in walls)
             {
                 Children.Add(wall);
@@ -366,6 +373,7 @@ namespace MonoPlayground
 
             Children.Add(_player);
             Children.Add(_scoreboard);
+            Children.Add(_fader);
         }
         public override void Update(GameTime gameTime)
         {
@@ -389,6 +397,14 @@ namespace MonoPlayground
                 }
             }
 #endif
+            // Check the condition for ending the level.
+            if (_flag.Touched)
+            {
+                if (_fader.Alpha == 0.0f)
+                    _fader.FadeOut();
+                else if (_fader.Alpha == 1.0f)
+                    GameOver = true;
+            }
 
             // Clean up destroyed game objects.            
             Children.Where(x => x.Destroyed).ToList().ForEach(x => Children.Remove(x));
@@ -396,6 +412,7 @@ namespace MonoPlayground
             // Update positions of background and scoreboard based on where the camera is.
             _background.Position = _camera.Location.ToVector2();
             _scoreboard.Position = _camera.Location.ToVector2();
+            _fader.Position = _camera.Location;
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

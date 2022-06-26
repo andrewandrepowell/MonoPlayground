@@ -51,8 +51,10 @@ namespace MonoPlayground
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            _testARoom.Update(gameTime);
+            if (_testARoom.GameOver)
+                Exit();
+            else
+                _testARoom.Update(gameTime);
             base.Update(gameTime);
         }
 
