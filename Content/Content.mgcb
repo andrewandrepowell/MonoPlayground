@@ -1292,6 +1292,12 @@
 /processorParam:TextureFormat=Compressed
 /build:font.spritefont
 
+#begin gameMusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gameMusic.mp3
+
 #begin noiseSound.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor

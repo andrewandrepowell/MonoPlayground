@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 #if DEBUG
 using System.Runtime.InteropServices;
 #endif
@@ -13,7 +14,8 @@ namespace MonoPlayground
         private const int _gameHeight = 720; // 720p
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Room _testARoom;
+        private Room _room;
+        private Song _songGame;
 
         public Game1()
         {
@@ -41,7 +43,12 @@ namespace MonoPlayground
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            _testARoom = new Room(
+            _songGame = Content.Load<Song>("gameMusic");
+            MediaPlayer.Play(_songGame);
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.01f;
+
+            _room = new Room(
                 contentManager: Content,
                 graphicsDevice: GraphicsDevice);
         }
@@ -51,10 +58,10 @@ namespace MonoPlayground
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (_testARoom.GameOver)
+            if (_room.GameOver)
                 Exit();
             else
-                _testARoom.Update(gameTime);
+                _room.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -63,7 +70,7 @@ namespace MonoPlayground
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            _testARoom.Draw(gameTime, _spriteBatch);
+            _room.Draw(gameTime, _spriteBatch);
             base.Draw(gameTime);
         }
 #if DEBUG
