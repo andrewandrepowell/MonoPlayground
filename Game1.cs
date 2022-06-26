@@ -49,16 +49,20 @@ namespace MonoPlayground
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.01f;
 
+                        
             _roomLevel = new LevelRoom(
                 contentManager: Content,
                 graphicsDevice: GraphicsDevice);
+            /*
+            _roomEnd = new EndRoom(game: this, score: 33433);
+            */
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            
             if (_roomLevel != null)
                 if (_roomLevel.GameOver)
                 {
@@ -67,7 +71,7 @@ namespace MonoPlayground
                 }
                 else
                     _roomLevel.Update(gameTime);
-
+            
             if (_roomEnd != null)
                 _roomEnd.Update(gameTime);
             
