@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoPlayground
 {
-    internal class Room : GameObject
+    internal class LevelRoom : GameObject
     {
         private static readonly Rectangle _roomBounds = new Rectangle(
             x: 0, y: 0, 
@@ -24,7 +24,8 @@ namespace MonoPlayground
         private readonly Fader _fader;
         private readonly SoundEffectInstance _soundGameOver;
         public bool GameOver { get; private set; }
-        public Room(ContentManager contentManager, GraphicsDevice graphicsDevice)
+        public Scoreboard Score { get => _scoreboard; }
+        public LevelRoom(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             _contentManager = contentManager;
             GameOver = false;
