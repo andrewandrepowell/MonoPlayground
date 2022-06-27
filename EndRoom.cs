@@ -58,23 +58,20 @@ namespace MonoPlayground
             _highscoreTextString = $"High Score: {highscore}";
             _messageTextString = _highscoreNew ? "New High Score! Thanks for playing!" : "Thanks for playing!";
 
-            float _scoreTextWidth = _scoreTextString.Select(x => _font.GetGlyphs()[x].BoundsInTexture.Width).Sum();
-            float _scoreTextHeight = _scoreTextString.Select(x => _font.GetGlyphs()[x].BoundsInTexture.Height).Max();
-            float _highscoreTextWidth = _highscoreTextString.Select(x => _font.GetGlyphs()[x].BoundsInTexture.Width).Sum();
-            float _highscoreTextHeight = _highscoreTextString.Select(x => _font.GetGlyphs()[x].BoundsInTexture.Height).Max();
-            float _messageTextWidth = _messageTextString.Select(x => _font.GetGlyphs()[x].BoundsInTexture.Width).Sum();
-            float _messageTextHeight = _messageTextString.Select(x => _font.GetGlyphs()[x].BoundsInTexture.Height).Max();
-            float _totalTextHeight = _scoreTextHeight + _highscoreTextHeight + _messageTextHeight;
+            Vector2 _scoreTextSize = _font.MeasureString(_scoreTextString);
+            Vector2 _highscoreTextSize = _font.MeasureString(_highscoreTextString);
+            Vector2 _messageTextSize = _font.MeasureString(_messageTextString);
+            float _totalTextHeight = _scoreTextSize.Y + _highscoreTextSize.Y + _messageTextSize.Y;
 
             _scoreTextPosition = new Vector2(
-                x: _cameraBounds.Center.X - _scoreTextWidth / 2,
+                x: _cameraBounds.Center.X - _scoreTextSize.X / 2,
                 y: _cameraBounds.Center.Y - _totalTextHeight / 2);
             _highscoreTextPosition = new Vector2(
-                x: _cameraBounds.Center.X - _highscoreTextWidth / 2,
-                y: _cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextHeight);
+                x: _cameraBounds.Center.X - _highscoreTextSize.X / 2,
+                y: _cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextSize.Y);
             _messageTextPosition = new Vector2(
-                x: _cameraBounds.Center.X - _messageTextWidth / 2,
-                y: _cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextHeight + _highscoreTextHeight);
+                x: _cameraBounds.Center.X - _messageTextSize.X / 2,
+                y: _cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextSize.Y + _highscoreTextSize.Y);
 
             Children.Add(_fader);
         }

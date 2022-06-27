@@ -49,13 +49,13 @@ namespace MonoPlayground
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.01f;
 
-            /*          
+                     
             _roomLevel = new LevelRoom(
                 contentManager: Content,
                 graphicsDevice: GraphicsDevice);
-            */
             
-            _roomEnd = new EndRoom(game: this, score: 2);
+            
+            //_roomEnd = new EndRoom(game: this, score: 2);
             
         }
 
