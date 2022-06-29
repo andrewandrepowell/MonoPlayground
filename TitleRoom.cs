@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -13,6 +14,7 @@ namespace MonoPlayground
         private readonly Texture2D _title;
         private readonly Rectangle _cameraBounds;
         private readonly Fader _fader;
+        private readonly SoundEffectInstance _soundGameStarting;
         private StartState _gameStartState;
         public bool GameStarted { get; private set; }
         private enum StartState { Waiting, ButtonPressed, GameStarting };
@@ -26,6 +28,8 @@ namespace MonoPlayground
                 color: Color.White);
             _fader.Alpha = 1.0f;
             _fader.FadeIn();
+            _soundGameStarting = game.Content.Load<SoundEffect>("endSound").CreateInstance();
+            _soundGameStarting.Volume = 0.01f;
             _gameStartState = StartState.Waiting;
             GameStarted = false;
             Children.Add(_fader);
@@ -46,6 +50,7 @@ namespace MonoPlayground
                     {
                         _gameStartState = StartState.GameStarting;
                         _fader.FadeOut();
+                        _soundGameStarting.Play();
                     }
                     break;
                 case StartState.GameStarting:
