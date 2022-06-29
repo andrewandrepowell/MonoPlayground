@@ -14,6 +14,7 @@ namespace MonoPlayground
         private const int _gameHeight = 720; // 720p
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private TitleRoom _roomTitle;
         private LevelRoom _roomLevel;
         private EndRoom _roomEnd;
         private Song _songGame;
@@ -49,10 +50,10 @@ namespace MonoPlayground
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.01f;
 
-                     
-            _roomLevel = new LevelRoom(
-                contentManager: Content,
-                graphicsDevice: GraphicsDevice);
+            _roomTitle = new TitleRoom(game: this);
+            //_roomLevel = new LevelRoom(
+            //    contentManager: Content,
+            //    graphicsDevice: GraphicsDevice);
             
             
             //_roomEnd = new EndRoom(game: this, score: 2);
@@ -63,7 +64,18 @@ namespace MonoPlayground
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
+
+            if (_roomTitle != null)
+                if (_roomTitle.GameStarted)
+                {
+                    _roomTitle = null;
+                    _roomLevel = new LevelRoom(
+                        contentManager: Content,
+                        graphicsDevice: GraphicsDevice);
+                }
+                else
+                    _roomTitle.Update(gameTime);
+
             if (_roomLevel != null)
                 if (_roomLevel.GameOver)
                 {
@@ -85,6 +97,9 @@ namespace MonoPlayground
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
+            if (_roomTitle != null)
+                _roomTitle.Draw(gameTime, _spriteBatch);
+            
             if (_roomLevel != null)
                 _roomLevel.Draw(gameTime, _spriteBatch);
 
