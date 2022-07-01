@@ -15,7 +15,6 @@ namespace MonoPlayground
             x: 0, y: 0, 
             width: Wall.Width * 40, 
             height: Wall.Width * 30);
-        private readonly ContentManager _contentManager;
         private readonly MonoKitty _player;
         private readonly Flag _flag;
         private readonly CameraFeature _camera;
@@ -25,19 +24,18 @@ namespace MonoPlayground
         private readonly SoundEffectInstance _soundGameOver;
         public bool GameOver { get; private set; }
         public Scoreboard Score { get => _scoreboard; }
-        public LevelRoom(ContentManager contentManager, GraphicsDevice graphicsDevice)
+        public LevelRoom(Game game)
         {
-            _contentManager = contentManager;
             GameOver = false;
 
             List<Wall> walls = new List<Wall>();
             {
                 void AddWall<T>(float x, float y) where T : Wall
                 {
-                    T wall = (T)Activator.CreateInstance(typeof(T), contentManager);
+                    T wall = (T)Activator.CreateInstance(typeof(T), game.Content);
                     wall.Physics.Position = new Vector2(x: x, y: y);
                     walls.Add(wall);
-                }
+                };
                 
                 for (int i = 5; i < 12; i++)
                     AddWall<Wall15>(Wall.Width * 0, _roomBounds.Height - Wall.Width * i);
@@ -180,14 +178,15 @@ namespace MonoPlayground
 
             List<DisplayFeature> textures = new List<DisplayFeature>();
             {
-                Action<string, float, float> AddTexture = delegate (string texture, float x, float y)
+                void AddTexture(string texture, float x, float y)
                 {
                     DisplayFeature display = new DisplayFeature(
                         gameObject: this, 
-                        texture: _contentManager.Load<Texture2D>(texture));
+                        texture: game.Content.Load<Texture2D>(texture));
                     display.Position = new Vector2(x, y);
                     textures.Add(display);
                 };
+                
                 for (int i = 0; Wall.Width * i < _roomBounds.Width; i++)
                     AddTexture("object3Texture", Wall.Width * i, _roomBounds.Height - Wall.Width * 1);
                 for (int x = 0; x < 5; x++)
@@ -224,9 +223,9 @@ namespace MonoPlayground
 
             List<Bouncer> bouncers = new List<Bouncer>();
             {
-                Action<float, float, float, float> AddBouncer = delegate(float posx, float posy, float dirx, float diry)
+                void AddBouncer(float posx, float posy, float dirx, float diry)
                 {
-                    Bouncer bouncer = new Bouncer(contentManager);
+                    Bouncer bouncer = new Bouncer(game.Content);
                     bouncer.Physics.Position = new Vector2(x: posx, y: posy);
                     bouncer.Direction = new Vector2(x: dirx, y: diry);
                     bouncers.Add(bouncer);
@@ -249,13 +248,12 @@ namespace MonoPlayground
 
             List<Cookie> cookies = new List<Cookie>();
             {
-                Action<float, float> AddCookie = delegate (float x, float y)
+                void AddCookie(float x, float y)
                 {
-                    Cookie cookie = new Cookie(contentManager);
+                    Cookie cookie = new Cookie(game.Content);
                     cookie.Physics.Position = new Vector2(x, y);
                     cookies.Add(cookie);
                 };
-
                 AddCookie(Wall.Width * 3, _roomBounds.Height - Wall.Width * 5);
                 AddCookie(Wall.Width * 10, _roomBounds.Height - Wall.Width * 3);
                 AddCookie(Wall.Width * 14, _roomBounds.Height - Wall.Width * 8);
@@ -310,13 +308,58 @@ namespace MonoPlayground
                 AddCookie(Wall.Width * 33f, _roomBounds.Height - Wall.Width * 10f);
             }
 
-            _flag = new Flag(contentManager: contentManager);
+            List<Bush> bushes = new List<Bush>();
+            {
+                void AddBush(float x, float y) => bushes.Add(new Bush(game) { Position = new Vector2(x, y) });
+                AddBush(Wall.Width * 4, _roomBounds.Height - Wall.Width * 5);
+                AddBush(Wall.Width * 1, _roomBounds.Height - Wall.Width * 5);
+                AddBush(Wall.Width * 8, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 12, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 9, _roomBounds.Height - Wall.Width * 7);
+                AddBush(Wall.Width * 5.5f, _roomBounds.Height - Wall.Width * 7);
+                AddBush(Wall.Width * 4, _roomBounds.Height - Wall.Width * 18);
+                AddBush(Wall.Width * 5, _roomBounds.Height - Wall.Width * 18);
+                AddBush(Wall.Width * 6, _roomBounds.Height - Wall.Width * 18);
+                AddBush(Wall.Width * 7, _roomBounds.Height - Wall.Width * 18);
+                AddBush(Wall.Width * 14, _roomBounds.Height - Wall.Width * 13);
+                AddBush(Wall.Width * 15, _roomBounds.Height - Wall.Width * 13);
+                AddBush(Wall.Width * 17, _roomBounds.Height - Wall.Width * 13);
+                AddBush(Wall.Width * 20, _roomBounds.Height - Wall.Width * 13);
+                AddBush(Wall.Width * 4, _roomBounds.Height - Wall.Width * 22);
+                AddBush(Wall.Width * 17, _roomBounds.Height - Wall.Width * 30);
+                AddBush(Wall.Width * 21, _roomBounds.Height - Wall.Width * 29);
+                AddBush(Wall.Width * 24, _roomBounds.Height - Wall.Width * 29);
+                AddBush(Wall.Width * 27, _roomBounds.Height - Wall.Width * 15);
+                AddBush(Wall.Width * 28, _roomBounds.Height - Wall.Width * 15);
+                AddBush(Wall.Width * 29, _roomBounds.Height - Wall.Width * 15);
+                AddBush(Wall.Width * 30, _roomBounds.Height - Wall.Width * 15);
+                AddBush(Wall.Width * 34, _roomBounds.Height - Wall.Width * 15);
+                AddBush(Wall.Width * 30.5f, _roomBounds.Height - Wall.Width * 29);
+                AddBush(Wall.Width * 37, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 36, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 34, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 32, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 31, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 30, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 29, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 27, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 25, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 24, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 22, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 21, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 20, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 18, _roomBounds.Height - Wall.Width * 3);
+                AddBush(Wall.Width * 21, _roomBounds.Height - Wall.Width * 10);
+                AddBush(Wall.Width * 23, _roomBounds.Height - Wall.Width * 10);
+            }
+
+            _flag = new Flag(contentManager: game.Content);
             _flag.Physics.Position = new Vector2(x: Wall.Width * 35, y: _roomBounds.Height - Wall.Width * 12);
 
-            _scoreboard = new Scoreboard(contentManager);
+            _scoreboard = new Scoreboard(game.Content);
 
             _player = new MonoKitty(
-                contentManager: contentManager);
+                contentManager: game.Content);
             _player.Scoreboard = _scoreboard;
             _player.Physics.Position = new Vector2(
                 x: Wall.Width * 2,
@@ -337,19 +380,19 @@ namespace MonoPlayground
             _camera = new CameraFeature(
                 gameObject: this, 
                 roomBounds: _roomBounds, 
-                cameraBounds: graphicsDevice.Viewport.Bounds, 
+                cameraBounds: game.GraphicsDevice.Viewport.Bounds, 
                 physics: _player.Physics, 
                 threshold: new Point(x:600, y: 200));
             Features.Add(_camera);
 
-            _background = new DisplayFeature(gameObject: this, texture: contentManager.Load<Texture2D>("scene0"));
+            _background = new DisplayFeature(gameObject: this, texture: game.Content.Load<Texture2D>("scene0"));
             Features.Add(_background);
 
             _fader = new Fader(cameraBounds: _camera.CameraBounds, color: Color.White);
             _fader.Alpha = 1.0f;
             _fader.FadeIn();
 
-            _soundGameOver = contentManager.Load<SoundEffect>("endSound").CreateInstance();
+            _soundGameOver = game.Content.Load<SoundEffect>("endSound").CreateInstance();
             _soundGameOver.Volume = 0.01f;
 
             foreach (Wall wall in walls)
@@ -362,6 +405,9 @@ namespace MonoPlayground
             {
                 Features.Add(texture);
             }
+
+            foreach (Bush bush in bushes)
+                Children.Add(bush);
 
             foreach (Bouncer bouncer in bouncers)
             {

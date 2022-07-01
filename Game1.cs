@@ -46,7 +46,7 @@ namespace MonoPlayground
 
             // TODO: use this.Content to load your game content here
             _songGame = Content.Load<Song>("gameMusic");
-            MediaPlayer.Play(_songGame);
+            //MediaPlayer.Play(_songGame);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.01f;
 
@@ -69,9 +69,7 @@ namespace MonoPlayground
                 if (_roomTitle.GameStarted)
                 {
                     _roomTitle = null;
-                    _roomLevel = new LevelRoom(
-                        contentManager: Content,
-                        graphicsDevice: GraphicsDevice);
+                    _roomLevel = new LevelRoom(this);
                 }
                 else
                     _roomTitle.Update(gameTime);
