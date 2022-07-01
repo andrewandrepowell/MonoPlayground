@@ -11,7 +11,7 @@ namespace MonoPlayground
 {
     internal class TitleRoom : GameObject
     {
-        private const float _messageCoverAlphaChange = 0.1f;
+        private const float _messageAlphaChange = 0.2f;
         private readonly SpriteFont _font;
         private readonly Texture2D _title;
         private readonly Rectangle _cameraBounds;
@@ -25,8 +25,7 @@ namespace MonoPlayground
         private float _timerThreshold;
         private Vector2 _titlePosition;
         private Vector2[] _messagePositions;
-        private Texture2D _messageCoverTexture;
-        private float _messageCoverAlpha;
+        private float _messageAlpha;
         
         public bool GameStarted { get; private set; }
         private enum StartState { Waiting, ButtonPressed, GameStarting };
@@ -70,7 +69,7 @@ namespace MonoPlayground
                 size: new Point(
                     x: (int)_messageStrings.Select(message => _font.MeasureString(message)).Max(dimen => dimen.X),
                     y: (int)_messageStrings.Select(message => _font.MeasureString(message)).Sum(dimen => dimen.Y)));
-            _messageCoverAlpha = 1.0f;
+            _messageAlpha = 0.0f;
             Children.Add(_fader);
         }
         public override void Update(GameTime gameTime)
@@ -118,13 +117,13 @@ namespace MonoPlayground
                     }
                     break;
                 case TitleState.RevealingText:
-                    if (_messageCoverAlpha > 0.0f)
+                    if (_messageAlpha < 1.0f)
                     {
-                        _messageCoverAlpha -= _messageCoverAlphaChange * timeElapsed;
+                        _messageAlpha += _messageAlphaChange * timeElapsed;
                     }
                     else
                     {
-                        _messageCoverAlpha = 0.0f;
+                        _messageAlpha = 1.0f;
                     }
                     break;
             }
@@ -132,17 +131,6 @@ namespace MonoPlayground
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (_messageCoverTexture == null)
-            {
-                _messageCoverTexture = new Texture2D(
-                    graphicsDevice: spriteBatch.GraphicsDevice,
-                    width: _messageCoverBounds.Width,
-                    height: _messageCoverBounds.Height);
-                _messageCoverTexture.SetData(Enumerable
-                    .Range(0, _messageCoverBounds.Width * _messageCoverBounds.Height)
-                    .Select(i => Color.White)
-                    .ToArray());
-            }
             spriteBatch.Begin();
             _messageStrings
                 .Zip(_messagePositions, (message, position) => (message, position))
@@ -152,12 +140,8 @@ namespace MonoPlayground
                         spriteFont: _font,
                         text: tuple.message,
                         position: tuple.position,
-                        color: Color.Black);
+                        color: Color.Black * _messageAlpha);
                 });
-            spriteBatch.Draw(
-                texture: _messageCoverTexture,
-                destinationRectangle: _messageCoverBounds,
-                color: Color.White * _messageCoverAlpha);
             spriteBatch.Draw(
                 texture: _title,
                 destinationRectangle: new Rectangle(

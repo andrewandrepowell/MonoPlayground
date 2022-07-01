@@ -32,7 +32,7 @@ namespace MonoPlayground
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             _graphics.HardwareModeSwitch = true;
             _graphics.PreferredBackBufferWidth = _gameWidth;
             _graphics.PreferredBackBufferHeight = _gameHeight;
