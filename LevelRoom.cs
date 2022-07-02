@@ -205,7 +205,7 @@ namespace MonoPlayground
                 AddTexture("object3Texture", 8, 15);
                 AddTexture("object3Texture", 9, 15);
                 for (int i = 8; i < 12; i++)
-                    AddTexture("object3Texture", Wall.Width * i, _roomBounds.Height - Wall.Width * 14);
+                    AddTexture("object3Texture", i, 14);
                 for (int y = 10; y < 14; y++)
                     for (int x = 8; x < 12; x++)
                         AddTexture("object3Texture", x, y);
@@ -226,24 +226,25 @@ namespace MonoPlayground
                 void AddBouncer(float posx, float posy, float dirx, float diry)
                 {
                     Bouncer bouncer = new Bouncer(game.Content);
-                    bouncer.Physics.Position = new Vector2(x: posx, y: posy);
+                    bouncer.Physics.Position = new Vector2(
+                        x: Wall.Width * posx, 
+                        y: _roomBounds.Height - Wall.Width * posy);
                     bouncer.Direction = new Vector2(x: dirx, y: diry);
                     bouncers.Add(bouncer);
                 };
-
-                AddBouncer(Wall.Width * 1, _roomBounds.Height - Wall.Width * 8, .8f, -1f);
-                AddBouncer(Wall.Width * 15, _roomBounds.Height - Wall.Width * 15, .5f, -1f);
-                AddBouncer(Wall.Width * 18, _roomBounds.Height - Wall.Width * 18, -.3f, -1f);
-                AddBouncer(Wall.Width * 19, _roomBounds.Height - Wall.Width * 21, -1f, -.2f);
-                AddBouncer(Wall.Width * 9, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
-                AddBouncer(Wall.Width * 14, _roomBounds.Height - Wall.Width * 24, 0f, -1f);
-                AddBouncer(Wall.Width * 25, _roomBounds.Height - Wall.Width * 15, 0f, -1f);
-                AddBouncer(Wall.Width * 26, _roomBounds.Height - Wall.Width * 19, 0f, -1f);
-                AddBouncer(Wall.Width * 25, _roomBounds.Height - Wall.Width * 22, 0f, -1f);
-                AddBouncer(Wall.Width * 27, _roomBounds.Height - Wall.Width * 26, -.75f, -1f);
-                AddBouncer(Wall.Width * 23, _roomBounds.Height - Wall.Width * 30, 1f, -0.1f);
-                AddBouncer(Wall.Width * 36, _roomBounds.Height - Wall.Width * 26, -.5f, -1f);
-                AddBouncer(Wall.Width * 29, _roomBounds.Height - Wall.Width * 6, 0f, -1f); 
+                AddBouncer(1, 8, .8f, -1f);
+                AddBouncer(15, 15, .5f, -1f);
+                AddBouncer(18, 18, -.3f, -1f);
+                AddBouncer(19, 21, -1f, -.2f);
+                AddBouncer(9, 24, 0f, -1f);
+                AddBouncer(14, 24, 0f, -1f);
+                AddBouncer(25, 15, 0f, -1f);
+                AddBouncer(26, 19, 0f, -1f);
+                AddBouncer(25, 22, 0f, -1f);
+                AddBouncer(27, 26, -.75f, -1f);
+                AddBouncer(23, 30, 1f, -0.1f);
+                AddBouncer(36, 26, -.5f, -1f);
+                AddBouncer(29, 6, 0f, -1f); 
             }
 
             List<Cookie> cookies = new List<Cookie>();
@@ -380,18 +381,6 @@ namespace MonoPlayground
             _player.Physics.Position = new Vector2(
                 x: Wall.Width * 2,
                 y: _roomBounds.Height - Wall.Width * 6);
-            //_player.Physics.Position = new Vector2(
-            //    x: Wall.Width * 3,
-            //    y: Wall.Width * 22);
-            //_player.Physics.Position = new Vector2(
-            //    x: Wall.Width * 6,
-            //    y: Wall.Width * 12);
-            //_player.Physics.Position = new Vector2(
-            //    x: Wall.Width * 19,
-            //    y: _roomBounds.Height - Wall.Width * 3);
-            //_player.Physics.Position = new Vector2(
-            //    x: Wall.Width * 4,
-            //    y: _roomBounds.Height - Wall.Width * 21);
 
             _camera = new CameraFeature(
                 gameObject: this, 
