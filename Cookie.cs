@@ -49,9 +49,12 @@ namespace MonoPlayground
             _floatingDirection = (float)(2 * _random.Next(0, 2) - 1);
             _floatingOffset = _floatingDirection * (float)_random.NextDouble() * _floatingOffsetThreshold;
 
-            _soundCrunch = contentManager.Load<SoundEffect>("crunchSound").CreateInstance();
-            _soundCrunch.Volume = 0.01f;
-            _soundCrunch.Pitch = -1.0f;
+            if (_soundCrunch == null)
+            {
+                _soundCrunch = contentManager.Load<SoundEffect>("crunchSound").CreateInstance();
+                _soundCrunch.Volume = 0.01f;
+                _soundCrunch.Pitch = -1.0f;
+            }
             _totalCookies += 1;
 
             Features.Add(Physics);

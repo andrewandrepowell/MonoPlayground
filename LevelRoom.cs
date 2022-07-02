@@ -353,6 +353,13 @@ namespace MonoPlayground
                 AddBush(Wall.Width * 23, _roomBounds.Height - Wall.Width * 10);
             }
 
+            List<Tree> trees = new List<Tree>();
+            {
+                void AddTree(float x, float y) => 
+                    trees.Add(new Tree(game) { Position = new Vector2(x: Wall.Width * x, y: _roomBounds.Height - Wall.Width * y)  });
+                AddTree(2, 7);
+            }
+
             _flag = new Flag(contentManager: game.Content);
             _flag.Physics.Position = new Vector2(x: Wall.Width * 35, y: _roomBounds.Height - Wall.Width * 12);
 
@@ -405,6 +412,9 @@ namespace MonoPlayground
             {
                 Features.Add(texture);
             }
+
+            foreach (Tree tree in trees)
+                Children.Add(tree);
 
             foreach (Bush bush in bushes)
                 Children.Add(bush);
