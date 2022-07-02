@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
 using System.IO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MonoPlayground
 {
@@ -13,7 +9,6 @@ namespace MonoPlayground
         private static readonly string _highscoreFile = "save.kitty";
         private readonly SpriteFont _font;
         private readonly Fader _fader;
-        private readonly Rectangle _cameraBounds;
         private readonly bool _highscoreNew;
         private readonly string _scoreTextString;
         private readonly Vector2 _scoreTextPosition;
@@ -23,17 +18,21 @@ namespace MonoPlayground
         private readonly Vector2 _messageTextPosition;
         public EndRoom(Game game, int score)
         {
+            // Text used to draw text for score and highscore.
             _font = game.Content.Load<SpriteFont>("font");
-            
+
+            // Fader used to fade in and out when entering and exiting room.
             _fader = new Fader(
                 cameraBounds: game.GraphicsDevice.Viewport.Bounds, 
                 color: Color.White);
             _fader.Alpha = 1.0f;
             _fader.FadeIn();
 
-            _cameraBounds = game.GraphicsDevice.Viewport.Bounds;
+            // Camera bounds is needed to position text.
+            Rectangle cameraBounds = game.GraphicsDevice.Viewport.Bounds;
             _scoreTextPosition = Vector2.Zero;
 
+            // Update the high score if new high score occurs.
             int highscore = 0;
             try
             {
@@ -54,6 +53,8 @@ namespace MonoPlayground
                 _highscoreNew = false;
             }
 
+            // Generate the text to display and their positions on the screen.
+            
             _scoreTextString = $"Final Score: {score}";
             _highscoreTextString = $"High Score: {highscore}";
             _messageTextString = _highscoreNew ? "New High Score! Thanks for playing!" : "Thanks for playing!";
@@ -64,14 +65,14 @@ namespace MonoPlayground
             float _totalTextHeight = _scoreTextSize.Y + _highscoreTextSize.Y + _messageTextSize.Y;
 
             _scoreTextPosition = new Vector2(
-                x: _cameraBounds.Center.X - _scoreTextSize.X / 2,
-                y: _cameraBounds.Center.Y - _totalTextHeight / 2);
+                x: cameraBounds.Center.X - _scoreTextSize.X / 2,
+                y: cameraBounds.Center.Y - _totalTextHeight / 2);
             _highscoreTextPosition = new Vector2(
-                x: _cameraBounds.Center.X - _highscoreTextSize.X / 2,
-                y: _cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextSize.Y);
+                x: cameraBounds.Center.X - _highscoreTextSize.X / 2,
+                y: cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextSize.Y);
             _messageTextPosition = new Vector2(
-                x: _cameraBounds.Center.X - _messageTextSize.X / 2,
-                y: _cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextSize.Y + _highscoreTextSize.Y);
+                x: cameraBounds.Center.X - _messageTextSize.X / 2,
+                y: cameraBounds.Center.Y - _totalTextHeight / 2 + _scoreTextSize.Y + _highscoreTextSize.Y);
 
             Children.Add(_fader);
         }

@@ -3,9 +3,6 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MonoPlayground
 {
@@ -14,11 +11,9 @@ namespace MonoPlayground
         private const float _messageAlphaChange = 0.2f;
         private readonly SpriteFont _font;
         private readonly Texture2D _title;
-        private readonly Rectangle _cameraBounds;
         private readonly Fader _fader;
         private readonly SoundEffectInstance _soundGameStarting;
         private readonly string[] _messageStrings;
-        private readonly Rectangle _messageCoverBounds;
         private StartState _gameStartState;
         private TitleState _titleState;
         private float _timer;
@@ -26,56 +21,51 @@ namespace MonoPlayground
         private Vector2 _titlePosition;
         private Vector2[] _messagePositions;
         private float _messageAlpha;
-        
         public bool GameStarted { get; private set; }
         private enum StartState { Waiting, ButtonPressed, GameStarting };
         private enum TitleState { Waiting, MovingTitle, RevealingText };
         public TitleRoom(Game game)
         {
-            _font = game.Content.Load<SpriteFont>("font");
-            _title = game.Content.Load<Texture2D>("title");
-            _cameraBounds = game.GraphicsDevice.Viewport.Bounds;
-            _fader = new Fader(
-                cameraBounds: game.GraphicsDevice.Viewport.Bounds,
+            _font = game.Content.Load<SpriteFont>("font"); // Font used to draw up the text.
+            _title = game.Content.Load<Texture2D>("title"); // Splash screen.
+            Rectangle cameraBounds = game.GraphicsDevice.Viewport.Bounds; // Bounds of the window is needed.
+            _fader = new Fader( // Fader is needed to fade in and out when entering and exiting room.
+                cameraBounds: cameraBounds,
                 color: Color.White);
             _fader.Alpha = 1.0f;
-            _fader.FadeIn();
-            _soundGameStarting = game.Content.Load<SoundEffect>("endSound").CreateInstance();
+            _fader.FadeIn(); // Fade in at start.
+            _soundGameStarting = game.Content.Load<SoundEffect>("endSound").CreateInstance(); 
             _soundGameStarting.Volume = 0.01f;
-            _gameStartState = StartState.Waiting;
-            _titleState = TitleState.Waiting;
-            _timerThreshold = 2.5f;
+            _gameStartState = StartState.Waiting; // FSM used to determine how the game starts.
+            _titleState = TitleState.Waiting; // FSM used to determine title screen animation.
+            _timerThreshold = 2.5f; // Multi-purpose timer used in FSM.
             _timer = _timerThreshold;
             GameStarted = false;
-            _titlePosition = new Vector2(
-                x: _cameraBounds.Center.X - _title.Bounds.Center.X,
-                y: _cameraBounds.Center.Y - _title.Bounds.Center.Y);
-            _messageStrings = new string[]
+            _titlePosition = new Vector2( // Title starts in middle on screen.
+                x: cameraBounds.Center.X - _title.Bounds.Center.X,
+                y: cameraBounds.Center.Y - _title.Bounds.Center.Y);
+            _messageStrings = new string[] // Messages to show during title animation.
             {
                 "Welcome!",
                 "Hit space to start!",
                 "Use arrow keys to move Mono Kitty, collect cookies, and get to the end!"
             };
-            _messagePositions = _messageStrings
+            _messagePositions = _messageStrings // Messages are positioned beneath title splash.
                 .Select(message => _font.MeasureString(message))
                 .Select((dimen, i) => new Vector2(
-                    x: _cameraBounds.Center.X - dimen.X / 2,
-                    y: MathHelper.Lerp(_title.Bounds.Height, _cameraBounds.Height, 0.15f) + i * dimen.Y))    
+                    x: cameraBounds.Center.X - dimen.X / 2,
+                    y: MathHelper.Lerp(_title.Bounds.Height, cameraBounds.Height, 0.15f) + i * dimen.Y))    
                 .ToArray();
-            _messageCoverBounds = new Rectangle(
-                location: new Point(
-                    x: (int)_messagePositions.Min(pos => pos.X),
-                    y: (int)_messagePositions.Min(pos => pos.Y)),
-                size: new Point(
-                    x: (int)_messageStrings.Select(message => _font.MeasureString(message)).Max(dimen => dimen.X),
-                    y: (int)_messageStrings.Select(message => _font.MeasureString(message)).Sum(dimen => dimen.Y)));
-            _messageAlpha = 0.0f;
-            Children.Add(_fader);
+            _messageAlpha = 0.0f; // Messages are initially invisible.
+            Children.Add(_fader); // Fader is added to children.
         }
         public override void Update(GameTime gameTime)
         {
+            // Get keyboard state and time elapsed is needed.
             KeyboardState keyboardState = Keyboard.GetState();
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // FSM used to determine how the game starts.
             switch (_gameStartState)
             {
                 case StartState.Waiting:
@@ -99,6 +89,8 @@ namespace MonoPlayground
                     }
                     break;
             }
+
+            // FSM used to determine title screen animation.
             switch (_titleState)
             {
                 case TitleState.Waiting:

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -26,8 +25,9 @@ namespace MonoPlayground
         public Scoreboard Score { get => _scoreboard; }
         public LevelRoom(Game game)
         {
-            GameOver = false;
+            GameOver = false; // Determine if game is over.
 
+            // Add all the walls to the level.
             List<Wall> walls = new List<Wall>();
             {
                 void AddWall<T>(float x, float y) where T : Wall
@@ -176,6 +176,7 @@ namespace MonoPlayground
                 AddWall<Wall4>(34, 11);
             }
 
+            // Add all the textures to the level.
             List<DisplayFeature> textures = new List<DisplayFeature>();
             {
                 void AddTexture(string texture, float x, float y)
@@ -221,6 +222,7 @@ namespace MonoPlayground
                         AddTexture("object3Texture", x, y);
             }
 
+            // Add all the bouncers to the level.
             List<Bouncer> bouncers = new List<Bouncer>();
             {
                 void AddBouncer(float posx, float posy, float dirx, float diry)
@@ -247,6 +249,7 @@ namespace MonoPlayground
                 AddBouncer(29, 6, 0f, -1f); 
             }
 
+            // Add all the cookies to the level.
             List<Cookie> cookies = new List<Cookie>();
             {
                 void AddCookie(float x, float y)
@@ -309,6 +312,7 @@ namespace MonoPlayground
                 AddCookie(33f, 10f);
             }
 
+            // Add all the bushes to the level.
             List<Bush> bushes = new List<Bush>();
             {
                 void AddBush(float x, float y) => 
@@ -357,6 +361,7 @@ namespace MonoPlayground
                 AddBush(23, 10);
             }
 
+            // All all the trees to the level.
             List<Tree> trees = new List<Tree>();
             {
                 void AddTree(float x, float y) => 
@@ -373,11 +378,14 @@ namespace MonoPlayground
                 AddTree(24.5f, 5);
             }
 
+            // Add the game over flag to the level. Player touches this to end the game.
             _flag = new Flag(contentManager: game.Content);
             _flag.Physics.Position = new Vector2(x: Wall.Width * 35, y: _roomBounds.Height - Wall.Width * 12);
 
+            // Add the scoreboard to the game. Scoreboard appears on the HUD to display the current score.
             _scoreboard = new Scoreboard(game.Content);
 
+            // Add Mono Kitty to the game. The player is Mono Kitty!
             _player = new MonoKitty(
                 contentManager: game.Content);
             _player.Scoreboard = _scoreboard;
@@ -385,6 +393,7 @@ namespace MonoPlayground
                 x: Wall.Width * 2,
                 y: _roomBounds.Height - Wall.Width * 6);
 
+            // Add the camera to the game.
             _camera = new CameraFeature(
                 gameObject: this, 
                 roomBounds: _roomBounds, 
@@ -393,15 +402,21 @@ namespace MonoPlayground
                 threshold: new Point(x:600, y: 200));
             Features.Add(_camera);
 
+            // Add the background image for the level.
             _background = new DisplayFeature(gameObject: this, texture: game.Content.Load<Texture2D>("scene0"));
             Features.Add(_background);
 
+            // Fader is used to fade in the level at start, and fade out at end.
             _fader = new Fader(cameraBounds: _camera.CameraBounds, color: Color.White);
             _fader.Alpha = 1.0f;
             _fader.FadeIn();
 
+            // Add the sound that's played 
             _soundGameOver = game.Content.Load<SoundEffect>("endSound").CreateInstance();
             _soundGameOver.Volume = 0.01f;
+
+            // Add all the game objects to the game.
+            // The order matters since that dictates what gets drawn firsts.
 
             foreach (Wall wall in walls)
             {

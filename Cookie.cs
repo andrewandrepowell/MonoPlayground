@@ -84,21 +84,15 @@ namespace MonoPlayground
 
             // Perform calculations related to the cookie floating.
             if (_floatingTimer > 0)
-            {
                 _floatingTimer -= timeElapsed;
-            }
             else
             {
                 _floatingTimer = _floatingTimerThreshold;
                 _floatingOffset += _floatingDirection * _floatingOffsetChange;
                 if (_floatingOffset > _floatingOffsetThreshold)
-                {
                     _floatingDirection = -1f;
-                }
                 else if (_floatingOffset < -_floatingOffsetThreshold)
-                {
                     _floatingDirection = 1f;
-                }
             }
 
             // If the cookie was eaten and the animation is finished, destroy the cookie.

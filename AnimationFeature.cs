@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +82,26 @@ namespace MonoPlayground
             if (_destroyed)
                 return;
             
+            if (_visible)
+            {
+                SpriteEffects spriteEffects = (_flip) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                spriteBatch.Draw(
+                    texture: _textures[_currentIndex],
+                    position: Vector2.Floor(_position), // Due to the fact the collision logic utilizes integers, all rounding is floored.
+                    sourceRectangle: null,
+                    color: Color.White,
+                    rotation: _rotation,
+                    origin: _origin,
+                    scale: _scale,
+                    effects: spriteEffects,
+                    layerDepth: 0f);
+            }
+        }
+        public override void Update(GameTime gameTime)
+        {
+            if (_destroyed)
+                return;
+            
             if (_play)
             {
                 float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -110,25 +129,6 @@ namespace MonoPlayground
                     }
                 }
             }
-
-            if (_visible)
-            {
-                SpriteEffects spriteEffects = (_flip) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                spriteBatch.Draw(
-                    texture: _textures[_currentIndex],
-                    position: Vector2.Floor(_position), // Due to the fact the collision logic utilizes integers, all rounding is floored.
-                    sourceRectangle: null,
-                    color: Color.White,
-                    rotation: _rotation,
-                    origin: _origin,
-                    scale: _scale,
-                    effects: spriteEffects,
-                    layerDepth: 0f);
-            }
-        }
-        public override void Update(GameTime gameTime)
-        {
-            
         }
         public override void Destroy()
         {

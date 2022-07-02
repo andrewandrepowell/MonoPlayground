@@ -31,7 +31,7 @@ namespace MonoPlayground
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Configuring the settings of the game.
             _graphics.IsFullScreen = false;
             _graphics.HardwareModeSwitch = true;
             _graphics.PreferredBackBufferWidth = _gameWidth;
@@ -42,29 +42,26 @@ namespace MonoPlayground
 
         protected override void LoadContent()
         {
+            // Load the content of the game.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Play the game's music.
             _songGame = Content.Load<Song>("gameMusic");
-            //MediaPlayer.Play(_songGame);
+            MediaPlayer.Play(_songGame);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.01f;
 
+            // Load the title screen.
             _roomTitle = new TitleRoom(game: this);
-            //_roomLevel = new LevelRoom(
-            //    contentManager: Content,
-            //    graphicsDevice: GraphicsDevice);
-            
-            
-            //_roomEnd = new EndRoom(game: this, score: 2);
-            
         }
 
         protected override void Update(GameTime gameTime)
         {
+            // Use Monogame's default way to implement game close.
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Update title room. If the game is started, create the level room.
             if (_roomTitle != null)
                 if (_roomTitle.GameStarted)
                 {
@@ -74,6 +71,7 @@ namespace MonoPlayground
                 else
                     _roomTitle.Update(gameTime);
 
+            // Update level room. If the game is over, create the end room.
             if (_roomLevel != null)
                 if (_roomLevel.GameOver)
                 {
@@ -83,6 +81,7 @@ namespace MonoPlayground
                 else
                     _roomLevel.Update(gameTime);
             
+            // Update end room.
             if (_roomEnd != null)
                 _roomEnd.Update(gameTime);
             
@@ -91,9 +90,10 @@ namespace MonoPlayground
         
         protected override void Draw(GameTime gameTime)
         {
+            // Draw the rooms if they exist.
+            
             GraphicsDevice.Clear(Color.White);
 
-            // TODO: Add your drawing code here
             if (_roomTitle != null)
                 _roomTitle.Draw(gameTime, _spriteBatch);
             
@@ -106,6 +106,7 @@ namespace MonoPlayground
         }
 #if DEBUG
         // https://gamedev.stackexchange.com/questions/45107/input-output-console-window-in-xna#:~:text=Right%20click%20your%20game%20in%20the%20solution%20explorer,tab.%20Change%20the%20Output%20Type%20to%20Console%20Application.
+        // This opens a console window in the game.
         [DllImport("kernel32")]
         static extern bool AllocConsole();
 #endif
