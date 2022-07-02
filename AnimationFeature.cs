@@ -9,6 +9,7 @@ namespace MonoPlayground
     internal class AnimationFeature : GameFeature
     {
         // https://www.gameart2d.com/license.html
+        // https://itch.io/game-assets/free
         readonly private IList<Texture2D> _textures;
         readonly private Vector2 _origin;
         private Vector2 _position;

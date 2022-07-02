@@ -1,0 +1,39 @@
+Asset: Cat (Mono Kitty) Animations
+URL: https://www.gameart2d.com/cat-and-dog-free-sprites.html
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Asset: Portion of the Tiles, Trees, Background, Rocks.
+URL: https://www.gameart2d.com/free-platformer-game-tileset.html
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Asset: Montserrate Font
+URL: https://www.fontsquirrel.com/fonts/montserrat
+License: SIL OFL v1.10
+License URL: https://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web
+
+Asset: Short Square Trip. Used as the walking sound for Mono Kitty.
+URL: https://freesound.org/people/ProjectsU012/sounds/341025/
+License: CC BY 4.0
+License URL: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Asset: Retro Video Game SFX - Bounce. Used as the bouncer sound effect.
+URL: https://freesound.org/people/OwlStorm/sounds/404769/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Asset: Retro Video Game SFX - Slap. Modified to make the eating noises for consuming a cookie.
+URL: https://freesound.org/people/OwlStorm/sounds/404781/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Asset: Retro Video Game SFX - Laser 4. Used when game starts and ends.
+URL: https://freesound.org/people/OwlStorm/sounds/404782/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Asset: Bit Forest Intro Music. Music used by the game.
+URL: https://freesound.org/people/Bertsz/sounds/545457/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
