@@ -358,6 +358,15 @@ namespace MonoPlayground
                 void AddTree(float x, float y) => 
                     trees.Add(new Tree(game) { Position = new Vector2(x: Wall.Width * x, y: _roomBounds.Height - Wall.Width * y)  });
                 AddTree(2, 7);
+                AddTree(9, 5);
+                AddTree(14.5f, 15);
+                AddTree(18, 15);
+                AddTree(21.5f, 31);
+                AddTree(31, 17);
+                AddTree(27.5f, 17);
+                AddTree(33.5f, 5);
+                AddTree(28.5f, 5);
+                AddTree(24.5f, 5);
             }
 
             _flag = new Flag(contentManager: game.Content);
