@@ -15,6 +15,7 @@ namespace MonoPlayground
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private TitleRoom _roomTitle;
+        private AboutRoom _roomAbout;
         private LevelRoom _roomLevel;
         private EndRoom _roomEnd;
         private Song _songGame;
@@ -32,8 +33,8 @@ namespace MonoPlayground
         protected override void Initialize()
         {
             // Configuring the settings of the game.
-            IsMouseVisible = false;
-            _graphics.IsFullScreen = true;
+            IsMouseVisible = true;
+            _graphics.IsFullScreen = false;
             _graphics.HardwareModeSwitch = true;
             _graphics.PreferredBackBufferWidth = _gameWidth;
             _graphics.PreferredBackBufferHeight = _gameHeight;
@@ -62,15 +63,32 @@ namespace MonoPlayground
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Update title room. If the game is started, create the level room.
+            // Update title room.
+            // If the game is started, create the level room.
+            // If the about page is activated, create the about room.
             if (_roomTitle != null)
                 if (_roomTitle.GameStarted)
                 {
                     _roomTitle = null;
                     _roomLevel = new LevelRoom(this);
                 }
+                else if (_roomTitle.About)
+                {
+                    _roomTitle = null;
+                    _roomAbout = new AboutRoom(this);
+                }
                 else
                     _roomTitle.Update(gameTime);
+
+            // Update about room. If the title is activated, go back to the title screen.
+            if (_roomAbout != null)
+                if (_roomAbout.Title)
+                {
+                    _roomAbout = null;
+                    _roomTitle = new TitleRoom(game: this);
+                }
+                else
+                    _roomAbout.Update(gameTime);
 
             // Update level room. If the game is over, create the end room.
             if (_roomLevel != null)
@@ -97,7 +115,10 @@ namespace MonoPlayground
 
             if (_roomTitle != null)
                 _roomTitle.Draw(gameTime, _spriteBatch);
-            
+
+            if (_roomAbout != null)
+                _roomAbout.Draw(gameTime, _spriteBatch);
+
             if (_roomLevel != null)
                 _roomLevel.Draw(gameTime, _spriteBatch);
 

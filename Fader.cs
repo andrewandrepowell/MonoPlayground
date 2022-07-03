@@ -7,12 +7,10 @@ namespace MonoPlayground
 {
     internal class Fader : GameObject
     {
-        private const float _fadeTimerThreshold = 0.1f;
-        private const float _fadeChangeAmount = 0.05f;
+        private const float _fadeChangeAmount = 0.75f;
         private Texture2D _texture;
         private readonly Color _color;
         private readonly Rectangle _cameraBounds;
-        private float _fadeTimer;
         private float _fadeChangeDirection = 0.0f;
         public float Alpha { get; set; }
         public Point Position { get; set; }
@@ -22,7 +20,6 @@ namespace MonoPlayground
             _cameraBounds = cameraBounds;
             Position = Point.Zero;
             Alpha = 0.0f;
-            _fadeTimer = _fadeTimerThreshold;
             _fadeChangeDirection = 0.0f;
         }
         public void FadeIn() => _fadeChangeDirection = -_fadeChangeAmount;
@@ -32,33 +29,15 @@ namespace MonoPlayground
             if (Alpha < 0.0f || Alpha > 1.0f)
                 throw new ArgumentOutOfRangeException("Alpha must be between 0.0f and 1.0f inclusively.");
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (_fadeChangeDirection != 0.0)
-            {
-                if (_fadeTimer > 0)
-                {
-                    _fadeTimer -= timeElapsed;
-                }
-                else
-                {
-                    _fadeTimer += _fadeTimerThreshold;
-                    Alpha += _fadeChangeDirection;
-                    if (Alpha >= 1.0f)
-                    {
-                        Alpha = 1.0f;
-                        _fadeChangeDirection = 0.0f;
-                    }
-                    else if (Alpha <= 0.0f)
-                    {
-                        Alpha = 0.0f;
-                        _fadeChangeDirection = 0.0f;
-                    }
-                }
-            }
+            Alpha += _fadeChangeDirection * timeElapsed;
+            if (Alpha < 0.0f)
+                Alpha = 0.0f;
+            else if (Alpha > 1.0f)
+                Alpha = 1.0f;
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
             if (_texture == null)
             {
                 _texture = new Texture2D(

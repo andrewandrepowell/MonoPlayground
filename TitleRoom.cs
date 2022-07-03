@@ -14,7 +14,8 @@ namespace MonoPlayground
         private readonly Fader _fader;
         private readonly SoundEffectInstance _soundGameStarting;
         private readonly string[] _messageStrings;
-        private StartState _gameStartState;
+        private RoomChangeState _gameStartState;
+        private RoomChangeState _aboutState;
         private TitleState _titleState;
         private float _timer;
         private float _timerThreshold;
@@ -22,7 +23,8 @@ namespace MonoPlayground
         private Vector2[] _messagePositions;
         private float _messageAlpha;
         public bool GameStarted { get; private set; }
-        private enum StartState { Waiting, ButtonPressed, GameStarting };
+        public bool About { get; private set; }
+        private enum RoomChangeState { Waiting, ButtonPressed, Changing };
         private enum TitleState { Waiting, MovingTitle, RevealingText };
         public TitleRoom(Game game)
         {
@@ -36,18 +38,20 @@ namespace MonoPlayground
             _fader.FadeIn(); // Fade in at start.
             _soundGameStarting = game.Content.Load<SoundEffect>("endSound").CreateInstance(); 
             _soundGameStarting.Volume = 0.01f;
-            _gameStartState = StartState.Waiting; // FSM used to determine how the game starts.
+            _gameStartState = RoomChangeState.Waiting; // FSM used to determine how the game starts.
+            _aboutState = RoomChangeState.Waiting; // FSM used to determine going to the about room.
             _titleState = TitleState.Waiting; // FSM used to determine title screen animation.
             _timerThreshold = 2.5f; // Multi-purpose timer used in FSM.
             _timer = _timerThreshold;
             GameStarted = false;
+            About = false;
             _titlePosition = new Vector2( // Title starts in middle on screen.
                 x: cameraBounds.Center.X - _title.Bounds.Center.X,
                 y: cameraBounds.Center.Y - _title.Bounds.Center.Y);
             _messageStrings = new string[] // Messages to show during title animation.
             {
                 "Welcome!",
-                "Hit space to start!",
+                "Hit space to start! (or \'A\' to go to the about page)",
                 "Use arrow keys to move Mono Kitty, collect cookies, and get to the end!"
             };
             _messagePositions = _messageStrings // Messages are positioned beneath title splash.
@@ -68,24 +72,48 @@ namespace MonoPlayground
             // FSM used to determine how the game starts.
             switch (_gameStartState)
             {
-                case StartState.Waiting:
+                case RoomChangeState.Waiting:
                     if (keyboardState.IsKeyDown(Keys.Space))
                     {
-                        _gameStartState = StartState.ButtonPressed;
+                        _gameStartState = RoomChangeState.ButtonPressed;
                     }
                     break;
-                case StartState.ButtonPressed:
+                case RoomChangeState.ButtonPressed:
                     if (!keyboardState.IsKeyDown(Keys.Space))
                     {
-                        _gameStartState = StartState.GameStarting;
+                        _gameStartState = RoomChangeState.Changing;
                         _fader.FadeOut();
                         _soundGameStarting.Play();
                     }
                     break;
-                case StartState.GameStarting:
+                case RoomChangeState.Changing:
                     if (_fader.Alpha == 1.0f)
                     {
                         GameStarted = true;
+                    }
+                    break;
+            }
+
+            // FSM used to determine going to the about room.
+            switch (_aboutState)
+            {
+                case RoomChangeState.Waiting:
+                    if (keyboardState.IsKeyDown(Keys.A))
+                    {
+                        _aboutState = RoomChangeState.ButtonPressed;
+                    }
+                    break;
+                case RoomChangeState.ButtonPressed:
+                    if (!keyboardState.IsKeyDown(Keys.A))
+                    {
+                        _aboutState = RoomChangeState.Changing;
+                        _fader.FadeOut();
+                    }
+                    break;
+                case RoomChangeState.Changing:
+                    if (_fader.Alpha == 1.0f)
+                    {
+                        About = true;
                     }
                     break;
             }
@@ -124,16 +152,12 @@ namespace MonoPlayground
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            _messageStrings
-                .Zip(_messagePositions, (message, position) => (message, position))
-                .ForEach(tuple =>
-                {
-                    spriteBatch.DrawString(
-                        spriteFont: _font,
-                        text: tuple.message,
-                        position: tuple.position,
-                        color: Color.Black * _messageAlpha);
-                });
+            foreach ((string message, Vector2 position) in _messageStrings.Zip(_messagePositions, (message, position) => (message, position)))
+                spriteBatch.DrawString(
+                    spriteFont: _font,
+                    text: message,
+                    position: position,
+                    color: Color.Black * _messageAlpha);
             spriteBatch.Draw(
                 texture: _title,
                 destinationRectangle: new Rectangle(
