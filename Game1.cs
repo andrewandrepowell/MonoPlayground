@@ -33,8 +33,8 @@ namespace MonoPlayground
         protected override void Initialize()
         {
             // Configuring the settings of the game.
-            IsMouseVisible = true;
-            _graphics.IsFullScreen = false;
+            IsMouseVisible = false;
+            _graphics.IsFullScreen = true;
             _graphics.HardwareModeSwitch = true;
             _graphics.PreferredBackBufferWidth = _gameWidth;
             _graphics.PreferredBackBufferHeight = _gameHeight;
