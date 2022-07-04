@@ -1,0 +1,48 @@
+Name: Cat (Mono Kitty) Animations
+Asset: catndog.zip
+URL: https://www.gameart2d.com/cat-and-dog-free-sprites.html
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Name: Portion of the Tiles, Trees, Background, Rocks.
+Asset: freetileset.zip
+URL: https://www.gameart2d.com/free-platformer-game-tileset.html
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Name: Montserrate Font
+Asset: montserrat-font.zip
+URL: https://www.fontsquirrel.com/fonts/montserrat
+License: SIL OFL v1.10
+License URL: https://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web
+
+Name: Short Square Trip. Used as the walking sound for Mono Kitty.
+Asset: 341025__projectsu012__short-square-trip.wav
+Author: ProjectsU012
+URL: https://freesound.org/people/ProjectsU012/sounds/341025/
+License: CC BY 4.0
+License URL: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Name: Retro Video Game SFX - Bounce. Used as the bouncer sound effect.
+Asset: 404769__owlstorm__retro-video-game-sfx-bounce.wav
+URL: https://freesound.org/people/OwlStorm/sounds/404769/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Name: Retro Video Game SFX - Slap. Modified to make the eating noises for consuming a cookie.
+Asset: 404781__owlstorm__retro-video-game-sfx-slap.wav
+URL: https://freesound.org/people/OwlStorm/sounds/404781/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Name: Retro Video Game SFX - Laser 4. Used when game starts and ends.
+Asset: 404782__owlstorm__retro-video-game-sfx-laser-4.wav
+URL: https://freesound.org/people/OwlStorm/sounds/404782/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Name: Bit Forest Intro Music. Music used by the game.
+Asset: 545457__bertsz__bit-forest-intro-music.flac
+URL: https://freesound.org/people/Bertsz/sounds/545457/
+License: CC0 1.0
+License URL: https://creativecommons.org/publicdomain/zero/1.0/legalcode
