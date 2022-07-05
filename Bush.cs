@@ -18,7 +18,7 @@ namespace MonoPlayground
             if (_textures == null)
             {
                 _textures = Enumerable.Range(1, _bushTotal)
-                    .Select(i => game.Content.Load<Texture2D>($"bush/bush ({i})"))
+                    .Select(i => game.Content.Load<Texture2D>($"bush/Bush ({i})"))
                     .ToArray();
             }
             _texture = _textures[_random.Next(0, _bushTotal)];
