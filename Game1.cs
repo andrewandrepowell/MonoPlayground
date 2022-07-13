@@ -24,7 +24,6 @@ namespace MonoPlayground
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
 #if DEBUG
             AllocConsole();
 #endif
@@ -34,7 +33,7 @@ namespace MonoPlayground
         {
             // Configuring the settings of the game.
             IsMouseVisible = false;
-            _graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = false;
             _graphics.HardwareModeSwitch = true;
             _graphics.PreferredBackBufferWidth = _gameWidth;
             _graphics.PreferredBackBufferHeight = _gameHeight;
